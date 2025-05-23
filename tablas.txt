@@ -1,0 +1,20 @@
+
+create y sp hechos: Usuario, Rol, Cuenta, Grupo Familiar, Pertenece, Tiene
+
+faltan: 
+Invitado
+Clase	
+Actividad
+Alquiler
+Actividad Extra
+TarifaPlaza
+Plaza de Verano	
+Tarjeta	
+Pago
+Método de Pago	
+Factura	
+ItemFactura
+Descuento	
+Recargo	
+Cobra Campaña
+Campaña
