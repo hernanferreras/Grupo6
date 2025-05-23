@@ -1,6 +1,6 @@
 
 --INSERTAR USUARIO
-CREATE PROCEDURE sp_insert_usuario
+CREATE PROCEDURE insertar_usuario
     @DNI INT,
     @Nombre NVARCHAR(100),
     @Apellido NVARCHAR(100),
@@ -19,7 +19,7 @@ END;
 GO
 
 --MODIFICAR USAURIO
-CREATE PROCEDURE sp_update_usuario
+CREATE PROCEDURE modificar_usuario
     @DNI INT,
     @Nombre NVARCHAR(100),
     @Apellido NVARCHAR(100),
@@ -43,7 +43,7 @@ END;
 GO
 
 --BORRAR USUARIO
-CREATE PROCEDURE sp_delete_usuario
+CREATE PROCEDURE borrar_usuario
     @DNI INT
 AS
 BEGIN
@@ -51,7 +51,7 @@ BEGIN
 END;
 GO
 --INSERTAR CUENTA
-CREATE PROCEDURE sp_insert_cuenta
+CREATE PROCEDURE insertar_cuenta
     @ID INT,
     @Alias NVARCHAR(100),
     @CVU NVARCHAR(50),
@@ -66,7 +66,7 @@ END;
 GO
 
 --MODIFICAR CUENTA
-CREATE PROCEDURE sp_update_cuenta
+CREATE PROCEDURE modificar_cuenta
     @ID INT,
     @Alias NVARCHAR(100),
     @CVU NVARCHAR(50),
@@ -88,7 +88,7 @@ GO
 GO
 
 --BORRAR CUENTA
-CREATE PROCEDURE sp_delete_cuenta
+CREATE PROCEDURE borrar_cuenta
     @ID INT
 AS
 BEGIN
@@ -97,7 +97,7 @@ END;
 GO
 
 --INSERTAR GRUPO FAMILIAR
-CREATE PROCEDURE sp_insert_grupo_familiar
+CREATE PROCEDURE insertar_grupo_familiar
     @ID INT,
     @Nombre NVARCHAR(100),
     @Descripcion NVARCHAR(255)
@@ -109,7 +109,7 @@ END;
 GO
 
 --MODIFICAR GRUPO FAMILIAR
-CREATE PROCEDURE sp_update_grupo_familiar
+CREATE PROCEDURE modificar_grupo_familiar
     @ID INT,
     @Nombre NVARCHAR(100),
     @Descripcion NVARCHAR(255)
@@ -123,7 +123,7 @@ END;
 GO
 
 --BORRAR GRUPO FAMILIAR
-CREATE PROCEDURE sp_delete_grupo_familiar
+CREATE PROCEDURE borrar_grupo_familiar
     @ID INT
 AS
 BEGIN
@@ -132,7 +132,7 @@ END;
 GO
 
 --INSERTAR PERTENECE
-CREATE PROCEDURE sp_insert_pertenece
+CREATE PROCEDURE insertar_pertenece
     @ID_GrupoFamiliar INT,
     @DNI_Usuario INT,
     @Es_Titular BIT
@@ -144,7 +144,7 @@ END;
 GO
 
 --BORRAR PERTENECE
-CREATE PROCEDURE sp_delete_pertenece
+CREATE PROCEDURE borrar_pertenece
     @ID_GrupoFamiliar INT,
     @DNI_Usuario INT
 AS
@@ -155,7 +155,7 @@ END;
 GO
 
 --INSERTAR TIENE
-CREATE PROCEDURE sp_insert_tiene
+CREATE PROCEDURE insertar_tiene
     @DNI_Usuario INT,
     @ID_Cuenta INT
 AS
@@ -166,13 +166,13 @@ END;
 GO
 
 --BORRAR TIENE
-CREATE PROCEDURE sp_insert_tiene
+CREATE PROCEDURE borrar_tiene
     @DNI_Usuario INT,
     @ID_Cuenta INT
 AS
 BEGIN
-    INSERT INTO Tiene (DNI_Usuario, ID_Cuenta)
-    VALUES (@DNI_Usuario, @ID_Cuenta);
+     DELETE FROM Tiene
+    WHERE DNI_Usuario = @DNI_Usuario AND ID_Cuenta = @ID_Cuenta;
 END;
 GO
 
