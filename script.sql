@@ -41,77 +41,158 @@ create database bdd2025
 use bdd2025
 
 CREATE TABLE Rol (
-    ID INT PRIMARY KEY,
-    Descripcion NVARCHAR(100)
+    ID_Rol INT IDENTITY (1,1) PRIMARY KEY,
+    Descripcion VARCHAR(100),
+	Nombre VARCHAR(60)
 );
 GO
 
 CREATE TABLE Usuario (
-    DNI INT PRIMARY KEY,
-    Nombre NVARCHAR(100),
-    Apellido NVARCHAR(100),
-    Email NVARCHAR(100),
-    TelefonoContacto NVARCHAR(20),
+    ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
+	DNI VARCHAR(20),
+    Nombre VARCHAR(100),
+    Apellido VARCHAR(100),
+    Email VARCHAR(100),
+    TelefonoContacto VARCHAR(20),
     FechaNacimiento DATE,
-    Contrasenia NVARCHAR(100),
+    Contrasenia VARCHAR(100),
     ID_Rol INT,
-    FOREIGN KEY (ID_Rol) REFERENCES Rol(ID)
+    FOREIGN KEY (ID_Rol) REFERENCES Rol(ID_Rol)
 );
 GO
 
+CREATE TABLE Tutor (
+	ID_Usuario INT PRIMARY KEY,
+	FechaInicioTutoria DATE,
+	FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario)   
+)
+GO
 CREATE TABLE GrupoFamiliar (
-    ID INT PRIMARY KEY,
-    Nombre NVARCHAR(100),
-    Descripcion NVARCHAR(255)
-);
-GO
-
-CREATE TABLE Pertenece (
-    ID_GrupoFamiliar INT,
-    DNI_Usuario INT,
-    Es_Titular BIT,
-    PRIMARY KEY (ID_GrupoFamiliar, DNI_Usuario),
-    FOREIGN KEY (ID_GrupoFamiliar) REFERENCES GrupoFamiliar(ID),
-    FOREIGN KEY (DNI_Usuario) REFERENCES Usuario(DNI)
-);
-GO
-
-CREATE TABLE Cuenta (
-    ID INT PRIMARY KEY,
-    Alias NVARCHAR(100),
-    CVU NVARCHAR(50),
-    Moneda NVARCHAR(10),
-    Saldo DECIMAL(18, 2),
-    Estado NVARCHAR(50)
-);
-GO
-
-CREATE TABLE Tiene (
-    DNI_Usuario INT,
-    ID_Cuenta INT,
-    PRIMARY KEY (DNI_Usuario, ID_Cuenta),
-    FOREIGN KEY (DNI_Usuario) REFERENCES Usuario(DNI),
-    FOREIGN KEY (ID_Cuenta) REFERENCES Cuenta(ID)
-);
-GO
-
-CREATE TABLE Socio (
-    DNI INT PRIMARY KEY,
-    FechaIngreso DATE NOT NULL,
-    Estado NVARCHAR(50) NOT NULL,
-    CategoriaID INT NOT NULL,
-    FOREIGN KEY (DNI) REFERENCES Usuario(DNI),
-    FOREIGN KEY (CategoriaID) REFERENCES Categoria(ID)
+    ID_GrupoFamiliar INT IDENTITY(1,1) PRIMARY KEY,
+    ID_Usuario INT,
+	Nombre VARCHAR(100),
+    Descripcion VARCHAR(255),
+	FOREIGN KEY (ID_Usuario) REFERENCES Tutor(ID_Usuario)
 );
 GO
 
 CREATE TABLE Categoria (
-    ID INT PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Importe DECIMAL(18, 2) NOT NULL
+    ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
+    Descripcion VARCHAR(100),
+    Importe DECIMAL(18, 2)
 );
 GO
 
+CREATE TABLE Socio (
+	ID_Usuario INT PRIMARY KEY,
+	telefonoEmergencia VARCHAR(20),
+    ObraSocial VARCHAR(100),
+    nroSocioOSocial INT,
+    CategoriaID INT,
+	ID_GrupoFamiliar INT,
+	ParentescoConTutor CHAR(50),                              
+    FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario),
+    FOREIGN KEY (CategoriaID) REFERENCES Categoria(ID_Categoria),
+	FOREIGN KEY (ID_GrupoFamiliar) REFERENCES GrupoFamiliar(ID_GrupoFamiliar)
+);
+GO
+
+CREATE TABLE Cuenta (
+    ID_Usuario INT,
+	NroCuenta INT,
+    FechaAlta DATE,
+    FechaBaja DATE,
+    Debito DECIMAL(15, 2),
+    Credito DECIMAL(15, 2),
+	SALDO DECIMAL(15, 2),
+	PRIMARY KEY (ID_Usuario, NroCuenta),
+    FOREIGN KEY (ID_Usuario) REFERENCES Socio(ID_Usuario)
+);
+GO
+
+CREATE TABLE Descuento (
+    ID_Descuento INT PRIMARY KEY,
+    Porcentaje DECIMAL(5, 2)
+);
+GO
+
+CREATE TABLE Costo (
+    ID_Costo INT PRIMARY KEY,
+    FechaIni DATE,
+    FechaFin DATE,
+    Monto DECIMAL(10,2)
+);
+GO
+
+CREATE TABLE Cuota (
+    ID_Cuota INT PRIMARY KEY,
+    nroCuota INT,
+    Estado NVARCHAR(50),
+    ID_Costo INT UNIQUE,
+    FOREIGN KEY (ID_Costo) REFERENCES Costo(ID_Costo)
+);
+GO
+
+CREATE TABLE Factura (
+    ID_Factura INT PRIMARY KEY,
+	ID_Cuota INT UNIQUE,
+    Numero VARCHAR(50),
+    FechaEmision DATE,
+    FechaVencimiento DATE,
+    TotalImporte DECIMAL(15,2),
+    Recargo DECIMAL(10,2),
+    Estado VARCHAR(30),
+    ID_Descuento INT, 
+    FOREIGN KEY (ID_Descuento) REFERENCES Descuento(ID_Descuento),
+	FOREIGN KEY (ID_Cuota) REFERENCES Cuota(ID_Cuota)
+);
+GO
+
+CREATE TABLE MedioDePago (
+    ID_MP INT PRIMARY KEY,
+    Tipo VARCHAR(15)  
+);
+GO
+
+CREATE TABLE Tarjeta (
+    ID INT PRIMARY KEY,  
+    NumeroTarjeta INT,
+    FechaVenc DATE,
+    DebitoAutomatico BIT,
+    FOREIGN KEY (ID) REFERENCES MedioDePago(ID_MP)
+);
+GO
+
+CREATE TABLE Transferencia (
+    ID INT PRIMARY KEY,  
+    NumeroTransaccion NVARCHAR(50),
+    Tipo VARCHAR(50),
+    FOREIGN KEY (ID) REFERENCES MedioDePago(ID_MP)
+);
+GO
+
+CREATE TABLE Pago (
+	ID_Pago INT IDENTITY(1,1) PRIMARY KEY,
+	FechaPago DATE,
+	Monto DECIMAL(15,2),
+	ID_MedioDePago INT,
+	NroCuenta INT,
+	ID_Usuario INT,
+	ID_Factura INT,
+	FOREIGN KEY (ID_MedioDePago) REFERENCES MedioDePago(ID_MP),
+	FOREIGN KEY (ID_Factura) REFERENCES Factura(ID_Factura),
+	FOREIGN KEY (ID_Usuario, NroCuenta) REFERENCES Cuenta(ID_Usuario, NroCuenta)
+)
+GO
+
+CREATE TABLE Reembolso (
+    ID_Reembolso INT PRIMARY KEY, 
+	ID_Pago INT UNIQUE,
+    Descripcion VARCHAR(300),
+    Fecha DATE,
+    FOREIGN KEY (ID_Pago) REFERENCES Pago(ID_Pago)
+);
+GO
 
 CREATE TABLE Actividad (
     ID INT PRIMARY KEY,
@@ -136,7 +217,9 @@ GO
 GO
 
 
-
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
 
 --Stored Procedures
 
