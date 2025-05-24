@@ -39,15 +39,16 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 
 -- 01 Creacion de la base de datos
 
-IF NOT EXITS (SELECT * FROM sys.databases WHERE NAME = 'bdd2025')
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'bdd2025')
 BEGIN 
-	CREATE DATABASE bdd2025
-	PRINT 'La base de datos se creo correctamente'
+    CREATE DATABASE bdd2025;
+    PRINT 'La base de datos se creó correctamente';
 END
 ELSE
-	PRINT 'La base de datos ya existe'
-END;
-use bdd2025
+    PRINT 'La base de datos ya existe';
+GO
+
+USE bdd2025;
 GO
 
 -- 02 Creacion del esquema
@@ -77,7 +78,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Usuario (
+	CREATE TABLE ddbba.Usuario (
     	ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
 	dni char(8) CHECK (dni >100000 AND dni <99999999),
     	Nombre VARCHAR(50),
@@ -87,7 +88,7 @@ BEGIN TRY
     	FechaNacimiento DATE,
     	Contrasenia VARCHAR(100),
     	ID_Rol INT,
-    	FOREIGN KEY (ID_Rol) REFERENCES Rol(ID_Rol)
+    	FOREIGN KEY (ID_Rol) REFERENCES ddbba.Rol(ID_Rol)
 	);
 END TRY
 BEGIN CATCH
@@ -96,10 +97,10 @@ END CATCH;
 GO
 
 BEGIN TRY	
-	CREATE TABLE Tutor (
+	CREATE TABLE ddbba.Tutor (
 		ID_Usuario INT PRIMARY KEY,
 		FechaInicioTutoria DATE,
-		FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario)   
+		FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Usuario(ID_Usuario)   
 	)
 END TRY
 BEGIN CATCH
@@ -108,10 +109,10 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Profesor (
+	CREATE TABLE ddbba.Profesor (
 		ID_Usuario INT PRIMARY KEY,
 		Especialidad VARCHAR(30),
-		FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario)
+		FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Usuario(ID_Usuario)
 	)
 END TRY
 BEGIN CATCH
@@ -120,12 +121,12 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE GrupoFamiliar (
+	CREATE TABLE ddbba.GrupoFamiliar (
     		ID_GrupoFamiliar INT IDENTITY(1,1) PRIMARY KEY,
     		ID_Usuario INT,
 		Nombre VARCHAR(100),
     		Descripcion VARCHAR(255),
-		FOREIGN KEY (ID_Usuario) REFERENCES Tutor(ID_Usuario)
+		FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Tutor(ID_Usuario)
 	);
 END TRY
 BEGIN CATCH
@@ -134,7 +135,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Categoria (
+	CREATE TABLE ddbba.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
     	Descripcion VARCHAR(100),
     	Importe DECIMAL(18, 2)
@@ -146,7 +147,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Socio (
+	CREATE TABLE ddbba.Socio (
 		ID_Usuario INT PRIMARY KEY,
 		telefonoEmergencia char(10),
     		ObraSocial VARCHAR(50),
@@ -154,9 +155,9 @@ BEGIN TRY
     		CategoriaID INT,
 		ID_GrupoFamiliar INT,
 		ParentescoConTutor CHAR(50),                              
-    		FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario),
-    		FOREIGN KEY (CategoriaID) REFERENCES Categoria(ID_Categoria),
-		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES GrupoFamiliar(ID_GrupoFamiliar)
+    		FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Usuario(ID_Usuario),
+    		FOREIGN KEY (CategoriaID) REFERENCES ddbba.Categoria(ID_Categoria),
+		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES ddbba.GrupoFamiliar(ID_GrupoFamiliar)
 	);
 END TRY
 BEGIN CATCH
@@ -165,7 +166,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Cuenta (
+	CREATE TABLE ddbba.Cuenta (
     		ID_Usuario INT,
 		NroCuenta INT,
     		FechaAlta DATE,
@@ -174,7 +175,7 @@ BEGIN TRY
     		Credito DECIMAL(10, 2),
 		SALDO DECIMAL(10, 2),
 		PRIMARY KEY (ID_Usuario, NroCuenta),
-    		FOREIGN KEY (ID_Usuario) REFERENCES Socio(ID_Usuario)
+    		FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Socio(ID_Usuario)
 	);
 END TRY
 BEGIN CATCH
@@ -183,7 +184,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Descuento (
+	CREATE TABLE ddbba.Descuento (
     		ID_Descuento INT PRIMARY KEY,
     		Porcentaje DECIMAL(5, 2)
 	);
@@ -194,7 +195,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Costo (
+	CREATE TABLE ddbba.Costo (
     		ID_Costo INT PRIMARY KEY,
     		FechaIni DATE,
     		FechaFin DATE,
@@ -207,20 +208,21 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Cuota (
+	CREATE TABLE ddbba.Cuota (
     		ID_Cuota INT PRIMARY KEY,
     		nroCuota INT,
     		Estado NVARCHAR(50),
    		ID_Costo INT UNIQUE,
-    		FOREIGN KEY (ID_Costo) REFERENCES Costo(ID_Costo)
+    		FOREIGN KEY (ID_Costo) REFERENCES ddbba.Costo(ID_Costo)
 );
+END TRY
 BEGIN CATCH
 	PRINT 'La tabla Cuota ya existe'
 END CATCH;
 GO
 	
 BEGIN TRY
-	CREATE TABLE Factura (
+	CREATE TABLE ddbba.Factura (
     		ID_Factura INT PRIMARY KEY,
 		ID_Cuota INT UNIQUE,
     		Numero VARCHAR(50),
@@ -230,8 +232,8 @@ BEGIN TRY
     		Recargo DECIMAL(10,2),
     		Estado VARCHAR(30),
     		ID_Descuento INT, 
-    		FOREIGN KEY (ID_Descuento) REFERENCES Descuento(ID_Descuento),
-		FOREIGN KEY (ID_Cuota) REFERENCES Cuota(ID_Cuota)
+    		FOREIGN KEY (ID_Descuento) REFERENCES ddbba.Descuento(ID_Descuento),
+		FOREIGN KEY (ID_Cuota) REFERENCES ddbba.Cuota(ID_Cuota)
 );
 END TRY
 BEGIN CATCH
@@ -240,23 +242,23 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE MedioDePago (
+	CREATE TABLE ddbba.MedioDePago (
     		ID_MP INT PRIMARY KEY,
     		Tipo VARCHAR(15)  
 	);
 END TRY
 BEGIN CATCH
-	'La Tabla MedioDePago ya existe'
+	PRINT 'La Tabla MedioDePago ya existe'
 END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Tarjeta (
+	CREATE TABLE ddbba.Tarjeta (
     		ID INT PRIMARY KEY,  
     		NumeroTarjeta INT,
     		FechaVenc DATE,
     		DebitoAutomatico BIT,
-    		FOREIGN KEY (ID) REFERENCES MedioDePago(ID_MP)
+    		FOREIGN KEY (ID) REFERENCES ddbba.MedioDePago(ID_MP)
 );
 END TRY
 BEGIN CATCH 
@@ -265,11 +267,11 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Transferencia (
+	CREATE TABLE ddbba.Transferencia (
     		ID INT PRIMARY KEY,  
     		NumeroTransaccion NVARCHAR(50),
     		Tipo VARCHAR(50),
-    		FOREIGN KEY (ID) REFERENCES MedioDePago(ID_MP)
+    		FOREIGN KEY (ID) REFERENCES ddbba.MedioDePago(ID_MP)
 	);
 END TRY
 BEGIN CATCH
@@ -278,7 +280,7 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Pago (
+	CREATE TABLE ddbba.Pago (
 		ID_Pago INT IDENTITY(1,1) PRIMARY KEY,
 		FechaPago DATE,
 		Monto DECIMAL(15,2),
@@ -286,9 +288,9 @@ BEGIN TRY
 		NroCuenta INT,
 		ID_Usuario INT,
 		ID_Factura INT,
-		FOREIGN KEY (ID_MedioDePago) REFERENCES MedioDePago(ID_MP),
-		FOREIGN KEY (ID_Factura) REFERENCES Factura(ID_Factura),
-		FOREIGN KEY (ID_Usuario, NroCuenta) REFERENCES Cuenta(ID_Usuario, NroCuenta)
+		FOREIGN KEY (ID_MedioDePago) REFERENCES ddbba.MedioDePago(ID_MP),
+		FOREIGN KEY (ID_Factura) REFERENCES ddbba.Factura(ID_Factura),
+		FOREIGN KEY (ID_Usuario, NroCuenta) REFERENCES ddbba.Cuenta(ID_Usuario, NroCuenta)
 );
 END TRY
 BEGIN CATCH
@@ -302,7 +304,7 @@ BEGIN TRY
 		ID_Pago INT UNIQUE,
     		Descripcion VARCHAR(300),
     		Fecha DATE,
-    		FOREIGN KEY (ID_Pago) REFERENCES Pago(ID_Pago)
+    		FOREIGN KEY (ID_Pago) REFERENCES ddbba.Pago(ID_Pago)
 	);
 END TRY
 BEGIN CATCH
@@ -311,11 +313,11 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Actividad (
+	CREATE TABLE ddbba.Actividad (
     		ID_Actividad INT PRIMARY KEY,
     		Nombre VARCHAR(60),
     		Descripcion VARCHAR(255),
-    	CostoMensual DECIMAL(18, 2) NOT NULL
+    		CostoMensual DECIMAL(18, 2) NOT NULL
 );
 END TRY
 BEGIN CATCH
@@ -324,15 +326,15 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Clase (
+	CREATE TABLE ddbba.Clase (
     		ID_Clase INT PRIMARY KEY,
     		HoraInicio TIME,
 		HoraFin TIME,
 		Dia DATE,
     		ID_Actividad INT,
     		ID_Profesor INT,
-    		FOREIGN KEY (ID_Actividad) REFERENCES Actividad(ID_Actividad),
-    		FOREIGN KEY (ID_Profesor) REFERENCES Usuario(ID_Usuario)
+    		FOREIGN KEY (ID_Actividad) REFERENCES ddbba.Actividad(ID_Actividad),
+    		FOREIGN KEY (ID_Profesor) REFERENCES ddbba.Usuario(ID_Usuario)
 	);
 END TRY
 BEGIN CATCH
@@ -341,12 +343,12 @@ END CATCH;
 GO
 
 BEGIN TRY
-	CREATE TABLE Clase_Profesor (
+	CREATE TABLE ddbba.Clase_Profesor (
     		ID_Clase INT,
     		ID_Profesor INT,
     		PRIMARY KEY (ID_Clase, ID_Profesor),
-    		FOREIGN KEY (ID_Clase) REFERENCES Clase(ID_Clase),
-    		FOREIGN KEY (ID_Profesor) REFERENCES Profesor(ID_Usuario)
+    		FOREIGN KEY (ID_Clase) REFERENCES ddbba.Clase(ID_Clase),
+    		FOREIGN KEY (ID_Profesor) REFERENCES ddbba.Profesor(ID_Usuario)
 );
 END TRY
 BEGIN CATCH
@@ -354,6 +356,101 @@ BEGIN CATCH
 END CATCH;
 GO
 
+BEGIN TRY
+    CREATE TABLE ddbba.ActividadExtra (
+        ID INT PRIMARY KEY,
+        Fecha DATE
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla ActividadExtra ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.Colonia (
+        ID INT PRIMARY KEY,
+        HoraInicio TIME,
+        HoraFin TIME,
+        Monto DECIMAL(10,2),
+        FOREIGN KEY (ID) REFERENCES ddbba.ActividadExtra(ID)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Colonia ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.AlquilerSUM (
+        ID INT PRIMARY KEY,
+        HoraInicio TIME,
+        HoraFin TIME,
+        Monto DECIMAL(10,2),
+        FOREIGN KEY (ID) REFERENCES ddbba.ActividadExtra(ID)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla AlquilerSUM ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.PiletaVerano (
+        ID INT PRIMARY KEY,
+        FOREIGN KEY (ID) REFERENCES ddbba.ActividadExtra(ID)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla PiletaVerano ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.ItemFactura (
+        ID_Factura INT,           
+        ID_Item INT,          
+        ID_Actividad INT,
+        Descripcion VARCHAR(300),
+        Importe DECIMAL(10,2),
+        PRIMARY KEY (ID_Factura, ID_Item),
+        FOREIGN KEY (ID_Factura) REFERENCES ddbba.Factura(ID_Factura),
+        FOREIGN KEY (ID_Actividad) REFERENCES ddbba.Actividad(ID_Actividad)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla ItemFactura ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.Invitacion (                          --Podría ser una una ternaria con dos entidades usuarios, conectada con Pileta...?
+        ID_Invitador INT,                              --SOCIO A SOCIO
+        ID_Invitado INT,
+        FechaInvitacion DATE,
+        PRIMARY KEY (ID_Invitador, ID_Invitado),
+        FOREIGN KEY (ID_Invitador) REFERENCES ddbba.Usuario(ID_Usuario),
+        FOREIGN KEY (ID_Invitado) REFERENCES ddbba.Usuario(ID_Usuario)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Invitacion ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE ddbba.Invitado (                               --SOCIO A NO SOCIO
+        ID_Invitado INT IDENTITY(1,1) PRIMARY KEY,
+        ID_Usuario INT,
+        ID_Pileta INT,
+        FOREIGN KEY (ID_Usuario) REFERENCES ddbba.Usuario(ID_Usuario),
+        FOREIGN KEY (ID_Pileta) REFERENCES ddbba.PiletaVerano(ID)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Invitado ya existe';
+END CATCH;
+GO
 
 --------------------------------------------------------
 --------------------------------------------------------
@@ -366,7 +463,7 @@ CREATE OR ALTER PROCEDURE insertar_rol
     @Nombre VARCHAR(60)
 AS
 BEGIN
-    INSERT INTO Rol (Descripcion, Nombre)
+    INSERT INTO ddbba.Rol (Descripcion, Nombre)
     VALUES (@Descripcion, @Nombre);
 END;
 GO
@@ -377,7 +474,7 @@ CREATE OR ALTER PROCEDURE modificar_rol
     @Nombre VARCHAR(60)
 AS
 BEGIN
-    UPDATE Rol
+    UPDATE ddbba.Rol
     SET Descripcion = @Descripcion,
         Nombre = @Nombre
     WHERE ID_Rol = @ID_Rol;
@@ -388,7 +485,7 @@ CREATE OR ALTER PROCEDURE borrar_rol
     @ID_Rol INT
 AS
 BEGIN
-    DELETE FROM Rol
+    DELETE FROM ddbba.Rol
     WHERE ID_Rol = @ID_Rol;
 END;
 GO
@@ -405,7 +502,7 @@ CREATE OR ALTER PROCEDURE insertar_usuario
     @ID_Rol INT
 AS
 BEGIN
-    INSERT INTO Usuario (
+    INSERT INTO ddbba.Usuario (
         DNI, Nombre, Apellido, Email, TelefonoContacto,
         FechaNacimiento, Contrasenia, ID_Rol
     )
@@ -429,7 +526,7 @@ CREATE OR ALTER PROCEDURE modificar_usuario
     @ID_Rol INT
 AS
 BEGIN
-    UPDATE Usuario
+    UPDATE ddbba.Usuario
     SET DNI = @DNI,
         Nombre = @Nombre,
         Apellido = @Apellido,
@@ -446,7 +543,7 @@ CREATE OR ALTER PROCEDURE borrar_usuario
     @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Usuario WHERE ID_Usuario = @ID_Usuario;
+    DELETE FROM ddbba.Usuario WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
 -----------------------------TUTOR
@@ -455,7 +552,7 @@ CREATE OR ALTER PROCEDURE insertar_tutor
     @FechaInicioTutoria DATE
 AS
 BEGIN
-    INSERT INTO Tutor (ID_Usuario, FechaInicioTutoria)
+    INSERT INTO ddbba.Tutor (ID_Usuario, FechaInicioTutoria)
     VALUES (@ID_Usuario, @FechaInicioTutoria);
 END;
 GO
@@ -465,7 +562,7 @@ CREATE OR ALTER PROCEDURE modificar_tutor
     @FechaInicioTutoria DATE
 AS
 BEGIN
-    UPDATE Tutor
+    UPDATE ddbba.Tutor
     SET FechaInicioTutoria = @FechaInicioTutoria
     WHERE ID_Usuario = @ID_Usuario;
 END;
@@ -475,17 +572,17 @@ CREATE OR ALTER PROCEDURE borrar_tutor
     @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Tutor
+    DELETE FROM ddbba.Tutor
     WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
 -----------------------------PROFESOR
-CREATE OR ALTER PROCEDUREinsertar_profesor
+CREATE OR ALTER PROCEDURE insertar_profesor
     @ID_Usuario INT,
     @Especialidad VARCHAR(30)
 AS
 BEGIN
-    INSERT INTO Profesor (ID_Usuario, Especialidad)
+    INSERT INTO ddbba.Profesor (ID_Usuario, Especialidad)
     VALUES (@ID_Usuario, @Especialidad);
 END;
 GO
@@ -495,7 +592,7 @@ CREATE OR ALTER PROCEDURE modificar_profesor
     @Especialidad VARCHAR(30)
 AS
 BEGIN
-    UPDATE Profesor
+    UPDATE ddbba.Profesor
     SET Especialidad = @Especialidad
     WHERE ID_Usuario = @ID_Usuario;
 END;
@@ -505,7 +602,7 @@ CREATE OR ALTER PROCEDURE borrar_profesor
     @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Profesor
+    DELETE FROM ddbba.Profesor
     WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
@@ -517,7 +614,7 @@ CREATE OR ALTER PROCEDURE insertar_grupo_familiar
     @Descripcion VARCHAR(255)
 AS
 BEGIN
-    INSERT INTO GrupoFamiliar (ID_Usuario, Nombre, Descripcion)
+    INSERT INTO ddbba.GrupoFamiliar (ID_Usuario, Nombre, Descripcion)
     VALUES (@ID_Usuario, @Nombre, @Descripcion);
 END;
 GO
@@ -529,7 +626,7 @@ CREATE OR ALTER PROCEDURE modificar_grupo_familiar
     @Descripcion VARCHAR(255)
 AS
 BEGIN
-    UPDATE GrupoFamiliar
+    UPDATE ddbba.GrupoFamiliar
     SET ID_Usuario = @ID_Usuario,
         Nombre = @Nombre,
         Descripcion = @Descripcion
@@ -541,7 +638,7 @@ CREATE OR ALTER PROCEDURE borrar_grupo_familiar
     @ID_GrupoFamiliar INT
 AS
 BEGIN
-    DELETE FROM GrupoFamiliar
+    DELETE FROM ddbba.GrupoFamiliar
     WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar;
 END;
 GO
@@ -552,7 +649,7 @@ CREATE OR ALTER PROCEDURE insertar_categoria
     @Importe DECIMAL(18, 2)
 AS
 BEGIN
-    INSERT INTO Categoria (Descripcion, Importe)
+    INSERT INTO ddbba.Categoria (Descripcion, Importe)
     VALUES (@Descripcion, @Importe);
 END;
 GO
@@ -563,7 +660,7 @@ CREATE OR ALTER PROCEDURE modificar_categoria
     @Importe DECIMAL(18, 2)
 AS
 BEGIN
-    UPDATE Categoria
+    UPDATE ddbba.Categoria
     SET Descripcion = @Descripcion,
         Importe = @Importe
     WHERE ID_Categoria = @ID_Categoria;
@@ -574,7 +671,7 @@ CREATE OR ALTER PROCEDURE borrar_categoria
     @ID_Categoria INT
 AS
 BEGIN
-    DELETE FROM Categoria
+    DELETE FROM ddbba.Categoria
     WHERE ID_Categoria = @ID_Categoria;
 END;
 GO
@@ -590,7 +687,7 @@ CREATE OR ALTER PROCEDURE insertar_socio
     @ParentescoConTutor CHAR(50)
 AS
 BEGIN
-    INSERT INTO Socio (
+    INSERT INTO ddbba.Socio (
         ID_Usuario,
         telefonoEmergencia,
         ObraSocial,
@@ -622,7 +719,7 @@ CREATE OR ALTER PROCEDURE modificar_socio
     @ParentescoConTutor CHAR(50)
 AS
 BEGIN
-    UPDATE Socio
+    UPDATE ddbba.Socio
     SET telefonoEmergencia = @telefonoEmergencia,
         ObraSocial = @ObraSocial,
         nroSocioOSocial = @nroSocioOSocial,
@@ -637,7 +734,7 @@ CREATE OR ALTER PROCEDURE borrar_socio
     @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Socio
+    DELETE FROM ddbba.Socio
     WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
@@ -652,7 +749,7 @@ CREATE OR ALTER PROCEDURE insertar_cuenta
     @Saldo DECIMAL(15, 2)
 AS
 BEGIN
-    INSERT INTO Cuenta (
+    INSERT INTO ddbba.Cuenta (
         ID_Usuario,
         NroCuenta,
         FechaAlta,
@@ -683,7 +780,7 @@ CREATE OR ALTER PROCEDURE modificar_cuenta
     @Saldo DECIMAL(15, 2)
 AS
 BEGIN
-    UPDATE Cuenta
+    UPDATE ddbba.Cuenta
     SET FechaAlta = @FechaAlta,
         FechaBaja = @FechaBaja,
         Debito = @Debito,
@@ -698,7 +795,7 @@ CREATE OR ALTER PROCEDURE borrar_cuenta
     @NroCuenta INT
 AS
 BEGIN
-    DELETE FROM Cuenta
+    DELETE FROM ddbba.Cuenta
     WHERE ID_Usuario = @ID_Usuario AND NroCuenta = @NroCuenta;
 END;
 GO
@@ -709,7 +806,7 @@ CREATE OR ALTER PROCEDURE insertar_descuento
     @Porcentaje DECIMAL(5, 2)
 AS
 BEGIN
-    INSERT INTO Descuento (ID_Descuento, Porcentaje)
+    INSERT INTO ddbba.Descuento (ID_Descuento, Porcentaje)
     VALUES (@ID_Descuento, @Porcentaje);
 END;
 GO
@@ -719,7 +816,7 @@ CREATE OR ALTER PROCEDURE modificar_descuento
     @Porcentaje DECIMAL(5, 2)
 AS
 BEGIN
-    UPDATE Descuento
+    UPDATE ddbba.Descuento
     SET Porcentaje = @Porcentaje
     WHERE ID_Descuento = @ID_Descuento;
 END;
@@ -730,7 +827,7 @@ CREATE OR ALTER PROCEDURE borrar_descuento
     @ID_Descuento INT
 AS
 BEGIN
-    DELETE FROM Descuento
+    DELETE FROM ddbba.Descuento
     WHERE ID_Descuento = @ID_Descuento;
 END;
 GO
@@ -742,7 +839,7 @@ CREATE OR ALTER PROCEDURE insertar_costo
     @Monto DECIMAL(10, 2)
 AS
 BEGIN
-    INSERT INTO Costo (ID_Costo, FechaIni, FechaFin, Monto)
+    INSERT INTO ddbba.Costo (ID_Costo, FechaIni, FechaFin, Monto)
     VALUES (@ID_Costo, @FechaIni, @FechaFin, @Monto);
 END;
 GO
@@ -755,7 +852,7 @@ CREATE OR ALTER PROCEDURE modificar_costo
     @Monto DECIMAL(10, 2)
 AS
 BEGIN
-    UPDATE Costo
+    UPDATE ddbba.Costo
     SET FechaIni = @FechaIni,
         FechaFin = @FechaFin,
         Monto = @Monto
@@ -767,7 +864,7 @@ CREATE OR ALTER PROCEDURE borrar_costo
     @ID_Costo INT
 AS
 BEGIN
-    DELETE FROM Costo
+    DELETE FROM ddbba.Costo
     WHERE ID_Costo = @ID_Costo;
 END;
 GO
@@ -779,7 +876,7 @@ CREATE OR ALTER PROCEDURE insertar_cuota
     @ID_Costo INT
 AS
 BEGIN
-    INSERT INTO Cuota (ID_Cuota, nroCuota, Estado, ID_Costo)
+    INSERT INTO ddbba.Cuota (ID_Cuota, nroCuota, Estado, ID_Costo)
     VALUES (@ID_Cuota, @nroCuota, @Estado, @ID_Costo);
 END;
 GO
@@ -791,7 +888,7 @@ CREATE OR ALTER PROCEDURE modificar_cuota
     @ID_Costo INT
 AS
 BEGIN
-    UPDATE Cuota
+    UPDATE ddbba.Cuota
     SET nroCuota = @nroCuota,
         Estado = @Estado,
         ID_Costo = @ID_Costo
@@ -803,7 +900,7 @@ CREATE OR ALTER PROCEDURE borrar_cuota
     @ID_Cuota INT
 AS
 BEGIN
-    DELETE FROM Cuota
+    DELETE FROM ddbba.Cuota
     WHERE ID_Cuota = @ID_Cuota;
 END;
 GO
