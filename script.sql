@@ -67,6 +67,14 @@ CREATE TABLE Tutor (
 	FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario)   
 )
 GO
+
+CREATE TABLE Profesor (
+	ID_Usuario INT PRIMARY KEY,
+	Especialidad VARCHAR(30),
+	FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario)
+)
+GO
+
 CREATE TABLE GrupoFamiliar (
     ID_GrupoFamiliar INT IDENTITY(1,1) PRIMARY KEY,
     ID_Usuario INT,
@@ -195,25 +203,33 @@ CREATE TABLE Reembolso (
 GO
 
 CREATE TABLE Actividad (
-    ID INT PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Descripcion NVARCHAR(255),
-    Costo DECIMAL(18, 2) NOT NULL
+    ID_Actividad INT PRIMARY KEY,
+    Nombre VARCHAR(60),
+    Descripcion VARCHAR(255),
+    CostoMensual DECIMAL(18, 2) NOT NULL
 );
 GO
 
 
 CREATE TABLE Clase (
-    ID INT PRIMARY KEY,
-    Fecha DATE NOT NULL,
-    Hora TIME NOT NULL,
-    ID_Actividad INT NOT NULL,
-    DNI_Profesor INT NOT NULL,
-    FOREIGN KEY (ID_Actividad) REFERENCES Actividad(ID),
-    FOREIGN KEY (DNI_Profesor) REFERENCES Usuario(DNI)
+    ID_Clase INT PRIMARY KEY,
+    HoraInicio TIME,
+	HoraFin TIME,
+	Dia DATE,
+    ID_Actividad INT,
+    ID_Profesor INT,
+    FOREIGN KEY (ID_Actividad) REFERENCES Actividad(ID_Actividad),
+    FOREIGN KEY (ID_Profesor) REFERENCES Usuario(ID_Usuario)
 );
 GO
 
+CREATE TABLE Clase_Profesor (
+    ID_Clase INT,
+    ID_Profesor INT,
+    PRIMARY KEY (ID_Clase, ID_Profesor),
+    FOREIGN KEY (ID_Clase) REFERENCES Clase(ID_Clase),
+    FOREIGN KEY (ID_Profesor) REFERENCES Profesor(ID_Usuario)
+);
 GO
 
 
