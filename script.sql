@@ -238,21 +238,56 @@ GO
 --------------------------------------------------------
 
 --Stored Procedures
+-----------------------------ROL
+CREATE PROCEDURE insertar_rol
+    @Descripcion VARCHAR(100),
+    @Nombre VARCHAR(60)
+AS
+BEGIN
+    INSERT INTO Rol (Descripcion, Nombre)
+    VALUES (@Descripcion, @Nombre);
+END;
+GO
 
+CREATE PROCEDURE modificar_rol
+    @ID_Rol INT,
+    @Descripcion VARCHAR(100),
+    @Nombre VARCHAR(60)
+AS
+BEGIN
+    UPDATE Rol
+    SET Descripcion = @Descripcion,
+        Nombre = @Nombre
+    WHERE ID_Rol = @ID_Rol;
+END;
+GO
 
---INSERTAR USUARIO
-CREATE PROCEDURE insertar_usuario
-    @DNI INT,
-    @Nombre NVARCHAR(100),
-    @Apellido NVARCHAR(100),
-    @Email NVARCHAR(100),
-    @TelefonoContacto NVARCHAR(20),
-    @FechaNacimiento DATE,
-    @Contrasenia NVARCHAR(100),
+CREATE PROCEDURE borrar_rol
     @ID_Rol INT
 AS
 BEGIN
-    INSERT INTO Usuario VALUES (
+    DELETE FROM Rol
+    WHERE ID_Rol = @ID_Rol;
+END;
+GO
+
+-----------------------------USUARIO
+CREATE PROCEDURE insertar_usuario
+    @DNI VARCHAR(20),
+    @Nombre VARCHAR(100),
+    @Apellido VARCHAR(100),
+    @Email VARCHAR(100),
+    @TelefonoContacto VARCHAR(20),
+    @FechaNacimiento DATE,
+    @Contrasenia VARCHAR(100),
+    @ID_Rol INT
+AS
+BEGIN
+    INSERT INTO Usuario (
+        DNI, Nombre, Apellido, Email, TelefonoContacto,
+        FechaNacimiento, Contrasenia, ID_Rol
+    )
+    VALUES (
         @DNI, @Nombre, @Apellido, @Email, @TelefonoContacto,
         @FechaNacimiento, @Contrasenia, @ID_Rol
     );
@@ -261,311 +296,394 @@ GO
 
 --MODIFICAR USAURIO
 CREATE PROCEDURE modificar_usuario
-    @DNI INT,
-    @Nombre NVARCHAR(100),
-    @Apellido NVARCHAR(100),
-    @Email NVARCHAR(100),
-    @TelefonoContacto NVARCHAR(20),
+    @ID_Usuario INT,
+    @DNI VARCHAR(20),
+    @Nombre VARCHAR(100),
+    @Apellido VARCHAR(100),
+    @Email VARCHAR(100),
+    @TelefonoContacto VARCHAR(20),
     @FechaNacimiento DATE,
-    @Contrasenia NVARCHAR(100),
+    @Contrasenia VARCHAR(100),
     @ID_Rol INT
 AS
 BEGIN
     UPDATE Usuario
-    SET Nombre = @Nombre,
+    SET DNI = @DNI,
+        Nombre = @Nombre,
         Apellido = @Apellido,
         Email = @Email,
         TelefonoContacto = @TelefonoContacto,
         FechaNacimiento = @FechaNacimiento,
         Contrasenia = @Contrasenia,
         ID_Rol = @ID_Rol
-    WHERE DNI = @DNI;
+    WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
-
 --BORRAR USUARIO
 CREATE PROCEDURE borrar_usuario
-    @DNI INT
+    @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Usuario WHERE DNI = @DNI;
+    DELETE FROM Usuario WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
---INSERTAR CUENTA
-CREATE PROCEDURE insertar_cuenta
-    @ID INT,
-    @Alias NVARCHAR(100),
-    @CVU NVARCHAR(50),
-    @Moneda NVARCHAR(10),
-    @Saldo DECIMAL(18,2),
-    @Estado NVARCHAR(50)
+-----------------------------TUTOR
+CREATE PROCEDURE insertar_tutor
+    @ID_Usuario INT,
+    @FechaInicioTutoria DATE
 AS
 BEGIN
-    INSERT INTO Cuenta (ID, Alias, CVU, Moneda, Saldo, Estado)
-    VALUES (@ID, @Alias, @CVU, @Moneda, @Saldo, @Estado);
+    INSERT INTO Tutor (ID_Usuario, FechaInicioTutoria)
+    VALUES (@ID_Usuario, @FechaInicioTutoria);
 END;
 GO
 
---MODIFICAR CUENTA
-CREATE PROCEDURE modificar_cuenta
-    @ID INT,
-    @Alias NVARCHAR(100),
-    @CVU NVARCHAR(50),
-    @Moneda NVARCHAR(10),
-    @Saldo DECIMAL(18,2),
-    @Estado NVARCHAR(50)
+CREATE PROCEDURE modificar_tutor
+    @ID_Usuario INT,
+    @FechaInicioTutoria DATE
 AS
 BEGIN
-    UPDATE Cuenta
-    SET Alias = @Alias,
-        CVU = @CVU,
-        Moneda = @Moneda,
-        Saldo = @Saldo,
-        Estado = @Estado
-    WHERE ID = @ID;
+    UPDATE Tutor
+    SET FechaInicioTutoria = @FechaInicioTutoria
+    WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
 
-GO
-
---BORRAR CUENTA
-CREATE PROCEDURE borrar_cuenta
-    @ID INT
+CREATE PROCEDURE borrar_tutor
+    @ID_Usuario INT
 AS
 BEGIN
-    DELETE FROM Cuenta WHERE ID = @ID;
+    DELETE FROM Tutor
+    WHERE ID_Usuario = @ID_Usuario;
+END;
+GO
+-----------------------------PROFESOR
+CREATE PROCEDURE insertar_profesor
+    @ID_Usuario INT,
+    @Especialidad VARCHAR(30)
+AS
+BEGIN
+    INSERT INTO Profesor (ID_Usuario, Especialidad)
+    VALUES (@ID_Usuario, @Especialidad);
 END;
 GO
 
---INSERTAR GRUPO FAMILIAR
+CREATE PROCEDURE modificar_profesor
+    @ID_Usuario INT,
+    @Especialidad VARCHAR(30)
+AS
+BEGIN
+    UPDATE Profesor
+    SET Especialidad = @Especialidad
+    WHERE ID_Usuario = @ID_Usuario;
+END;
+GO
+
+CREATE PROCEDURE borrar_profesor
+    @ID_Usuario INT
+AS
+BEGIN
+    DELETE FROM Profesor
+    WHERE ID_Usuario = @ID_Usuario;
+END;
+GO
+
+-----------------------------GRUPO FAMILIAR
 CREATE PROCEDURE insertar_grupo_familiar
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255)
+    @ID_Usuario INT,
+    @Nombre VARCHAR(100),
+    @Descripcion VARCHAR(255)
 AS
 BEGIN
-    INSERT INTO GrupoFamiliar (ID, Nombre, Descripcion)
-    VALUES (@ID, @Nombre, @Descripcion);
+    INSERT INTO GrupoFamiliar (ID_Usuario, Nombre, Descripcion)
+    VALUES (@ID_Usuario, @Nombre, @Descripcion);
 END;
 GO
 
---MODIFICAR GRUPO FAMILIAR
 CREATE PROCEDURE modificar_grupo_familiar
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255)
+    @ID_GrupoFamiliar INT,
+    @ID_Usuario INT,
+    @Nombre VARCHAR(100),
+    @Descripcion VARCHAR(255)
 AS
 BEGIN
     UPDATE GrupoFamiliar
-    SET Nombre = @Nombre,
+    SET ID_Usuario = @ID_Usuario,
+        Nombre = @Nombre,
         Descripcion = @Descripcion
-    WHERE ID = @ID;
+    WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar;
 END;
 GO
 
---BORRAR GRUPO FAMILIAR
 CREATE PROCEDURE borrar_grupo_familiar
-    @ID INT
+    @ID_GrupoFamiliar INT
 AS
 BEGIN
-    DELETE FROM GrupoFamiliar WHERE ID = @ID;
+    DELETE FROM GrupoFamiliar
+    WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar;
 END;
 GO
 
---INSERTAR PERTENECE
-CREATE PROCEDURE insertar_pertenece
-    @ID_GrupoFamiliar INT,
-    @DNI_Usuario INT,
-    @Es_Titular BIT
-AS
-BEGIN
-    INSERT INTO Pertenece (ID_GrupoFamiliar, DNI_Usuario, Es_Titular)
-    VALUES (@ID_GrupoFamiliar, @DNI_Usuario, @Es_Titular);
-END;
-GO
-
---BORRAR PERTENECE
-CREATE PROCEDURE borrar_pertenece
-    @ID_GrupoFamiliar INT,
-    @DNI_Usuario INT
-AS
-BEGIN
-    DELETE FROM Pertenece
-    WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar AND DNI_Usuario = @DNI_Usuario;
-END;
-GO
-
---INSERTAR TIENE
-CREATE PROCEDURE insertar_tiene
-    @DNI_Usuario INT,
-    @ID_Cuenta INT
-AS
-BEGIN
-    INSERT INTO Tiene (DNI_Usuario, ID_Cuenta)
-    VALUES (@DNI_Usuario, @ID_Cuenta);
-END;
-GO
-
---BORRAR TIENE
-CREATE PROCEDURE borrar_tiene
-    @DNI_Usuario INT,
-    @ID_Cuenta INT
-AS
-BEGIN
-     DELETE FROM Tiene
-    WHERE DNI_Usuario = @DNI_Usuario AND ID_Cuenta = @ID_Cuenta;
-END;
-GO
-
--- INSERTAR SOCIO
-CREATE PROCEDURE insertar_socio
-    @DNI INT,
-    @FechaIngreso DATE,
-    @Estado NVARCHAR(50)
-AS
-BEGIN
-    INSERT INTO Socio (DNI, FechaIngreso, Estado)
-    VALUES (@DNI, @FechaIngreso, @Estado);
-END;
-GO
-
--- MODIFICAR SOCIO
-CREATE PROCEDURE modificar_socio
-    @DNI INT,
-    @FechaIngreso DATE,
-    @Estado NVARCHAR(50)
-AS
-BEGIN
-    UPDATE Socio
-    SET FechaIngreso = @FechaIngreso,
-        Estado = @Estado
-    WHERE DNI = @DNI;
-END;
-GO
-
--- BORRAR SOCIO
-CREATE PROCEDURE borrar_socio
-    @DNI INT
-AS
-BEGIN
-    DELETE FROM Socio WHERE DNI = @DNI;
-END;
-GO
-
--- INSERTAR CATEGORIA
+-----------------------------CATEGORIA
 CREATE PROCEDURE insertar_categoria
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255)
+    @Descripcion VARCHAR(100),
+    @Importe DECIMAL(18, 2)
 AS
 BEGIN
-    INSERT INTO Categoria (ID, Nombre, Descripcion)
-    VALUES (@ID, @Nombre, @Descripcion);
+    INSERT INTO Categoria (Descripcion, Importe)
+    VALUES (@Descripcion, @Importe);
 END;
 GO
 
--- MODIFICAR CATEGORIA
 CREATE PROCEDURE modificar_categoria
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255)
+    @ID_Categoria INT,
+    @Descripcion VARCHAR(100),
+    @Importe DECIMAL(18, 2)
 AS
 BEGIN
     UPDATE Categoria
-    SET Nombre = @Nombre,
-        Descripcion = @Descripcion
-    WHERE ID = @ID;
+    SET Descripcion = @Descripcion,
+        Importe = @Importe
+    WHERE ID_Categoria = @ID_Categoria;
 END;
 GO
 
--- BORRAR CATEGORIA
 CREATE PROCEDURE borrar_categoria
-    @ID INT
-AS
-BEGIN
-    DELETE FROM Categoria WHERE ID = @ID;
-END;
-GO
-
-
--- INSERTAR ACTIVIDAD
-CREATE PROCEDURE insertar_actividad
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255),
     @ID_Categoria INT
 AS
 BEGIN
-    INSERT INTO Actividad (ID, Nombre, Descripcion, ID_Categoria)
-    VALUES (@ID, @Nombre, @Descripcion, @ID_Categoria);
+    DELETE FROM Categoria
+    WHERE ID_Categoria = @ID_Categoria;
 END;
 GO
 
--- MODIFICAR ACTIVIDAD
-CREATE PROCEDURE modificar_actividad
-    @ID INT,
-    @Nombre NVARCHAR(100),
-    @Descripcion NVARCHAR(255),
-    @ID_Categoria INT
+-----------------------------SOCIO
+CREATE PROCEDURE insertar_socio
+    @ID_Usuario INT,
+    @telefonoEmergencia VARCHAR(20),
+    @ObraSocial VARCHAR(100),
+    @nroSocioOSocial INT,
+    @CategoriaID INT,
+    @ID_GrupoFamiliar INT,
+    @ParentescoConTutor CHAR(50)
 AS
 BEGIN
-    UPDATE Actividad
-    SET Nombre = @Nombre,
-        Descripcion = @Descripcion,
-        ID_Categoria = @ID_Categoria
-    WHERE ID = @ID;
+    INSERT INTO Socio (
+        ID_Usuario,
+        telefonoEmergencia,
+        ObraSocial,
+        nroSocioOSocial,
+        CategoriaID,
+        ID_GrupoFamiliar,
+        ParentescoConTutor
+    )
+    VALUES (
+        @ID_Usuario,
+        @telefonoEmergencia,
+        @ObraSocial,
+        @nroSocioOSocial,
+        @CategoriaID,
+        @ID_GrupoFamiliar,
+        @ParentescoConTutor
+    );
 END;
 GO
 
--- BORRAR ACTIVIDAD
-CREATE PROCEDURE borrar_actividad
-    @ID INT
+
+CREATE PROCEDURE modificar_socio
+    @ID_Usuario INT,
+    @telefonoEmergencia VARCHAR(20),
+    @ObraSocial VARCHAR(100),
+    @nroSocioOSocial INT,
+    @CategoriaID INT,
+    @ID_GrupoFamiliar INT,
+    @ParentescoConTutor CHAR(50)
 AS
 BEGIN
-    DELETE FROM Actividad WHERE ID = @ID;
+    UPDATE Socio
+    SET telefonoEmergencia = @telefonoEmergencia,
+        ObraSocial = @ObraSocial,
+        nroSocioOSocial = @nroSocioOSocial,
+        CategoriaID = @CategoriaID,
+        ID_GrupoFamiliar = @ID_GrupoFamiliar,
+        ParentescoConTutor = @ParentescoConTutor
+    WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
 
--- INSERTAR CLASE
-CREATE PROCEDURE insertar_clase
-    @ID INT,
-    @ID_Actividad INT,
-    @FechaHora DATETIME,
-    @Duracion INT,
-    @CupoMaximo INT,
-    @Lugar NVARCHAR(100)
+CREATE PROCEDURE borrar_socio
+    @ID_Usuario INT
 AS
 BEGIN
-    INSERT INTO Clase (ID, ID_Actividad, FechaHora, Duracion, CupoMaximo, Lugar)
-    VALUES (@ID, @ID_Actividad, @FechaHora, @Duracion, @CupoMaximo, @Lugar);
+    DELETE FROM Socio
+    WHERE ID_Usuario = @ID_Usuario;
+END;
+GO
+-----------------------------cuenta
+CREATE PROCEDURE insertar_cuenta
+    @ID_Usuario INT,
+    @NroCuenta INT,
+    @FechaAlta DATE,
+    @FechaBaja DATE,
+    @Debito DECIMAL(15, 2),
+    @Credito DECIMAL(15, 2),
+    @Saldo DECIMAL(15, 2)
+AS
+BEGIN
+    INSERT INTO Cuenta (
+        ID_Usuario,
+        NroCuenta,
+        FechaAlta,
+        FechaBaja,
+        Debito,
+        Credito,
+        Saldo
+    )
+    VALUES (
+        @ID_Usuario,
+        @NroCuenta,
+        @FechaAlta,
+        @FechaBaja,
+        @Debito,
+        @Credito,
+        @Saldo
+    );
 END;
 GO
 
--- MODIFICAR CLASE
-CREATE PROCEDURE modificar_clase
-    @ID INT,
-    @ID_Actividad INT,
-    @FechaHora DATETIME,
-    @Duracion INT,
-    @CupoMaximo INT,
-    @Lugar NVARCHAR(100)
+CREATE PROCEDURE modificar_cuenta
+    @ID_Usuario INT,
+    @NroCuenta INT,
+    @FechaAlta DATE,
+    @FechaBaja DATE,
+    @Debito DECIMAL(15, 2),
+    @Credito DECIMAL(15, 2),
+    @Saldo DECIMAL(15, 2)
 AS
 BEGIN
-    UPDATE Clase
-    SET ID_Actividad = @ID_Actividad,
-        FechaHora = @FechaHora,
-        Duracion = @Duracion,
-        CupoMaximo = @CupoMaximo,
-        Lugar = @Lugar
-    WHERE ID = @ID;
+    UPDATE Cuenta
+    SET FechaAlta = @FechaAlta,
+        FechaBaja = @FechaBaja,
+        Debito = @Debito,
+        Credito = @Credito,
+        Saldo = @Saldo
+    WHERE ID_Usuario = @ID_Usuario AND NroCuenta = @NroCuenta;
 END;
 GO
 
--- BORRAR CLASE
-CREATE PROCEDURE borrar_clase
-    @ID INT
+CREATE PROCEDURE borrar_cuenta
+    @ID_Usuario INT,
+    @NroCuenta INT
 AS
 BEGIN
-    DELETE FROM Clase WHERE ID = @ID;
+    DELETE FROM Cuenta
+    WHERE ID_Usuario = @ID_Usuario AND NroCuenta = @NroCuenta;
 END;
 GO
+
+--------------------------------DESCUENTO
+CREATE PROCEDURE insertar_descuento
+    @ID_Descuento INT,
+    @Porcentaje DECIMAL(5, 2)
+AS
+BEGIN
+    INSERT INTO Descuento (ID_Descuento, Porcentaje)
+    VALUES (@ID_Descuento, @Porcentaje);
+END;
+GO
+
+CREATE PROCEDURE modificar_descuento
+    @ID_Descuento INT,
+    @Porcentaje DECIMAL(5, 2)
+AS
+BEGIN
+    UPDATE Descuento
+    SET Porcentaje = @Porcentaje
+    WHERE ID_Descuento = @ID_Descuento;
+END;
+GO
+
+
+CREATE PROCEDURE borrar_descuento
+    @ID_Descuento INT
+AS
+BEGIN
+    DELETE FROM Descuento
+    WHERE ID_Descuento = @ID_Descuento;
+END;
+GO
+
+CREATE PROCEDURE insertar_costo
+    @ID_Costo INT,
+    @FechaIni DATE,
+    @FechaFin DATE,
+    @Monto DECIMAL(10, 2)
+AS
+BEGIN
+    INSERT INTO Costo (ID_Costo, FechaIni, FechaFin, Monto)
+    VALUES (@ID_Costo, @FechaIni, @FechaFin, @Monto);
+END;
+GO
+
+
+CREATE PROCEDURE modificar_costo
+    @ID_Costo INT,
+    @FechaIni DATE,
+    @FechaFin DATE,
+    @Monto DECIMAL(10, 2)
+AS
+BEGIN
+    UPDATE Costo
+    SET FechaIni = @FechaIni,
+        FechaFin = @FechaFin,
+        Monto = @Monto
+    WHERE ID_Costo = @ID_Costo;
+END;
+GO
+
+CREATE PROCEDURE borrar_costo
+    @ID_Costo INT
+AS
+BEGIN
+    DELETE FROM Costo
+    WHERE ID_Costo = @ID_Costo;
+END;
+GO
+
+CREATE PROCEDURE insertar_cuota
+    @ID_Cuota INT,
+    @nroCuota INT,
+    @Estado NVARCHAR(50),
+    @ID_Costo INT
+AS
+BEGIN
+    INSERT INTO Cuota (ID_Cuota, nroCuota, Estado, ID_Costo)
+    VALUES (@ID_Cuota, @nroCuota, @Estado, @ID_Costo);
+END;
+GO
+
+CREATE PROCEDURE modificar_cuota
+    @ID_Cuota INT,
+    @nroCuota INT,
+    @Estado NVARCHAR(50),
+    @ID_Costo INT
+AS
+BEGIN
+    UPDATE Cuota
+    SET nroCuota = @nroCuota,
+        Estado = @Estado,
+        ID_Costo = @ID_Costo
+    WHERE ID_Cuota = @ID_Cuota;
+END;
+GO
+
+CREATE PROCEDURE borrar_cuota
+    @ID_Cuota INT
+AS
+BEGIN
+    DELETE FROM Cuota
+    WHERE ID_Cuota = @ID_Cuota;
+END;
+GO
+
+
