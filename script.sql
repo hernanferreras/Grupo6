@@ -255,7 +255,7 @@ GO
 BEGIN TRY
 	CREATE TABLE ddbba.Tarjeta (
     		ID INT PRIMARY KEY,  
-    		NumeroTarjeta INT,
+    		NumeroTarjeta char(16),
     		FechaVenc DATE,
     		DebitoAutomatico BIT,
     		FOREIGN KEY (ID) REFERENCES ddbba.MedioDePago(ID_MP)
