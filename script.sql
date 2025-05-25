@@ -80,7 +80,7 @@ GO
 BEGIN TRY
 	CREATE TABLE ddbba.Usuario (
     	ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
-	dni char(8) CHECK (dni BETWEEN 100000 AND 99999999),
+	dni int CHECK (dni BETWEEN 100000 AND 99999999),
     	Nombre VARCHAR(50),
     	Apellido VARCHAR(50),
     	Email VARCHAR(50),
