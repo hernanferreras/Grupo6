@@ -68,7 +68,7 @@ END;
 BEGIN TRY
 	CREATE TABLE ddbba.Rol (
     	ID_Rol INT IDENTITY (1,1) PRIMARY KEY,
-    	Descripcion VARCHAR(100),
+    	Descripcion VARCHAR(30),
 	Nombre VARCHAR(60)
 	);
 END TRY
