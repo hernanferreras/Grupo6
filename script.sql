@@ -138,7 +138,7 @@ BEGIN TRY
 	CREATE TABLE ddbba.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
     	Descripcion VARCHAR(100),
-    	Importe DECIMAL(18, 2)
+    	Importe DECIMAL(10, 2)
 );
 END TRY
 BEGIN CATCH
@@ -228,7 +228,7 @@ BEGIN TRY
     		Numero VARCHAR(50),
     		FechaEmision DATE,
     		FechaVencimiento DATE,
-    		TotalImporte DECIMAL(15,2),
+    		TotalImporte DECIMAL(10,2),
     		Recargo DECIMAL(10,2),
     		Estado VARCHAR(30),
     		ID_Descuento INT, 
@@ -255,10 +255,11 @@ GO
 BEGIN TRY
 	CREATE TABLE ddbba.Tarjeta (
     		ID INT PRIMARY KEY,  
-    		NumeroTarjeta char(16),
+    		NumeroTarjeta char(19),
     		FechaVenc DATE,
     		DebitoAutomatico BIT,
-    		FOREIGN KEY (ID) REFERENCES ddbba.MedioDePago(ID_MP)
+    		FOREIGN KEY (ID) REFERENCES ddbba.MedioDePago(ID_MP),
+		CONSTRAINT ck_NumeroTarjeta CHECK(NumeroTarjeta LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
 );
 END TRY
 BEGIN CATCH 
