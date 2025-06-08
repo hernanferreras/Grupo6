@@ -284,7 +284,7 @@ BEGIN TRY
 	CREATE TABLE ddbba.Pago (
 		ID_Pago INT IDENTITY(1,1) PRIMARY KEY,
 		FechaPago DATE,
-		Monto DECIMAL(15,2),
+		Monto DECIMAL(10,2),
 		ID_MedioDePago INT,
 		NroCuenta INT,
 		ID_Usuario INT,
@@ -318,7 +318,7 @@ BEGIN TRY
     		ID_Actividad INT PRIMARY KEY,
     		Nombre VARCHAR(60),
     		Descripcion VARCHAR(255),
-    		CostoMensual DECIMAL(18, 2) NOT NULL
+    		CostoMensual DECIMAL(10, 2) NOT NULL
 );
 END TRY
 BEGIN CATCH
@@ -647,7 +647,7 @@ GO
 -----------------------------CATEGORIA
 CREATE OR ALTER PROCEDURE insertar_categoria
     @Descripcion VARCHAR(100),
-    @Importe DECIMAL(18, 2)
+    @Importe DECIMAL(10, 2)
 AS
 BEGIN
     INSERT INTO ddbba.Categoria (Descripcion, Importe)
@@ -658,7 +658,7 @@ GO
 CREATE OR ALTER PROCEDURE modificar_categoria
     @ID_Categoria INT,
     @Descripcion VARCHAR(100),
-    @Importe DECIMAL(18, 2)
+    @Importe DECIMAL(10, 2)
 AS
 BEGIN
     UPDATE ddbba.Categoria
@@ -745,9 +745,9 @@ CREATE OR ALTER PROCEDURE insertar_cuenta
     @NroCuenta INT,
     @FechaAlta DATE,
     @FechaBaja DATE,
-    @Debito DECIMAL(15, 2),
-    @Credito DECIMAL(15, 2),
-    @Saldo DECIMAL(15, 2)
+    @Debito DECIMAL(10, 2),
+    @Credito DECIMAL(10, 2),
+    @Saldo DECIMAL(10, 2)
 AS
 BEGIN
     INSERT INTO ddbba.Cuenta (
@@ -776,9 +776,9 @@ CREATE OR ALTER PROCEDURE modificar_cuenta
     @NroCuenta INT,
     @FechaAlta DATE,
     @FechaBaja DATE,
-    @Debito DECIMAL(15, 2),
-    @Credito DECIMAL(15, 2),
-    @Saldo DECIMAL(15, 2)
+    @Debito DECIMAL(10, 2),
+    @Credito DECIMAL(10, 2),
+    @Saldo DECIMAL(10, 2)
 AS
 BEGIN
     UPDATE ddbba.Cuenta
