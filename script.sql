@@ -906,4 +906,17 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE ingresarPago
+	@FechaPago DATE,
+	@Monto DECIMAL(10,2),
+	@ID_MedioDePago INT,
+	@NroCuenta INT,
+	@ID_Usuario INT,
+	@ID_Factura INT
+AS
+BEGIN
+	INSERT INTO ddbba.Pago(FechaPago,Monto,ID_MedioDePago, NroCuenta, ID_Usuario, ID_Factura) 
+	VALUES (@FechaPago, @Monto, ID_MedioDePago, @NroCuenta, @ID_Usuario, @ID_Factura)
+END;
+GO
 
