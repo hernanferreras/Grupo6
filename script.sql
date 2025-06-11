@@ -928,3 +928,25 @@ BEGIN
     WHERE ID_Pago = @ID_Pago;
 END;
 GO
+
+CREATE OR ALTER PROCEDURE modificarPago
+	@ID_Pago INT,
+	@FechaPago DATE = NULL,
+	@Monto DECIMAL(10,2) = NULL,
+	@ID_MedioDePago INT = NULL,
+	@NroCuenta INT = NULL,
+	@ID_Usuario INT = NULL,
+	@ID_Factura INT = NULL,
+AS 
+BEGIN
+	UPDATE ddbba.PAGO
+	SET
+	FechaPago = ISNULL(@FechaPago, FechaPago),
+	Monto = ISNULL(@Monto, Monto),
+	ID_MedioDePago= ISNULL(@ID_MedioDePago, ID_MedioDePago),
+	NroCuenta = ISNULL(@NroCuenta, NroCuenta)
+	ID_Usuario = ISNULL(@ID_Usuario, ID_Usuario),
+	ID_Factura = ISNULL(@ID_Factura, ID_Factura)
+	WHERE ID_Pago = @ID_Pago
+END;
+GO
