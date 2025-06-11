@@ -920,3 +920,11 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE borrarPago
+    @ID_Pago INT
+AS
+BEGIN
+    DELETE FROM ddbba.Pago
+    WHERE ID_Pago = @ID_Pago;
+END;
+GO
