@@ -1,8 +1,7 @@
 
-create y sp hechos: Usuario, Rol, Cuenta, Grupo Familiar, Pertenece, Tiene, Socio, Actividad, Categoria, Clase
+create y sp hechos: Usuario, Rol, Cuenta, Grupo Familiar, Pertenece, Tiene, Socio, Actividad, Categoria, Clase, Pago  
 
 faltan: 
-PAGO
 MEDIO DE PAGO
 TRANSFERENCIA
 TARJETA
