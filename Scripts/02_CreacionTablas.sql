@@ -37,7 +37,7 @@ BEGIN TRY
     	Nombre VARCHAR(50),
     	Apellido VARCHAR(50),
     	Email VARCHAR(50),
-    	TelefonoContacto VARCHAR(20),
+    	TelefonoContacto char(12),
     	FechaNacimiento DATE,
     	Contrasenia VARCHAR(100),
     	ID_Rol INT,
@@ -188,10 +188,11 @@ GO
 BEGIN TRY
 	CREATE TABLE Facturacion.Tarjeta (
     		ID_MedioDePago INT PRIMARY KEY,  
-    		NroTarjeta char(16),
+    		NroTarjeta char(19),
     		FechaVenc DATE,
     		DebitoAutomatico BIT,
-    		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago)
+    		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago),
+		CONSTRAINT ch_NroTarjeta CHECK(NroTarjeta LIKE '[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]')
 );
 END TRY
 BEGIN CATCH 
