@@ -13,12 +13,12 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'Com3641G06')
 BEGIN 
-    CREATE DATABASE Com3641G06;
+    CREATE DATABASE Com5600G06;
     PRINT 'La base de datos se creó correctamente';
 END
 ELSE
     PRINT 'La base de datos ya existe';
 GO
 
-USE Com3641G06;
+USE Com5600G06;
 GO
