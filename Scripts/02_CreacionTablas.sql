@@ -110,7 +110,8 @@ BEGIN TRY
 	CREATE TABLE Personas.Socio (
 		ID_Socio INT PRIMARY KEY,
 		TelefonoEmergencia char(10),
-    	ObraSocial VARCHAR(50),
+    	--EDAD int AS (DATEDIFF(YEAR, Administracion.Usuario(FechaNacimiento), GETDATE())),
+	ObraSocial VARCHAR(50),
     	NroSocioObraSocial INT,
     	ID_Categoria INT NOT NULL,
 		ID_GrupoFamiliar INT,                    
