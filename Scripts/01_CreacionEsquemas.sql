@@ -12,7 +12,7 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 -- ╚══════════════════════╝
 
 
-USE Com3641G06;
+USE Com5600G06;
 GO
 	
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Personas')
