@@ -12,7 +12,7 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 -- ╚════════════════════╝
 
 
-USE Com3641G06;
+USE Com5600G06;
 GO
 
 
@@ -33,7 +33,7 @@ GO
 BEGIN TRY
 	CREATE TABLE Administracion.Usuario (
     	ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
-	    dni int CHECK (dni BETWEEN 100000 AND 99999999),
+	    DNI int CHECK (dni BETWEEN 100000 AND 99999999),
     	Nombre VARCHAR(50),
     	Apellido VARCHAR(50),
     	Email VARCHAR(50),
@@ -77,21 +77,6 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA TUTOR
-BEGIN TRY	
-	CREATE TABLE Personas.Tutor (
-		ID_Tutor INT PRIMARY KEY,
-		FechaInicioTutoria DATE,
-        ID_GrupoFamiliar INT NOT NULL,
-        FOREIGN KEY (ID_Tutor) REFERENCES Administracion.Usuario(ID_Usuario),
-        FOREIGN KEY (ID_GrupoFamiliar) REFERENCES Personas.GrupoFamiliar(ID_GrupoFamiliar)
-	)
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Tutor ya existe'
-END CATCH;
-GO
-
 -- TABLA CATEGORIA
 BEGIN TRY
 	CREATE TABLE Personas.Categoria (
@@ -110,8 +95,7 @@ BEGIN TRY
 	CREATE TABLE Personas.Socio (
 		ID_Socio INT PRIMARY KEY,
 		TelefonoEmergencia char(10),
-    	--EDAD int AS (DATEDIFF(YEAR, Administracion.Usuario(FechaNacimiento), GETDATE())),
-	ObraSocial VARCHAR(50),
+    	ObraSocial VARCHAR(50),
     	NroSocioObraSocial INT,
     	ID_Categoria INT NOT NULL,
 		ID_GrupoFamiliar INT,                    
@@ -126,34 +110,38 @@ END CATCH;
 GO
 
 -- TABLA SOCIO-TUTOR
-BEGIN TRY
+BEGIN TRY	
 	CREATE TABLE Personas.SocioTutor (
-        Parentesco NVARCHAR (20),
-        ID_Socio INT NOT NULL,
-        ID_Tutor INT NOT NULL,
-        PRIMARY KEY (ID_Socio, ID_Tutor),
-        FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio (ID_Socio),
-		FOREIGN KEY (ID_Tutor) REFERENCES Personas.Tutor (ID_Tutor),
-    );
+		ID_Tutor INT,
+        ID_Menor INT,
+        PRIMARY KEY (ID_Tutor, ID_Menor),
+        FOREIGN KEY (ID_Tutor) REFERENCES Personas.Socio(ID_Socio),
+        FOREIGN KEY (ID_Menor) REFERENCES Personas.Socio(ID_Socio),
+        CHECK (ID_Tutor <> ID_Menor)
+	)
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla SocioTutor ya existe'
-END CATCH
+	PRINT 'La tabla SocioTutor ya existe'
+END CATCH;
 GO
 
 -- TABLA PROFESOR
 BEGIN TRY
 	CREATE TABLE Personas.Profesor (
-		ID_Profesor INT PRIMARY KEY,
+		ID_Profesor INT IDENTITY(1,1)PRIMARY KEY,
+        DNI int CHECK (dni BETWEEN 100000 AND 99999999),
 		Especialidad VARCHAR(30),
-		FOREIGN KEY (ID_Profesor) REFERENCES Administracion.Usuario(ID_Usuario)
+        Nombre VARCHAR(50),
+    	Apellido VARCHAR(50),
+    	Email VARCHAR(50),
+    	TelefonoContacto char(12),
 	)
 END TRY
 BEGIN CATCH
 	PRINT 'La tabla Profesor ya existe'
 END CATCH;
 GO
-
+    
 --TABLA CUENTA
 BEGIN TRY
 	CREATE TABLE Facturacion.Cuenta (
@@ -165,7 +153,7 @@ BEGIN TRY
     	Credito DECIMAL(10, 2),
 		Saldo DECIMAL(10, 2),
 		PRIMARY KEY (ID_Socio, NroCuenta),
-    	FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
+    	FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
 	);
 END TRY
 BEGIN CATCH
@@ -350,9 +338,26 @@ BEGIN TRY
 );
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Profesor ya existe'
+	PRINT 'La tabla ClaseDictada ya existe'
 END CATCH;  
 GO
+
+-- TABLA ACTIVIDAD REALIZADA
+BEGIN TRY
+	CREATE TABLE Actividades.ActividadRealizada (
+    		ID_Actividad INT,
+    		ID_Socio INT,
+            FechaActividad DATE NOT NULL,
+    		PRIMARY KEY (ID_Socio, ID_Actividad),
+    		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
+    		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
+);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla ActividadRealizada ya existe'
+END CATCH;  
+GO
+
 
 -- TABLA ACTIVIDAD EXTRA
 BEGIN TRY
