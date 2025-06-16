@@ -220,3 +220,56 @@ BEGIN
 	FROM Personas.Socio
 	WHERE ID_Socio = @ID_Socio
 END;
+
+--- 16 CREACION PROCEDURE ingresarProfesor
+
+CREATE OR ALTER PROCEDURE ingresarProfesor
+	@DNI INT,
+	@Especialidad VARCHAR(30),
+	@Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @Email VARCHAR(50),
+    @TelefonoContacto CHAR(12)
+AS
+BEGIN
+	INSERT INTO Personas.Profesor(DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) VALUES(
+		@DNI,
+		@Especialidad,
+		@Nombre,
+    		@Apellido,
+    		@Email,
+    		@TelefonoContacto
+	)
+END;
+
+--- 17 CREACION PROCEDURE modificarProfesor
+
+CREATE OR ALTER PROCEDURE modificarProfesor
+	@ID_Profesor INT = NULL,
+	@DNI INT = NULL,
+	@Especialidad VARCHAR(30) = NULL,
+	@Nombre VARCHAR(50) = NULL,
+    	@Apellido VARCHAR(50) = NULL,
+    	@Email VARCHAR(50) = NULL,
+    	@TelefonoContacto CHAR(12) = NULL
+AS
+BEGIN
+	UPDATE Personas.Profesor(DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) SET
+		DNI = ISNULL(@DNI, DNI),
+		Especialidad = ISNULL(@Especialidad, Especialidad),
+		Nombre = ISNULL(@Nombre, Nombre),
+		Apellido = ISNULL(@Apellido, Apellido),
+		Email = ISNULL(@Email, Email),
+		TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto)
+	WHERE ID_PRofesor = @ID_Profesor
+END;
+
+--- CREACION PROCEDURE eliminarProfesor
+	@ID_Profesor INT
+AS
+BEGIN
+	DELETE
+	FROM Personas.Profesor
+	WHERE ID_Profesor = @ID_Profesor
+END;
+	
