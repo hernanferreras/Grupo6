@@ -64,7 +64,7 @@ END;
 
 --- 05 CREACION DE PROCEDURE modificarUsuario
 
-CREATE OR ALTER modificarUsuario
+CREATE OR ALTER PROCEDURE modificarUsuario
 	@ID_Usuario,
 	@DNI int = NULL,
     	@Nombre VARCHAR(50) = NULL,
@@ -90,7 +90,7 @@ END;
 
 --- 06 CREACION DE PROCEDURE eliminarUsuario
 
-CREATE OR ALTER eliminarUsuario
+CREATE OR ALTER PROCEDURE eliminarUsuario
 	@ID_Usuario INT	
 BEGIN
 	DELETE
