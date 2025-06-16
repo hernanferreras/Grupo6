@@ -264,7 +264,7 @@ BEGIN
 	WHERE ID_PRofesor = @ID_Profesor
 END;
 
---- CREACION PROCEDURE eliminarProfesor
+--- 18 CREACION PROCEDURE eliminarProfesor
 	@ID_Profesor INT
 AS
 BEGIN
@@ -272,4 +272,58 @@ BEGIN
 	FROM Personas.Profesor
 	WHERE ID_Profesor = @ID_Profesor
 END;
-	
+--- 19 CREACION PROCEDURE ingresarCuenta
+
+CREATE OR ALTER PROCEDURE ingresarCuenta
+		@ID_Socio INT,
+		@NroCuenta INT,
+        @FechaAlta DATE,
+    	@FechaBaja DATE,
+    	@Debito DECIMAL(10, 2),
+    	@Credito DECIMAL(10, 2),
+		@Saldo DECIMAL(10, 2)
+BEGIN
+AS	
+	INSERT INTO Facturacion.Cuenta(ID_Socio, NroCuenta, FechaAlta, FechaBaja, Debito, Credito, Saldo) VALUES(
+		@ID_Socio,
+		@NroCuenta,
+		@FechaAlta,
+		@FechaBaja,
+		@Debito,
+		@Credito,
+		@Saldo
+	)
+END;
+
+--- 20 CREACION PROCEDURE modificarCuenta
+
+CREATE OR ALTER PROCEDURE modificarCuenta
+		@ID_Socio INT = NULL,
+		@NroCuenta INT = NULL,
+        @FechaAlta DATE = NULL,
+    	@FechaBaja DATE = NULL,
+    	@Debito DECIMAL(10, 2) = NULL,
+    	@Credito DECIMAL(10, 2) = NULL,
+		@Saldo DECIMAL(10, 2) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Cuenta(IDSocio, NroCuenta, FechaAlta, FechaBaja, Debito, Credito, Saldo) SET
+		@NroCuenta = ISNULL(@NroCuenta, NroCuenta),
+        @FechaAlta = ISNULL(@FechaAlta, FechaAlta),
+    	@FechaBaja = ISNULL(@FechaBaja, FechaBaja),
+    	@Debito = ISNULL(@Debito, Debito),
+    	@Credito = ISNULL(@Credito, Credito),
+		@Saldo = ISNULL(@Saldo, Saldo)
+	WHERE ID_Socio = @ID_Socio
+END;
+
+--- 21 CREACION PROCEDURE eliminarCuenta
+
+CREATE OR ALTER PROCEDURE eliminarCuenta
+		@ID_Socio INT
+AS
+BEGIN
+		DELETE
+		FROM Facturacion.Cuenta
+		WHERE ID_Socio = @ID_Socio
+END;
