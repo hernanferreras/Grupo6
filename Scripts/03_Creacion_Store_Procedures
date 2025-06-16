@@ -405,3 +405,39 @@ BEGIN
 	FROM Facturacion.Tarjeta
 	WHERE NroTarjeta = @NroTarjeta
 END;
+
+--- CREACION PROCEDURE ingresarTransferencia
+	
+CREATE OR ALTER PROCEDURE ingresarTransferencia	
+	@ID_MedioDePago INT,
+	@NumeroTransaccion NVARCHAR(50)
+AS
+BEGIN
+	INSERT INTO Facturacion.Transferencia(ID_MedioDePago, NumeroTransaccion) VALUES(
+		@ID_MedioDePago,
+		@NumeroTransaccion
+	)
+END;
+
+--- CREACION PROCEDURE modificarTransferencia
+
+CREATE OR ALTER PROCEDURE modificarTransferencia
+	@ID_MedioDePago INT,
+	@NumeroTransaccion NVARCHAR(50) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Transferencia(ID_MedioDePago, NumeroTransaccion) SET
+		NumeroTransaccion = ISNULL(@NumeroTransaccion, NumeroTransaccion)
+	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
+
+--- CREACION PROCEDURE eliminarTransferencia
+
+CREATE OR ALTER PROCEDURE modificarTransferencia
+	@ID_MedioDePagoINT
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Transferencia
+	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
