@@ -29,15 +29,15 @@ END;
 --- 03 CREA O MODIFICA SP para eliminar Rol
 
 CREATE OR ALTER PROCEDURE eliminarRol
-	@ID_Rol INT,
+	@ID_Rol INT
 AS
 BEGIN
-	DELETE *
+	DELETE
 	FROM Administración.Rol
 	WHERE ID_Rol = @ID_Rol
 END;
 
---- CREACION DE PROCEDURE ingresarUsuario
+--- 04 CREACION DE PROCEDURE ingresarUsuario
 
 CREATE OR ALTER PROCEDURE ingresarUsuario
     	@DNI int,
@@ -62,7 +62,7 @@ BEGIN
 	)
 END;
 
---- CREACION DE PROCEDURE modificarUsuario
+--- 05 CREACION DE PROCEDURE modificarUsuario
 
 CREATE OR ALTER modificarUsuario
 	@ID_Usuario,
@@ -88,13 +88,12 @@ BEGIN
 	WHERE ID_Usuario = @ID_Usuario
 END;
 
---- CREACION DE PROCEDURE eliminarUsuario
+--- 06 CREACION DE PROCEDURE eliminarUsuario
 
 CREATE OR ALTER eliminarUsuario
-	@ID_Usuario INT,
-	
+	@ID_Usuario INT	
 BEGIN
-	DELETE *
+	DELETE
 	FROM Administración.Usuario
 	WHERE ID_Usuario = @ID_Usuario
 END;
