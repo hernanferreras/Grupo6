@@ -406,7 +406,7 @@ BEGIN
 	WHERE NroTarjeta = @NroTarjeta
 END;
 
---- CREACION PROCEDURE ingresarTransferencia
+--- 28 CREACION PROCEDURE ingresarTransferencia
 	
 CREATE OR ALTER PROCEDURE ingresarTransferencia	
 	@ID_MedioDePago INT,
@@ -419,7 +419,7 @@ BEGIN
 	)
 END;
 
---- CREACION PROCEDURE modificarTransferencia
+--- 29 CREACION PROCEDURE modificarTransferencia
 
 CREATE OR ALTER PROCEDURE modificarTransferencia
 	@ID_MedioDePago INT,
@@ -431,7 +431,7 @@ BEGIN
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
 
---- CREACION PROCEDURE eliminarTransferencia
+--- 30 CREACION PROCEDURE eliminarTransferencia
 
 CREATE OR ALTER PROCEDURE modificarTransferencia
 	@ID_MedioDePagoINT
@@ -440,4 +440,71 @@ BEGIN
 	DELETE
 	FROM Facturacion.Transferencia
 	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
+
+CREATE TABLE Facturacion.Factura (
+    		ID_Factura INT PRIMARY KEY,
+    		Numero VARCHAR(50),
+    		FechaEmision DATE,
+    		FechaVencimiento DATE,
+    		TotalImporte DECIMAL(10,2),
+    		Recargo DECIMAL(10,2),
+    		Estado VARCHAR(30),
+);
+
+
+--- 31 CREACION DE PROCEDURE ingresoFactura
+
+CREATE OR ALTER PROCEDURE ingresoFactura
+	@ID_Factura INT,
+	@Numero VARCHAR(50),
+	@FechaEmision DATE,
+	@FechaVencimiento DATE,
+	@TotalImporte DECIMAL(10,2),
+	@Recargo DECIMAL(10,2),
+	@Estado VARCHAR(30)
+AS
+BEGIN
+	INSERT INTO Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado) VALUES(
+		@ID_Factura,
+		@Numero,
+		@FechaEmision,
+		@FechaVencimiento,
+		@TotalImporte,
+		@Recargo,
+		@Estado
+	)
+END;
+
+--- 32 CREACION DE PROCEDURE modificarFactura
+
+CREATE OR ALTER PROCEDURE modificarFactura
+	@ID_Factura INT = NULL,
+	@Numero VARCHAR(50) = NULL,
+	@FechaEmision DATE = NULL,
+	@FechaVencimiento DATE = NULL,
+	@TotalImporte DECIMAL(10,2)= NULL,
+	@Recargo DECIMAL(10,2)= NULL,
+	@Estado VARCHAR(30) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado) SET
+		Numero VARCHAR(50) = ISNULL(@Numero, Numero),
+		FechaEmision DATE = ISNULL(@FechaEmision, FechaEmision),
+		FechaVencimiento DATE = ISNULL(@FechaVencimiento, FechaVencimiento),
+		TotalImporte DECIMAL(10,2)= ISNULL(@TotalImporte, TotalImporte),
+		Recargo DECIMAL(10,2)= ISNULL(@Recargo, Recargo),
+		Estado VARCHAR(30) = ISNULL(@Estado, Estado)
+	WHERE ID_Factura = @ID_Factura
+END;
+
+--- 33 CREACION DE PROCEDURE eliminarFactura
+
+CREATE OR ALTER PROCEDURE eliminarFactura
+	@ID_Factura INT
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Factura
+	WHERE ID_Factura = @ID_Factura
 END;
