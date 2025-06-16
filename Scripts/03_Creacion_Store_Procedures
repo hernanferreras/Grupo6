@@ -118,7 +118,7 @@ CREATE OR ALTER PROCEDURE modificarGrupoFamiliar
 	@Nombre VARCHAR(100) = NULL
 AS
 BEGIN
-	UPDATE Personas.GrupoFamiliar(Tamaño, Nombre) SET
+	UPDATE Personas.GrupoFamiliar SET
 		Tamaño = ISNULL(@Tamaño,Tamaño),
 		Nombre = ISNULL(@Nombre, Nombre)
 	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
@@ -154,7 +154,7 @@ CREATE OR ALTER PROCEDURE modificarCategoria
 	@Importe DECIMAL(10,2) = NULL
 AS
 BEGIN
-	UPDATE Personas.Categoria(Descripción, Importe) SET
+	UPDATE Personas.Categoria SET
 		Descripción = ISNULL(@Descripcion, Descripción),
 		Importe = ISNULL(@Importe, Importe)
 	WHERE ID_Categoria = @ID_Categoria
@@ -201,7 +201,7 @@ CREATE OR ALTER PROCEDURE modificarSocio
 	@ID_GrupoFamiliar INT = NULL,
 AS
 BEGIN
-	UPDATE Personas.Socio(TelefonoEmergencia, ObraSocial, NroSocioObraSocial, ID_Categoria, ID_GrupoFamiliar) SET
+	UPDATE Personas.Socio SET
 		TelefonoEmergencia = ISNULL(@TelefonoEmergencia, TelefonoEmergencia),
 		ObraSocial = ISNULL(@ObraSocial, ObraSocial),
 		NroSocioObraSocial = ISNULL(@NroSocioObraSocial, NroSocioObraSocial),
@@ -254,7 +254,7 @@ CREATE OR ALTER PROCEDURE modificarProfesor
     	@TelefonoContacto CHAR(12) = NULL
 AS
 BEGIN
-	UPDATE Personas.Profesor(DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) SET
+	UPDATE Personas.Profesor SET
 		DNI = ISNULL(@DNI, DNI),
 		Especialidad = ISNULL(@Especialidad, Especialidad),
 		Nombre = ISNULL(@Nombre, Nombre),
@@ -307,7 +307,7 @@ CREATE OR ALTER PROCEDURE modificarCuenta
 		@Saldo DECIMAL(10, 2) = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Cuenta(IDSocio, NroCuenta, FechaAlta, FechaBaja, Debito, Credito, Saldo) SET
+	UPDATE Facturacion.Cuenta SET
 		@NroCuenta = ISNULL(@NroCuenta, NroCuenta),
         @FechaAlta = ISNULL(@FechaAlta, FechaAlta),
     	@FechaBaja = ISNULL(@FechaBaja, FechaBaja),
@@ -348,7 +348,7 @@ CREATE OR ALTER PROCEDURE modificarMedioDePago
 	@Tipo VARCHAR(15) = NULL
 AS
 BEGIN
-	UPDATE Facturacion.MedioDePago(Tipo) SET
+	UPDATE Facturacion.MedioDePago SET
 		Tipo = ISNULL(@Tipo, Tipo)
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
@@ -388,7 +388,7 @@ END;
 	@DebitoAutomatico BIT = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Tarjeta(NroTarjeta, FechaVenc, DebitoAutomatico) SET
+	UPDATE Facturacion.Tarjeta SET
 		NroTarjeta = ISNULL(@NroTarjeta, NroTarjeta),
 		FechaVenc = ISNULL(@FechaVenc, FechaVenc),
 		DebitoAutomatico = ISNULL(@DebitoAutomatico, DebitoAutomatico)
@@ -426,7 +426,7 @@ CREATE OR ALTER PROCEDURE modificarTransferencia
 	@NumeroTransaccion NVARCHAR(50) = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Transferencia(ID_MedioDePago, NumeroTransaccion) SET
+	UPDATE Facturacion.Transferencia SET
 		NumeroTransaccion = ISNULL(@NumeroTransaccion, NumeroTransaccion)
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
@@ -488,7 +488,7 @@ CREATE OR ALTER PROCEDURE modificarFactura
 	@Estado VARCHAR(30) = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado) SET
+	UPDATE Facturacion.Factura SET
 		Numero VARCHAR(50) = ISNULL(@Numero, Numero),
 		FechaEmision DATE = ISNULL(@FechaEmision, FechaEmision),
 		FechaVencimiento DATE = ISNULL(@FechaVencimiento, FechaVencimiento),
@@ -507,4 +507,58 @@ BEGIN
 	DELETE
 	FROM Facturacion.Factura
 	WHERE ID_Factura = @ID_Factura
+END;
+
+--- CREACION DE PROCEDURE ingresarPago
+
+CREATE OR ALTER PROCEDURE ingresarPago
+		@FechaPago DATE,
+		@Monto DECIMAL(10,2),
+		@ID_MedioDePago INT,
+		@NroCuenta INT,
+		@ID_Socio INT,
+		@ID_Factura INT,
+AS
+BEGIN
+	INSERT INTO Facturacion.Pago(FechaPago, Monto, ID_MedioDePago, NroCuenta, ID_Socio, ID_Factura) VALUES(
+		@FechaPago,
+		@Monto,
+		@ID_MedioDePago,
+		@NroCuenta,
+		@ID_Socio,
+		@ID_Factura
+	)
+END;
+
+--- CREACION DE PROCEDURE modificarPago
+		
+CREATE OR ALTER PROCEDURE modificarPago		
+		@ID_Pago INT,
+		@FechaPago DATE,
+		@Monto DECIMAL(10,2),
+		@ID_MedioDePago INT,
+		@NroCuenta INT,
+		@ID_Socio INT,
+		@ID_Factura INT
+AS
+BEGIN
+	UPDATE Facturacion.Pago SET
+		FechaPago = ISNULL(@FechaPago, FechaPago),
+		Monto = ISNULL(@Monto, Monto),
+		ID_MedioDePago = ISNULL(@ID_MedioDePago, ID_MedioDePago),
+		NroCuenta = ISNULL(@NroCuenta, NroCuenta),
+		ID_Socio = ISNULL(@ID_Socio, ID_Socio),
+		ID_Factura = ISNULL(@ID_Factura, ID_Factura)
+	WHERE ID_Pago = @ID_Pago
+END;
+
+--- CREACION DE PROCEDURE eliminarPago
+
+CREATE OR ALTER PROCEDURE eliminarPago
+	@ID_Pago INT,
+AS
+BEGIN
+	DELETE 
+	FROM Facturacion.Pago
+	WHERE ID_Pago = @ID_Pago
 END;
