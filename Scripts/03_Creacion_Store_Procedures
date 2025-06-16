@@ -36,3 +36,65 @@ BEGIN
 	FROM Administración.Rol
 	WHERE ID_Rol = @ID_Rol
 END;
+
+--- CREACION DE PROCEDURE ingresarUsuario
+
+CREATE OR ALTER PROCEDURE ingresarUsuario
+    	@DNI int,
+    	@Nombre VARCHAR(50),
+    	@Apellido VARCHAR(50),
+    	@Email VARCHAR(50),
+    	@TelefonoContacto char(12),
+    	@FechaNacimiento DATE,
+    	@Contrasenia VARCHAR(100),
+    	@ID_Rol INT
+AS
+BEGIN
+	INSERT INTO Administracion.Usuario(DNI, Nombre, Apellido, Email, TelefonoContacto, FechaNacimiento, Contrasenia, ID_Rol) VALUES(
+		@DNI,
+    		@Nombre,
+    		@Apellido,
+    		@Email,
+    		@TelefonoContacto,
+    		@FechaNacimiento,
+    		@Contrasenia,
+    		@ID_Rol
+	)
+END;
+
+--- CREACION DE PROCEDURE modificarUsuario
+
+CREATE OR ALTER modificarUsuario
+	@ID_Usuario,
+	@DNI int = NULL,
+    	@Nombre VARCHAR(50) = NULL,
+    	@Apellido VARCHAR(50) = NULL,
+    	@Email VARCHAR(50) = NULL,
+    	@TelefonoContacto char(12) = NULL,
+    	@FechaNacimiento DATE = NULL,
+    	@Contrasenia VARCHAR(100) = NULL,
+    	@ID_Rol INT = NULL
+AS
+BEGIN
+	UPDATE Administración.Usuario SET
+		DNI int = ISNULL(@DNI, DNI),
+    		Nombre = ISNULL(@Nombre, Nombre),
+    		Apellido = ISNULL(@Apellido, Apellido),
+    		Email = ISNULL(@Email,Email),
+    		TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto),
+    		FechaNacimiento = ISNULL(@FechaNacimiento, FechaNacimiento),
+    		Contrasenia = ISNULL(@Contrasenia, Contrasenia),
+    		@ID_Rol = ISNULL(@ID_Rol, ID_Rol)
+	WHERE ID_Usuario = @ID_Usuario
+END;
+
+--- CREACION DE PROCEDURE eliminarUsuario
+
+CREATE OR ALTER eliminarUsuario
+	@ID_Usuario INT,
+	
+BEGIN
+	DELETE *
+	FROM Administración.Usuario
+	WHERE ID_Usuario = @ID_Usuario
+END;
