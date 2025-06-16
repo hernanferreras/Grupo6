@@ -168,3 +168,55 @@ BEGIN
 	FROM Personas.Categoria
 	WHERE ID_Categoria = @ID_Categoria
 END;
+
+--- 13 CREACION PROCEDURE ingresarSocio
+
+CREATE OR ALTER PROCEDURE ingresarSocio
+	@ID_Socio INT,
+	@TelefonoEmergencia CHAR(12),
+	@ObraSocial VARCHAR(50),
+	@NroSocioObraSocial INT,
+	@ID_Categoria INT,
+	@ID_GrupoFamiliar INT,
+AS
+BEGIN
+	INSERT INTO Personas.Socio(ID_Socio, TelefonoEmergencia, ObraSocial, NroObraSocial, ID_Categoriam ID_GrupoFamiliar) VALUES(
+		@ID_Socio,
+		@TelefonoEmergencia,
+		@ObraSocial,
+		@NroSocioObraSocial,
+		@ID_Categoria,
+		@ID_GrupoFamiliar
+	)
+END;
+
+--- 14 CREACION PROCEDURE modificarSocio
+
+CREATE OR ALTER PROCEDURE modificarSocio
+	@ID_Socio INT,
+	@TelefonoEmergencia CHAR(12) = NULL,
+	@ObraSocial VARCHAR(50) = NULL,
+	@NroSocioObraSocial INT = NULL,
+	@ID_Categoria INT = NULL,
+	@ID_GrupoFamiliar INT = NULL,
+AS
+BEGIN
+	UPDATE Personas.Socio(TelefonoEmergencia, ObraSocial, NroSocioObraSocial, ID_Categoria, ID_GrupoFamiliar) SET
+		TelefonoEmergencia = ISNULL(@TelefonoEmergencia, TelefonoEmergencia),
+		ObraSocial = ISNULL(@ObraSocial, ObraSocial),
+		NroSocioObraSocial = ISNULL(@NroSocioObraSocial, NroSocioObraSocial),
+		ID_Categoria = ISNULL(@ID_Categoria, ID_Categoria),
+		ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar)
+	WHERE ID_Socio = @ID_Socio
+END;
+
+--- 15 CREACION PROCEDURE eliminarSocio
+
+CREATE OR ALTER PROCEDURE eliminarSocio
+	@ID_Socio INT
+AS
+BEGIN
+	DELETE
+	FROM Personas.Socio
+	WHERE ID_Socio = @ID_Socio
+END;
