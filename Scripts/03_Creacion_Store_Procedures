@@ -132,3 +132,39 @@ BEGIN
 	FROM Personas.GrupoFamiliar
 	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
 END;
+
+--- 10 CREACION PROCEDURE ingresarCategoria
+
+CREATE OR ALTER PROCEDURE ingresarCategoria
+	@Descripcion VARCHAR(100),
+	@Importe DECIMAL(10,2)
+AS
+BEGIN
+	INSERT INTO Personas.Categoria(Descripción, Importe) VALUES(
+		@Descripcion,
+		@Importe
+	)
+END;
+
+--- 11 CREACION PROCEDURE modificarCategoria
+	
+CREATE OR ALTER PROCEDURE modificarCategoria	
+	@ID_Categoria INT = NULL,
+	@Descripcion VARCHAR(100) = NULL,
+	@Importe DECIMAL(10,2) = NULL
+AS
+BEGIN
+	UPDATE Personas.Categoria(Descripción, Importe) SET
+		Descripción = ISNULL(@Descripcion, Descripción),
+		Importe = ISNULL(@Importe, Importe)
+	WHERE ID_Categoria = @ID_Categoria
+END;
+
+--- 12 CREACION PROCEDURE eliminarCategoria
+	@ID_Categoria INT
+AS
+BEGIN
+	DELETE
+	FROM Personas.Categoria
+	WHERE ID_Categoria = @ID_Categoria
+END;
