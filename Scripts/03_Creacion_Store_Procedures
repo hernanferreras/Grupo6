@@ -1,0 +1,38 @@
+--- 01 CREA O MODIFICA SP insertar Rol
+
+CREATE OR ALTER PROCEDURE insertarRol
+	@Nombre VARCHAR(60),    	
+	@Descripcion VARCHAR(30)
+AS
+BEGIN
+	INSERT INTO Administración.Rol(Nombre, Descripcion) VALUES(
+		@Nombre,
+		@Descripcion
+	);
+END;
+
+--- 02 CREA O MODIFICA SP para modificar Rol 
+
+CREATE OR ALTER PROCEDURE modificarRol
+	@ID_Rol INT,
+	@Nombre VARCHAR(60) = NULL,    	
+	@Descripcion VARCHAR(30) = NULL
+AS
+BEGIN
+	UPDATE Administración.Rol 
+	SET
+		Nombre = ISNULL(@Nombre, Nombre), 
+		Descripcion = ISNULL(@Descripcion, Descripcion)
+	WHERE ID_Rol = @ID_Rol
+END;
+
+--- 03 CREA O MODIFICA SP para eliminar Rol
+
+CREATE OR ALTER PROCEDURE eliminarRol
+	@ID_Rol INT,
+AS
+BEGIN
+	DELETE *
+	FROM Administración.Rol
+	WHERE ID_Rol = @ID_Rol
+END;
