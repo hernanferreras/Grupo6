@@ -97,3 +97,38 @@ BEGIN
 	FROM Administración.Usuario
 	WHERE ID_Usuario = @ID_Usuario
 END;
+
+--- 07 CREACION PROCEDURE ingresarGrupoFamiliar
+	
+CREATE OR ALTER PROCEDURE ingresarGrupoFamiliar
+	@Tamaño INT,
+	@Nombre VARCHAR(100),
+AS
+BEGIN	
+	INSERT INTO Personas.GrupoFamiliar(Tamaño, Nombre) VALUES(
+        	Tamaño = @Tamaño,
+		Nombre = @Nombre
+END;
+
+--- 08 CREACION PROCEDURE modificarGrupoFamiliar
+	
+CREATE OR ALTER PROCEDURE modificarGrupoFamiliar
+	@ID_GrupoFamiliar INT,
+	@Tamaño INT = NULL,
+	@Nombre VARCHAR(100) = NULL
+AS
+BEGIN
+	UPDATE Personas.GrupoFamiliar(Tamaño, Nombre) SET
+		Tamaño = ISNULL(@Tamaño,Tamaño),
+		Nombre = ISNULL(@Nombre, Nombre)
+	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
+END;
+
+--- 09 CREACION PROCEDURE eliminarGrupoFamiliar
+	@ID_GrupoFamiliar INT
+AS
+BEGIN
+	DELETE
+	FROM Personas.GrupoFamiliar
+	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
+END;
