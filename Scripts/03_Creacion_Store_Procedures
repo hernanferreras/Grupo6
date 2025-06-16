@@ -327,3 +327,39 @@ BEGIN
 		FROM Facturacion.Cuenta
 		WHERE ID_Socio = @ID_Socio
 END;
+
+--- 22 CREACION PROCEDURE ingresarMedioDePago
+
+CREATE OR ALTER PROCEDURE ingresarMedioDePago
+	@ID_MedioDePago INT,
+	@Tipo VARCHAR(15),
+AS
+BEGIN
+	INSERT INTO Facturacion.MedioDePago(ID_MedioDePago, Tipo) VALUES(
+		@ID_MedioDePago,
+		@Tipo
+	)
+END;
+
+--- 23 CREACION PROCEDURE modificarMedioDePago
+	
+CREATE OR ALTER PROCEDURE modificarMedioDePago	
+	@ID_MedioDePago INT,
+	@Tipo VARCHAR(15) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.MedioDePago(Tipo) SET
+		Tipo = ISNULL(@Tipo, Tipo)
+	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
+
+--- 24 CREACION PROCEDURE eliminarMedioDePago
+	
+CREATE OR ALTER PROCEDURE eliminarMedioDePago
+	@ID_MedioDePago
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.MedioDePago
+	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
