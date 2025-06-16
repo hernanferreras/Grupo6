@@ -433,7 +433,7 @@ END;
 
 --- 30 CREACION PROCEDURE eliminarTransferencia
 
-CREATE OR ALTER PROCEDURE modificarTransferencia
+CREATE OR ALTER PROCEDURE eliminarTransferencia
 	@ID_MedioDePagoINT
 AS
 BEGIN
