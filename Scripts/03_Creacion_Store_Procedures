@@ -363,3 +363,45 @@ BEGIN
 	FROM Facturacion.MedioDePago
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+
+--- 25 CREACION PROCEDURE ingresoTarjeta
+	
+CREATE OR ALTER PROCEDURE ingresoTarjeta	
+	@ID_MedioDePago INT,
+	@NroTarjeta CHAR(19),
+	@FechaVenc DATE,
+	@DebitoAutomatico BIT
+AS
+BEGIN
+	INSERT INTO Facturacion.Tarjeta(ID_MedioDePago, NroTarjeta, FechaVenc, DebitoAutomatico) VALUES(
+		@ID_MedioDePago,
+		@NroTarjeta,
+		@FechaVenc,
+		@DebitoAutomatico
+	)
+END;
+
+--- 26 CREACION PROCEDURE modificarTarjeta
+	@ID_MedioDePago INT,
+	@NroTarjeta CHAR(19) = NULL,
+	@FechaVenc DATE = NULL,
+	@DebitoAutomatico BIT = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Tarjeta(NroTarjeta, FechaVenc, DebitoAutomatico) SET
+		NroTarjeta = ISNULL(@NroTarjeta, NroTarjeta),
+		FechaVenc = ISNULL(@FechaVenc, FechaVenc),
+		DebitoAutomatico = ISNULL(@DebitoAutomatico, DebitoAutomatico)
+	WHERE ID_MedioDePago = @ID_MedioDePago
+END;
+
+--- 27 CREACION PROCEDURE eliminarTarjeta
+
+CREATE OR ALTER PROCEDURE eliminarTarjeta
+	@NroTarjeta char(19)
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Tarjeta
+	WHERE NroTarjeta = @NroTarjeta
+END;
