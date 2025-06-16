@@ -562,3 +562,41 @@ BEGIN
 	FROM Facturacion.Pago
 	WHERE ID_Pago = @ID_Pago
 END;
+
+--- CREACION DE PROCEDURE ingresarDescuento
+
+CREATE OR ALTER PROCEDURE ingresarDescuento
+	@ID_Descuento INT,
+	@Porcentaje DECIMAL(5,2),
+	@ID_Factura INT
+AS
+BEGIN
+	INSERT INTO Facturacion.Descuento(ID_Descuento, Porcentaje, ID_Factura) VALUES(
+		@ID_Descuento,
+		@Porcentaje,
+		@ID_Factura
+END;
+
+--- CREACION DE PROCEDURE modificarDescuento
+
+CREATE OR ALTER PROCEDURE modificarDescuento
+		@Porcentaje DECIMAL(5,2) = NULL,
+		@ID_Factura INT = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Descuento SET
+		Porcentaje = ISNULL(@Porcentaje, Porcentaje),
+		ID_Factura = ISNULL(@ID_Factura, ID_Factura)
+	WHERE ID_Descuento = @ID_Descuento
+END;
+
+--- CREACION DE PROCEDURE eliminarDescuento
+
+CREATE OR ALTER PROCEDURE eliminarDescuento
+	@ID_Descuento INT
+AS
+BEGIN
+	DELETE 
+	FROM Facturacion.Descuento
+	WHERE ID_Descuento = @ID_Descuento
+END;
