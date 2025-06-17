@@ -648,3 +648,44 @@ BEGIN
 	FROM Facturacion.Reembolso
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
+
+--- CREACION DE PROCEDURE ingresarCosto
+
+CREATE OR ALTER PROCEDURE ingresarCosto
+	@ID_Costo INT,
+	@FechaIni DATE,
+	@FechaFin DATE,
+	@Monto DECIMAL(10,2)
+AS
+BEGIN
+	INSERT INTO Facturacion.Costo(ID_Costo, FechaIni, FechaFin, Monto) VALUES(
+		@ID_Costo, 
+		@FechaIni,
+		@FechaFin,
+		@Monto
+END;
+
+--- CREACION DE PROCEDURE modificarCosto
+
+CREATE OR ALTER PROCEDURE modificarCosto
+	@ID_Costo INT = NULL,
+	@FechaIni DATE = NULL,
+	@FechaFin DATE = NULL,
+	@Monto DECIMAL(10,2) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Costo SET
+		FechaIni = ISNULL(@FechaIni, FechaIni),
+		FechaFin = ISNULL(@FechaFin, FechaFin),
+		Monto = ISNULL(@Monto, Monto)
+	WHERE ID_Costo = @ID_Costo
+END;
+
+--- CREACION DE PROCEDURE eliminarCosto
+	@ID_Costo INT
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Costo
+	WHERE ID_Costo = @ID_Costo
+END;
