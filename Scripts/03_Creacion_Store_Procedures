@@ -820,3 +820,43 @@ BEGIN
 	FROM Actividades.Clase
 	WHERE ID_Clase = @ID_Clase
 END;
+
+--- 55 CREACION DE PROCEDURE ingresarClaseDictada
+
+CREATE OR ALTER ingresarClaseDictada
+	@ID_Clase INT,
+    @ID_Profesor INT,
+    @FechaClase DATE
+AS
+BEGIN
+	INSERT INTO Actividades.ClaseDictada(ID_Clase, Profesor, FechaClase) VALUES(
+		@ID_Clase,
+		@ID_Profesor,
+		@FechaClase
+	)
+END;
+
+--- 56 CREACION DE PROCEDURE modificarClaseDictada
+
+CREATE OR ALTER modificarClaseDictada
+	@ID_Clase INT,
+    @ID_Profesor INT = NULL,
+    @FechaClase DATE = NULL
+AS
+BEGIN
+	UPDATE Actividades.ClaseDictada SET
+		ID_Profesor = ISNULL(@ID_Profesor, ID_Profesor),
+		FechaClase = ISNULL(@FechaClase, FechaClase)
+	WHERE ID_Clase = @ID_Clase
+END;
+
+--- 57 CREACION DE PROCEDURE eliminarClaseDictada
+
+CREATE OR ALTER eliminarClaseDictada
+	@ID_Clase INT
+AS
+BEGIN
+	DELETE
+	FROM Actividades.ClaseDictada
+	WHERE ID_Clase = @ID_Clase
+END;
