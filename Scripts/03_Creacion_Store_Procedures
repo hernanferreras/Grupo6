@@ -649,7 +649,7 @@ BEGIN
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
 
---- CREACION DE PROCEDURE ingresarCosto
+--- 43 CREACION DE PROCEDURE ingresarCosto
 
 CREATE OR ALTER PROCEDURE ingresarCosto
 	@ID_Costo INT,
@@ -665,7 +665,7 @@ BEGIN
 		@Monto
 END;
 
---- CREACION DE PROCEDURE modificarCosto
+--- 44 CREACION DE PROCEDURE modificarCosto
 
 CREATE OR ALTER PROCEDURE modificarCosto
 	@ID_Costo INT = NULL,
@@ -681,7 +681,7 @@ BEGIN
 	WHERE ID_Costo = @ID_Costo
 END;
 
---- CREACION DE PROCEDURE eliminarCosto
+--- 45 CREACION DE PROCEDURE eliminarCosto
 	@ID_Costo INT
 AS
 BEGIN
@@ -690,7 +690,7 @@ BEGIN
 	WHERE ID_Costo = @ID_Costo
 END;
 
---- CREACION DE PROCEDURE ingresarCuota
+--- 46 CREACION DE PROCEDURE ingresarCuota
 
 CREATE OR ALTER PROCEDURE ingresarCuota
 	@ID_Cuota INT,
@@ -706,7 +706,7 @@ BEGIN
 END;
 
 
---- CREACION DE PROCEDURE modificarCuota
+--- 47 CREACION DE PROCEDURE modificarCuota
 
 CREATE OR ALTER PROCEDURE modificarCuota
 	@ID_Cuota INT,
@@ -720,7 +720,7 @@ BEGIN
 	WHERE ID_Cuota = @ID_Cuota
 END;
 
---- CREACION DE PROCEDURE eliminarCuota
+--- 48 CREACION DE PROCEDURE eliminarCuota
 
 CREATE OR ALTER PROCEDURE eliminarCuota
 	@ID_Cuota
@@ -731,7 +731,7 @@ BEGIN
 	WHERE ID_Cuota = @ID_Cuota
 END;
 
---- CREACION DE PROCEDURE ingresarActividad
+--- 49 CREACION DE PROCEDURE ingresarActividad
 
 CREATE OR ALTER PROCEDURE ingresarActividad
 	@ID_Actividad INT,
@@ -748,7 +748,7 @@ BEGIN
 	)
 END;
 
---- CREACION DE PROCEDURE modificarActividad
+--- 50 CREACION DE PROCEDURE modificarActividad
 
 CREATE OR ALTER PROCEDURE modificarActividad
 	@ID_Actividad INT = NULL,
@@ -764,11 +764,59 @@ BEGIN
 	WHERE ID_Actividad = @ID_Actividad
 END;
 
---- CREACION DE PROCEDURE eliminarActividad
+--- 51 CREACION DE PROCEDURE eliminarActividad
 	@ID_Actividad INT
 AS
 BEGIN
 	DELETE
 	FROM Actividades.Actividad
 	WHERE ID_Actividad = @ID_Actividad
+END;
+
+--- 52 CREACION DE PROCEDURE ingresarClase
+
+CREATE OR ALTER PROCEDURE ingresarClase
+	@ID_Clase INT,
+    @Dia DATE,
+    @HoraInicio TIME,
+	@HoraFin TIME,
+    @ID_Actividad INT,
+AS
+BEGIN
+	INSERT INTO Actividades.Clase(ID_Clase, Dia, HoraInicio, HoraFin, ID_Actividad) VALUES(
+		@ID_Clase
+		@Dia
+		@HoraInicio
+		@HoraFin
+		@ID_Actividad
+	)
+END;
+
+--- 53 CREACION DE PROCEDURE modificarClase
+
+CREATE OR ALTER PROCEDURE modificarClase
+	@ID_Clase INT,
+    @Dia DATE = NULL,
+    @HoraInicio TIME = NULL,
+	@HoraFin TIME = NULL,
+    @ID_Actividad INT = NULL,
+AS
+BEGIN
+	UPDATE Actividades.Clase SET
+		Dia = ISNULL(@Dia, Dia),
+		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
+		HoraFin = ISNULL(@HoraFin, HoraFin),
+		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad)
+	WHERE ID_Clase = @ID_Clase
+END;
+
+--- 54 CREACION DE PROCEDURE eliminarClase
+
+CREATE OR ALTER eliminarClase
+	@ID_Clase INT
+AS
+BEGIN
+	DELETE
+	FROM Actividades.Clase
+	WHERE ID_Clase = @ID_Clase
 END;
