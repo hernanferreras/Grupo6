@@ -202,7 +202,7 @@ CREATE OR ALTER PROCEDURE modificarSocio
 	@ObraSocial VARCHAR(50) = NULL,
 	@NroSocioObraSocial INT = NULL,
 	@ID_Categoria INT = NULL,
-	@ID_GrupoFamiliar INT = NULL,
+	@ID_GrupoFamiliar INT = NULL
 AS
 BEGIN
 	UPDATE Personas.Socio SET
