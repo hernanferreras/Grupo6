@@ -509,7 +509,7 @@ BEGIN
 	WHERE ID_Factura = @ID_Factura
 END;
 
---- CREACION DE PROCEDURE ingresarPago
+--- 34 CREACION DE PROCEDURE ingresarPago
 
 CREATE OR ALTER PROCEDURE ingresarPago
 		@FechaPago DATE,
@@ -530,7 +530,7 @@ BEGIN
 	)
 END;
 
---- CREACION DE PROCEDURE modificarPago
+--- 35 CREACION DE PROCEDURE modificarPago
 		
 CREATE OR ALTER PROCEDURE modificarPago		
 		@ID_Pago INT,
@@ -552,7 +552,7 @@ BEGIN
 	WHERE ID_Pago = @ID_Pago
 END;
 
---- CREACION DE PROCEDURE eliminarPago
+--- 36 CREACION DE PROCEDURE eliminarPago
 
 CREATE OR ALTER PROCEDURE eliminarPago
 	@ID_Pago INT,
@@ -563,7 +563,7 @@ BEGIN
 	WHERE ID_Pago = @ID_Pago
 END;
 
---- CREACION DE PROCEDURE ingresarDescuento
+--- 37 CREACION DE PROCEDURE ingresarDescuento
 
 CREATE OR ALTER PROCEDURE ingresarDescuento
 	@ID_Descuento INT,
@@ -577,7 +577,7 @@ BEGIN
 		@ID_Factura
 END;
 
---- CREACION DE PROCEDURE modificarDescuento
+--- 38 CREACION DE PROCEDURE modificarDescuento
 
 CREATE OR ALTER PROCEDURE modificarDescuento
 		@Porcentaje DECIMAL(5,2) = NULL,
@@ -590,7 +590,7 @@ BEGIN
 	WHERE ID_Descuento = @ID_Descuento
 END;
 
---- CREACION DE PROCEDURE eliminarDescuento
+--- 39 CREACION DE PROCEDURE eliminarDescuento
 
 CREATE OR ALTER PROCEDURE eliminarDescuento
 	@ID_Descuento INT
@@ -599,4 +599,52 @@ BEGIN
 	DELETE 
 	FROM Facturacion.Descuento
 	WHERE ID_Descuento = @ID_Descuento
+END;
+
+--- 40 CREACION DE PROCEDURE ingresarReembolso
+
+CREATE OR ALTER PROCEDURE ingresarReembolso
+		@ID_Reembolso INT, 
+		@Tipo NVARCHAR(30),   
+        @ID_Pago INT,
+    	@Descripcion VARCHAR(100),
+    	@FechaReembolso DATE,
+AS
+BEGIN
+	INSERT INTO Facturacion.Reembolso(ID_Reembolso, Tipo, ID_Pago, Descripcion, FechaReembolso) VALUES(
+		@ID_Reembolso, 
+		@Tipo NVARCHAR,   
+        @ID_Pago,
+    	@Descripcion,
+    	@FechaReembolso
+	)
+END;
+
+--- 41 CREACION DE PROCEDURE modificarReembolso
+
+CREATE OR ALTER PROCEDURE modificarReembolso
+		@ID_Reembolso INT = NULL, 
+		@Tipo NVARCHAR(30) = NULL,   
+        @ID_Pago INT = NULL,
+    	@Descripcion VARCHAR(100) = NULL,
+    	@FechaReembolso DATE = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Reembolso SET 
+		Tipo = ISNULL(@Tipo, Tipo),   
+        ID_Pago = ISNULL(@ID_Pago, ID_Pago),
+    	Descripcion = ISNULL(@Descripcion, Descripcion),
+    	FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
+	WHERE ID_Reembolso = @ID_Reembolso
+END;
+
+--- 42 CREACION DE PROCEDURE eliminarReembolso
+
+CREATE OR ALTER eliminarReembolso
+	@ID_Reembolso INT
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Reembolso
+	WHERE ID_Reembolso = @ID_Reembolso
 END;
