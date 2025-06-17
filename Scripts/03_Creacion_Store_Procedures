@@ -1153,3 +1153,36 @@ BEGIN
 	WHERE ID_Factura = @ID_Factura
 END;
 
+--- 79 CREACION DE PROCEDURE ingresarInvitado
+
+CREATE OR ALTER PROCEDURE ingresarInvitado
+		@ID_Usuario INT,
+        @ID_Pileta INT
+AS
+BEGIN
+	INSERT INTO Personas.Invitado(ID_Usuario, ID_Pileta) VALUES (
+		@ID_Usuario,
+		@ID_Pileta
+	)
+END;
+
+--- 80 CREACION DE PROCEDURE modificarInvitado
+		@ID_Invitado INT,
+		@ID_Usuario INT = NULL,
+		@ID_Pileta INT = NULL
+AS
+BEGIN
+	UPDATE Personas.Invitado SET
+		ID_Usuario = ISNULL(@ID_Usuario, ID_Usuario),
+		ID_Pileta = ISNULL(@ID_Pileta, ID_Pileta)
+	WHERE ID_Invitado = @ID_Invitado
+END;
+
+--- 81 CREACION DE PROCEDURE eliminarInvitado
+	@ID_Invitado INT
+AS
+BEGIN
+	DELETE
+	FROM Personas.Invitado
+	WHERE ID_Invitado = @ID_Invitado
+END;
