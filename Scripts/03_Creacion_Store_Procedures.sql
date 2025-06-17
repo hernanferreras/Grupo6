@@ -65,12 +65,12 @@ END;
 --- 05 CREACION DE PROCEDURE modificarUsuario
 
 CREATE OR ALTER PROCEDURE modificarUsuario
-	@ID_Usuario,
-	@DNI int = NULL,
+	@ID_Usuario INT,
+	@DNI INT = NULL,
     	@Nombre VARCHAR(50) = NULL,
     	@Apellido VARCHAR(50) = NULL,
     	@Email VARCHAR(50) = NULL,
-    	@TelefonoContacto char(12) = NULL,
+    	@TelefonoContacto CHAR(12) = NULL,
     	@FechaNacimiento DATE = NULL,
     	@Contrasenia VARCHAR(100) = NULL,
     	@ID_Rol INT = NULL
