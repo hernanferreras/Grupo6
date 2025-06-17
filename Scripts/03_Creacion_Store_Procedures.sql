@@ -269,6 +269,8 @@ BEGIN
 END;
 
 --- 18 CREACION PROCEDURE eliminarProfesor
+
+CREATE OR ALTER PROCEDURE eliminarProfesor
 	@ID_Profesor INT
 AS
 BEGIN
@@ -276,6 +278,7 @@ BEGIN
 	FROM Personas.Profesor
 	WHERE ID_Profesor = @ID_Profesor
 END;
+
 --- 19 CREACION PROCEDURE ingresarCuenta
 
 CREATE OR ALTER PROCEDURE ingresarCuenta
