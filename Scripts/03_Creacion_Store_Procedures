@@ -861,7 +861,7 @@ BEGIN
 	WHERE ID_Clase = @ID_Clase
 END;
 
---- CREACION DE PROCEDURE ActividadRealizada
+--- 58 CREACION DE PROCEDURE ActividadRealizada
 
 CREATE OR ALTER PROCEDURE Actividades.ActividadRealizada
 	@ID_Actividad INT,
@@ -876,7 +876,7 @@ BEGIN
 	)
 END;
 
---- CREACION DE PROCEDURE modificarActividadRealizada
+--- 59 CREACION DE PROCEDURE modificarActividadRealizada
 
 CREATE OR ALTER PROCEDURE modificarActividadRealizada
 		@ID_Actividad INT,
@@ -890,7 +890,7 @@ BEGIN
 	WHERE ID_Actividad = @ID_Actividad
 END;
 
---- CREACION DE PROCEDURE eliminarActividadRealizada
+--- 60 CREACION DE PROCEDURE eliminarActividadRealizada
 
 CREATE OR ALTER PROCEDURE eliminarActividadRealizada
 	@ID_Actividad INT,
@@ -901,7 +901,7 @@ BEGIN
 	WHERE ID_Actividad = @ID_Actividad
 END;
 
---- CREACION DE PROCEDURE ingresarActividadExtra
+--- 61 CREACION DE PROCEDURE ingresarActividadExtra
 
 CREATE OR TABLE PROCEDURE ingresarActividadExtra
 	@ID_ActividadExtra INT,
@@ -914,7 +914,7 @@ BEGIN
 	)
 END;
 
---- CREACION DE PROCEDURE modificarActividadExtra
+--- 62 CREACION DE PROCEDURE modificarActividadExtra
 
 CREATE OR ALTER PROCEDURE modificarActividadExtra
 	@ID_ActividadExtra INT,
@@ -926,11 +926,55 @@ BEGIN
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 
---- CREACION DE PROCEDURE eliminarActividadExtra
+--- 63 CREACION DE PROCEDURE eliminarActividadExtra
 	@ID_ActividadExtra INT
 AS
 BEGIN
 	DELETE
 	FROM Actividades.ActividadExtra
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
+--- 64 CREACION DE PROCEDURE ingresarColonia
+
+CREATE OR ALTER PROCEDURE ingresarColonia
+	@ID_ActividadExtra INT,
+        @HoraInicio TIME,
+        @HoraFin TIME,
+        @Monto DECIMAL(10,2)
+AS
+BEGIN
+	INSERT INTO Actividades.Colonia(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
+		@ID_ActividadExtra,
+        @HoraInicio,
+        @HoraFin,
+        @Monto DECIMAL(10,2)
+	)
+END;
+
+--- 65 CREACION DE PROCEDURE modificarColonia
+
+CREATE OR ALTER PROCEDURE modificarColonia
+	@ID_ActividadExtra INT,
+	@HoraInicio TIME = NULL, 
+	@HoraFin TIME = NULL,
+	@Monto DECIMAL(10,2) = NULL
+AS 
+BEGIN
+	UPDATE Actividades.Colonia SET
+		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
+		HoraFin = ISNULL(@HoraFin, HoraFin),
+		Monto = ISNULL(@Monto, Monto)
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
+--- 66 CREACION DE PROCEDURE eliminarColonia
+
+CREATE OR ALTER PROCEDURE eliminarColonia
+	@ID_ActividadExtra INT,
+AS
+BEGIN
+	DELETE
+	FROM Actividades.Colonia
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
