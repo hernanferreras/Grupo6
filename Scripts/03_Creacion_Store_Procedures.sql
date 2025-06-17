@@ -164,6 +164,7 @@ BEGIN
 END;
 
 --- 12 CREACION PROCEDURE eliminarCategoria
+CREATE OR ALTER PROCEDURE eliminarCategoria
 	@ID_Categoria INT
 AS
 BEGIN
