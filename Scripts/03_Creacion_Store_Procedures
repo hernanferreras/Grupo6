@@ -1020,3 +1020,38 @@ BEGIN
 	FROM ActividadExtra.AlquilerSUM
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+
+--- 70 CREACION DE PROCEDURE ingresarTarifaPileta
+
+CREATE OR ALTER PROCEDURE ingresarTarifaPileta
+	@ID_TarifaPileta INT,
+	@Costo DECIMAL(10,2) 
+AS
+BEGIN
+	INSERT INTO Actividades.TarifaPileta(ID_TarifaPileta, Costo) VALUES(
+		@ID_TarifaPileta,
+		@Costo
+	)
+END;
+
+--- 71 CREACION DE PROCEDURE modificarTarifaPileta
+	@ID_TarifaPileta INT,
+	@Costo DECIMAL(10,2) = NULL
+AS
+BEGIN
+	UPDATE Actividades.TarifaPileta SET
+		Costo = ISNULL(@Costo, Costo)
+	WHERE ID_TarifaPileta = @ID_TarifaPileta
+END;
+
+--- 72 CREACION DE PROCEDURE eliminarTarifaPileta
+
+CREATE OR ALTER PROCEDURE eliminarTarifaPileta
+	@ID_TarifaPileta INT
+AS
+BEGIN	
+	DELETE
+	FROM Actividades.TarifaPileta
+	WHERE ID_TarifaPileta = @ID_TarifaPileta
+END;
+	
