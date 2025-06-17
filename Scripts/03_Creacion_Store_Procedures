@@ -860,3 +860,43 @@ BEGIN
 	FROM Actividades.ClaseDictada
 	WHERE ID_Clase = @ID_Clase
 END;
+
+--- CREACION DE PROCEDURE ActividadRealizada
+
+CREATE OR ALTER PROCEDURE Actividades.ActividadRealizada
+	@ID_Actividad INT,
+	@ID_Socio INT,
+	@FechaActividad DATE
+AS
+BEGIN
+	INSERT INTO Actividades.ActividadRealizada(ID_Actividad, ID_Socio, FechaActividad) VALUES(
+		@ID_Actividad,
+		@ID_Socio,
+		@FechaActividad
+	)
+END;
+
+--- CREACION DE PROCEDURE modificarActividadRealizada
+
+CREATE OR ALTER PROCEDURE modificarActividadRealizada
+		@ID_Actividad INT,
+		@ID_Socio INT = NULL,
+		@FechaActividad DATE = NULL
+AS
+BEGIN
+	UPDATE Actividades.ActividadRealizada SET
+		ID_Socio = ISNULL(@ID_Socio, ID_Socio),
+		FechaActividad = ISNULL(@FechaActividad, FechaActividad)
+	WHERE ID_Actividad = @ID_Actividad
+END;
+
+--- CREACION DE PROCEDURE eliminarActividadRealizada
+
+CREATE OR ALTER PROCEDURE eliminarActividadRealizada
+	@ID_Actividad INT,
+AS
+BEGIN
+	DELETE
+	FROM Actividades.Actividad
+	WHERE ID_Actividad = @ID_Actividad
+END;
