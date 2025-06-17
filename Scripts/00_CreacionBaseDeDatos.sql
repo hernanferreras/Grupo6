@@ -17,8 +17,10 @@ BEGIN
     PRINT 'La base de datos se creó correctamente';
 END
 ELSE
+BEGIN
     PRINT 'La base de datos ya existe';
+END
 GO
 
-USE Com5600G06;
+USE Com5600G06
 GO
