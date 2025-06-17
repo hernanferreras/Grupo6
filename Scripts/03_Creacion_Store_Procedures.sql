@@ -107,8 +107,9 @@ CREATE OR ALTER PROCEDURE ingresarGrupoFamiliar
 AS
 BEGIN	
 	INSERT INTO Personas.GrupoFamiliar(Tamaño, Nombre) VALUES(
-        	Tamaño = @Tamaño,
-		Nombre = @Nombre
+        	@Tamaño,
+		@Nombre
+	)
 END;
 
 --- 08 CREACION PROCEDURE modificarGrupoFamiliar
