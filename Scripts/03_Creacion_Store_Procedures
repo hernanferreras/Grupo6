@@ -978,3 +978,45 @@ BEGIN
 	FROM Actividades.Colonia
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+
+--- 67 CREACION DE PROCEDURE ingresarAlquilerSUM
+
+CREATE OR ALTER PROCEDURE ingresarAlquilerSUM
+	@ID_ActividadExtra INT,
+    @HoraInicio TIME,
+    @HoraFin TIME,
+    @Monto DECIMAL(10,2),
+AS
+BEGIN
+	INSERT INTO Actividades.AlquilerSUM(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
+		@ID_ActividadExtra,
+		@HoraInicio,
+		@HoraFin,
+		@Monto
+	)
+END;
+
+--- 68 CREACION DE PROCEDURE modificarAlquilerSUM
+
+CREATE OR ALTER PROCEDURE modificarAlquilerSUM
+	@ID_ActividadExtra INT,
+    @HoraInicio TIME = NULL,
+    @HoraFin TIME = NULL,
+    @Monto DECIMAL(10,2) = NULL
+AS
+BEGIN
+	UPDATE Actividades.AlquilerSUM SET
+		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
+		HoraFin = ISNULL(@HoraFin, HoraFin),
+		Monto = ISNULL(@Monto, Monto)	
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
+--- 69 CREACION DE PROCEDURE eliminarAlquilerSUM
+	@ID_ActividadExtra INT
+AS
+BEGIN
+	DELETE
+	FROM ActividadExtra.AlquilerSUM
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
