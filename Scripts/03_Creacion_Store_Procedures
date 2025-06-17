@@ -689,3 +689,44 @@ BEGIN
 	FROM Facturacion.Costo
 	WHERE ID_Costo = @ID_Costo
 END;
+
+--- CREACION DE PROCEDURE ingresarCuota
+
+CREATE OR ALTER PROCEDURE ingresarCuota
+	@ID_Cuota INT,
+	@nroCuota INT,
+	@Estado NVARCHAR(50)
+AS
+BEGIN
+	INSERT INTO Facturacion.Cuota(ID_Cuota, nroCuota, Estado) VALUES(
+		@ID_Cuota,
+		@nroCuota,
+		@Estado
+	)
+END;
+
+
+--- CREACION DE PROCEDURE modificarCuota
+
+CREATE OR ALTER PROCEDURE modificarCuota
+	@ID_Cuota INT,
+	@nroCuota INT = NULL,
+	@Estado NVARCHAR(50) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.Cuota SET
+		nroCuota = ISNULL(@nroCuota, nroCuota),
+		Estado = ISNULL(@Estado, Estado)
+	WHERE ID_Cuota = @ID_Cuota
+END;
+
+--- CREACION DE PROCEDURE eliminarCuota
+
+CREATE OR ALTER PROCEDURE eliminarCuota
+	@ID_Cuota
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.Cuota
+	WHERE ID_Cuota = @ID_Cuota
+END;
