@@ -1103,3 +1103,53 @@ BEGIN
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 
+--- 76 CREACION DE PROCEDURE ingresarItemFactura
+
+CREATE OR ALTER ingresarItemFactura
+	@ID_Factura INT,           
+    @ID_Item INT,          
+    @ID_Actividad INT,
+    @ID_ActividadExtra INT,
+    @Descripcion VARCHAR(300),
+    @Importe DECIMAL(10,2)
+AS
+BEGIN
+	INSERT INTO Facturacion.ItemFactura(ID_Factura, ID_Item, ID_Actividad, ID_ActividadExtra, Descripcion, Importe) VALUES(
+		@ID_Factura,           
+		@ID_Item,          
+		@ID_Actividad,
+		@ID_ActividadExtra,
+		@Descripcion,
+		@Importe
+	)
+END;
+
+--- 77 CREACION DE PROCEDURE modificarItemFactura
+	
+CREATE OR ALTER PROCEDURE modificarItemFactura
+	@ID_Factura INT,           
+    @ID_Item INT = NULL,          
+    @ID_Actividad INT = NULL,
+    @ID_ActividadExtra INT = NULL,
+    @Descripcion VARCHAR(300) = NULL,
+    @Importe DECIMAL(10,2) = NULL
+AS
+BEGIN
+	UPDATE Facturacion.ItemFactura SET
+		ID_Item = ISNULL(@ID_Item, ID_Item),          
+		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad),
+		ID_ActividadExtra= ISNULL(@ID_ActividadExtra, ID_ActividadExtra),
+		Descripcion = ISNULL(@Descripcion, Descripcion),
+		Importe = ISNULL(@Importe, Importe)
+	WHERE ID_Factura = @ID_Factura
+END;
+
+--- 78 CREACION DE PROCEDURE eliminarItemFactura
+	@ID_Factura INT
+AS
+BEGIN
+	DELETE
+	FROM Facturacion.ItemFactura
+	WHERE ID_Factura = @ID_Factura
+END;
+
