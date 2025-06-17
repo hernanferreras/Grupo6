@@ -1055,3 +1055,51 @@ BEGIN
 	WHERE ID_TarifaPileta = @ID_TarifaPileta
 END;
 	
+--- 73 CREACION DE PROCEDURE ingresarPiletaVerano
+
+CREATE OR ALTER PROCEDURE ingresarPiletaVerano
+	@ID_ActividadExtra INT,
+    @HoraInicio TIME,
+    @HoraFin TIME,
+    @CapacidadMaxima INT,
+    @ID_TarifaPileta INT
+AS
+BEGIN
+	INSERT INTO Actividades.PiletaVerano(ID_ActividadExtra, HoraInicio, HoraFin, CapacidadMaxima, ID_TarifaPileta) VALUES(
+		@ID_ActividadExtra,
+		@HoraInicio,
+		@HoraFin,
+		@CapacidadMaxima,
+		@ID_TarifaPileta
+	)
+END;
+
+--- 74 CREACION DE PROCEDURE modificarPiletaVerano
+
+CREATE OR ALTER PROCEDURE modificarPiletaVerano
+	@ID_ActividadExtra INT,
+    @HoraInicio TIME = NULL,
+    @HoraFin TIME = NULL, 
+    @CapacidadMaxima INT = NULL,
+    @ID_TarifaPileta INT = NULL
+AS
+BEGIN
+	UPDATE Actividades.PiletaVerano SET
+		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
+		HoraFin = ISNULL(@HoraFin, HoraFin),
+		CapacidadMaxima = ISNULL(@CapacidadMaxima, CapacidadMaxima),
+		ID_TarifaPileta = ISNULL(@ID_TarifaPileta, ID_TarifaPileta)
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
+--- 75 CREACION DE PROCEDURE eliminarPiletaVerano
+
+CREATE OR ALTER eliminarPiletaVerano
+	@ID_ActividadExtra INT
+AS
+BEGIN
+	DELETE 
+	FROM Actividades.PiletaVerano
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
