@@ -614,17 +614,17 @@ BEGIN
 	INSERT INTO Facturacion.Reembolso(ID_Reembolso, Tipo, ID_Pago, Descripcion, FechaReembolso) VALUES(
 		@ID_Reembolso, 
 		@Tipo NVARCHAR,   
-        @ID_Pago,
-    	@Descripcion,
-    	@FechaReembolso
+        	@ID_Pago,
+    		@Descripcion,
+    		@FechaReembolso
 	)
 END;
 
 --- 41 CREACION DE PROCEDURE modificarReembolso
 
 CREATE OR ALTER PROCEDURE modificarReembolso
-		@ID_Reembolso INT = NULL, 
-		@Tipo NVARCHAR(30) = NULL,   
+	@ID_Reembolso INT = NULL, 
+	@Tipo NVARCHAR(30) = NULL,   
         @ID_Pago INT = NULL,
     	@Descripcion VARCHAR(100) = NULL,
     	@FechaReembolso DATE = NULL
@@ -632,9 +632,9 @@ AS
 BEGIN
 	UPDATE Facturacion.Reembolso SET 
 		Tipo = ISNULL(@Tipo, Tipo),   
-        ID_Pago = ISNULL(@ID_Pago, ID_Pago),
-    	Descripcion = ISNULL(@Descripcion, Descripcion),
-    	FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
+        	ID_Pago = ISNULL(@ID_Pago, ID_Pago),
+    		Descripcion = ISNULL(@Descripcion, Descripcion),
+    		FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
 
