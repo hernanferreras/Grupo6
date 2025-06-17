@@ -181,10 +181,10 @@ CREATE OR ALTER PROCEDURE ingresarSocio
 	@ObraSocial VARCHAR(50),
 	@NroSocioObraSocial INT,
 	@ID_Categoria INT,
-	@ID_GrupoFamiliar INT,
+	@ID_GrupoFamiliar INT
 AS
 BEGIN
-	INSERT INTO Personas.Socio(ID_Socio, TelefonoEmergencia, ObraSocial, NroObraSocial, ID_Categoriam ID_GrupoFamiliar) VALUES(
+	INSERT INTO Personas.Socio(ID_Socio, TelefonoEmergencia, ObraSocial, NroObraSocial, ID_Categoria, ID_GrupoFamiliar) VALUES(
 		@ID_Socio,
 		@TelefonoEmergencia,
 		@ObraSocial,
