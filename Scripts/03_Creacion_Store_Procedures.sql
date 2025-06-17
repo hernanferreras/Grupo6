@@ -482,12 +482,12 @@ CREATE OR ALTER PROCEDURE modificarFactura
 AS
 BEGIN
 	UPDATE Facturacion.Factura SET
-		Numero VARCHAR(50) = ISNULL(@Numero, Numero),
-		FechaEmision DATE = ISNULL(@FechaEmision, FechaEmision),
-		FechaVencimiento DATE = ISNULL(@FechaVencimiento, FechaVencimiento),
-		TotalImporte DECIMAL(10,2)= ISNULL(@TotalImporte, TotalImporte),
-		Recargo DECIMAL(10,2)= ISNULL(@Recargo, Recargo),
-		Estado VARCHAR(30) = ISNULL(@Estado, Estado)
+		Numero = ISNULL(@Numero, Numero),
+		FechaEmision = ISNULL(@FechaEmision, FechaEmision),
+		FechaVencimiento = ISNULL(@FechaVencimiento, FechaVencimiento),
+		TotalImporte = ISNULL(@TotalImporte, TotalImporte),
+		Recargo = ISNULL(@Recargo, Recargo),
+		Estado = ISNULL(@Estado, Estado)
 	WHERE ID_Factura = @ID_Factura
 END;
 
