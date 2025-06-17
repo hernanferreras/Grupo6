@@ -900,3 +900,37 @@ BEGIN
 	FROM Actividades.Actividad
 	WHERE ID_Actividad = @ID_Actividad
 END;
+
+--- CREACION DE PROCEDURE ingresarActividadExtra
+
+CREATE OR TABLE PROCEDURE ingresarActividadExtra
+	@ID_ActividadExtra INT,
+	@FechaActividadExtra DATE
+AS
+BEGIN
+	INSERT INTO Actividades.ActividadExtra(ID_ActividadExtra, FechaActividadExtra) VALUES(
+		@ID_ActividadExtra,
+		@FechaActividadExtra
+	)
+END;
+
+--- CREACION DE PROCEDURE modificarActividadExtra
+
+CREATE OR ALTER PROCEDURE modificarActividadExtra
+	@ID_ActividadExtra INT,
+	@FechaActividadExtra DATE = NULL
+AS
+BEGIN
+	UPDATE Actividades.ActividadExtra SET
+		FechaActividadExtra = ISNULL(@FechaActividadExtra, FechaActividadExtra)
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
+
+--- CREACION DE PROCEDURE eliminarActividadExtra
+	@ID_ActividadExtra INT
+AS
+BEGIN
+	DELETE
+	FROM Actividades.ActividadExtra
+	WHERE ID_ActividadExtra = @ID_ActividadExtra
+END;
