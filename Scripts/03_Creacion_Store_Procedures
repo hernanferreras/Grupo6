@@ -730,3 +730,45 @@ BEGIN
 	FROM Facturacion.Cuota
 	WHERE ID_Cuota = @ID_Cuota
 END;
+
+--- CREACION DE PROCEDURE ingresarActividad
+
+CREATE OR ALTER PROCEDURE ingresarActividad
+	@ID_Actividad INT,
+    @Nombre VARCHAR(50),
+    @Descripcion VARCHAR(100),
+    @CostoMensual DECIMAL(10, 2)
+AS
+BEGIN
+	INSERT INTO Actividades.Actividad(ID_Actividad, Nombre, Descripcion, CostoMensual) VALUES(
+		@ID_Actividad,
+		@Nombre,
+		@Descripcion,
+		@CostoMensual
+	)
+END;
+
+--- CREACION DE PROCEDURE modificarActividad
+
+CREATE OR ALTER PROCEDURE modificarActividad
+	@ID_Actividad INT = NULL,
+    @Nombre VARCHAR(50) = NULL,
+    @Descripcion VARCHAR(100) = NULL,
+    @CostoMensual DECIMAL(10, 2) = NULL
+AS
+BEGIN
+	UPDATE Actividades.Actividad SET
+		Nombre = ISNULL(@Nombre, Nombre),
+		Descripcion = ISNULL(@Descripcion, Descripcion),
+		CostoMensual = ISNULL(@CostoMensual, CostoMensual)
+	WHERE ID_Actividad = @ID_Actividad
+END;
+
+--- CREACION DE PROCEDURE eliminarActividad
+	@ID_Actividad INT
+AS
+BEGIN
+	DELETE
+	FROM Actividades.Actividad
+	WHERE ID_Actividad = @ID_Actividad
+END;
