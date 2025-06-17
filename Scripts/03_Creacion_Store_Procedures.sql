@@ -659,6 +659,7 @@ BEGIN
 		@FechaIni,
 		@FechaFin,
 		@Monto
+	)
 END;
 
 --- 44 CREACION DE PROCEDURE modificarCosto
