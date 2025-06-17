@@ -127,6 +127,7 @@ BEGIN
 END;
 
 --- 09 CREACION PROCEDURE eliminarGrupoFamiliar
+CREATE OR ALTER PROCEDURE eliminarGrupoFamiliar
 	@ID_GrupoFamiliar INT
 AS
 BEGIN
