@@ -679,6 +679,8 @@ BEGIN
 END;
 
 --- 45 CREACION DE PROCEDURE eliminarCosto
+
+CREATE OR ALTER PROCEDURE eliminarCosto
 	@ID_Costo INT
 AS
 BEGIN
@@ -720,7 +722,7 @@ END;
 --- 48 CREACION DE PROCEDURE eliminarCuota
 
 CREATE OR ALTER PROCEDURE eliminarCuota
-	@ID_Cuota
+	@ID_Cuota INT
 AS
 BEGIN
 	DELETE
@@ -732,9 +734,9 @@ END;
 
 CREATE OR ALTER PROCEDURE ingresarActividad
 	@ID_Actividad INT,
-    @Nombre VARCHAR(50),
-    @Descripcion VARCHAR(100),
-    @CostoMensual DECIMAL(10, 2)
+   	@Nombre VARCHAR(50),
+    	@Descripcion VARCHAR(100),
+    	@CostoMensual DECIMAL(10, 2)
 AS
 BEGIN
 	INSERT INTO Actividades.Actividad(ID_Actividad, Nombre, Descripcion, CostoMensual) VALUES(
@@ -762,6 +764,8 @@ BEGIN
 END;
 
 --- 51 CREACION DE PROCEDURE eliminarActividad
+
+CREATE OR ALTER PROCEDURE eliminarActividad
 	@ID_Actividad INT
 AS
 BEGIN
@@ -777,14 +781,14 @@ CREATE OR ALTER PROCEDURE ingresarClase
     @Dia DATE,
     @HoraInicio TIME,
 	@HoraFin TIME,
-    @ID_Actividad INT,
+    @ID_Actividad INT
 AS
 BEGIN
 	INSERT INTO Actividades.Clase(ID_Clase, Dia, HoraInicio, HoraFin, ID_Actividad) VALUES(
-		@ID_Clase
-		@Dia
-		@HoraInicio
-		@HoraFin
+		@ID_Clase,
+		@Dia,
+		@HoraInicio,
+		@HoraFin,
 		@ID_Actividad
 	)
 END;
@@ -796,7 +800,7 @@ CREATE OR ALTER PROCEDURE modificarClase
     @Dia DATE = NULL,
     @HoraInicio TIME = NULL,
 	@HoraFin TIME = NULL,
-    @ID_Actividad INT = NULL,
+    @ID_Actividad INT = NULL
 AS
 BEGIN
 	UPDATE Actividades.Clase SET
@@ -809,7 +813,7 @@ END;
 
 --- 54 CREACION DE PROCEDURE eliminarClase
 
-CREATE OR ALTER eliminarClase
+CREATE OR ALTER PROCEDURE eliminarClase
 	@ID_Clase INT
 AS
 BEGIN
@@ -820,7 +824,7 @@ END;
 
 --- 55 CREACION DE PROCEDURE ingresarClaseDictada
 
-CREATE OR ALTER ingresarClaseDictada
+CREATE OR ALTER PROCEDURE ingresarClaseDictada
 	@ID_Clase INT,
     @ID_Profesor INT,
     @FechaClase DATE
@@ -835,7 +839,7 @@ END;
 
 --- 56 CREACION DE PROCEDURE modificarClaseDictada
 
-CREATE OR ALTER modificarClaseDictada
+CREATE OR ALTER PROCEDURE modificarClaseDictada
 	@ID_Clase INT,
     @ID_Profesor INT = NULL,
     @FechaClase DATE = NULL
@@ -849,7 +853,7 @@ END;
 
 --- 57 CREACION DE PROCEDURE eliminarClaseDictada
 
-CREATE OR ALTER eliminarClaseDictada
+CREATE OR ALTER PROCEDURE eliminarClaseDictada
 	@ID_Clase INT
 AS
 BEGIN
