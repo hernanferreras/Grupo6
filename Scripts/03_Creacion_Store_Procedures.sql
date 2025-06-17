@@ -77,7 +77,7 @@ CREATE OR ALTER PROCEDURE modificarUsuario
 AS
 BEGIN
 	UPDATE Administración.Usuario SET
-		DNI int = ISNULL(@DNI, DNI),
+		DNI = ISNULL(@DNI, DNI),
     		Nombre = ISNULL(@Nombre, Nombre),
     		Apellido = ISNULL(@Apellido, Apellido),
     		Email = ISNULL(@Email,Email),
