@@ -510,7 +510,7 @@ CREATE OR ALTER PROCEDURE ingresarPago
 		@ID_MedioDePago INT,
 		@NroCuenta INT,
 		@ID_Socio INT,
-		@ID_Factura INT,
+		@ID_Factura INT
 AS
 BEGIN
 	INSERT INTO Facturacion.Pago(FechaPago, Monto, ID_MedioDePago, NroCuenta, ID_Socio, ID_Factura) VALUES(
@@ -548,7 +548,7 @@ END;
 --- 36 CREACION DE PROCEDURE eliminarPago
 
 CREATE OR ALTER PROCEDURE eliminarPago
-	@ID_Pago INT,
+	@ID_Pago INT
 AS
 BEGIN
 	DELETE 
@@ -568,11 +568,13 @@ BEGIN
 		@ID_Descuento,
 		@Porcentaje,
 		@ID_Factura
+	)
 END;
 
 --- 38 CREACION DE PROCEDURE modificarDescuento
 
 CREATE OR ALTER PROCEDURE modificarDescuento
+		@ID_Descuento INT,
 		@Porcentaje DECIMAL(5,2) = NULL,
 		@ID_Factura INT = NULL
 AS
@@ -597,19 +599,19 @@ END;
 --- 40 CREACION DE PROCEDURE ingresarReembolso
 
 CREATE OR ALTER PROCEDURE ingresarReembolso
-		@ID_Reembolso INT, 
-		@Tipo NVARCHAR(30),   
+	@ID_Reembolso INT, 
+	@Tipo NVARCHAR(30),   
         @ID_Pago INT,
     	@Descripcion VARCHAR(100),
-    	@FechaReembolso DATE,
+    	@FechaReembolso DATE
 AS
 BEGIN
 	INSERT INTO Facturacion.Reembolso(ID_Reembolso, Tipo, ID_Pago, Descripcion, FechaReembolso) VALUES(
 		@ID_Reembolso, 
-		@Tipo NVARCHAR,   
+		@Tipo,   
         	@ID_Pago,
     		@Descripcion,
-    		@FechaReembolso
+   		@FechaReembolso
 	)
 END;
 
@@ -633,7 +635,7 @@ END;
 
 --- 42 CREACION DE PROCEDURE eliminarReembolso
 
-CREATE OR ALTER eliminarReembolso
+CREATE OR ALTER PROCEDURE eliminarReembolso
 	@ID_Reembolso INT
 AS
 BEGIN
@@ -641,6 +643,7 @@ BEGIN
 	FROM Facturacion.Reembolso
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
+
 
 --- 43 CREACION DE PROCEDURE ingresarCosto
 
