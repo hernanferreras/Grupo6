@@ -92,6 +92,7 @@ END;
 
 CREATE OR ALTER PROCEDURE eliminarUsuario
 	@ID_Usuario INT	
+AS
 BEGIN
 	DELETE
 	FROM Administración.Usuario
