@@ -862,9 +862,9 @@ BEGIN
 	WHERE ID_Clase = @ID_Clase
 END;
 
---- 58 CREACION DE PROCEDURE ActividadRealizada
+--- 58 CREACION DE PROCEDURE ingresarActividadRealizada
 
-CREATE OR ALTER PROCEDURE Actividades.ActividadRealizada
+CREATE OR ALTER PROCEDURE ingresarActividadRealizada
 	@ID_Actividad INT,
 	@ID_Socio INT,
 	@FechaActividad DATE
@@ -894,7 +894,7 @@ END;
 --- 60 CREACION DE PROCEDURE eliminarActividadRealizada
 
 CREATE OR ALTER PROCEDURE eliminarActividadRealizada
-	@ID_Actividad INT,
+	@ID_Actividad INT
 AS
 BEGIN
 	DELETE
@@ -904,7 +904,7 @@ END;
 
 --- 61 CREACION DE PROCEDURE ingresarActividadExtra
 
-CREATE OR TABLE PROCEDURE ingresarActividadExtra
+CREATE OR ALTER PROCEDURE ingresarActividadExtra
 	@ID_ActividadExtra INT,
 	@FechaActividadExtra DATE
 AS
@@ -928,6 +928,8 @@ BEGIN
 END;
 
 --- 63 CREACION DE PROCEDURE eliminarActividadExtra
+
+CREATE OR ALTER PROCEDURE eliminarActividadExtra
 	@ID_ActividadExtra INT
 AS
 BEGIN
@@ -939,7 +941,7 @@ END;
 --- 64 CREACION DE PROCEDURE ingresarColonia
 
 CREATE OR ALTER PROCEDURE ingresarColonia
-	@ID_ActividadExtra INT,
+		@ID_ActividadExtra INT,
         @HoraInicio TIME,
         @HoraFin TIME,
         @Monto DECIMAL(10,2)
@@ -949,7 +951,7 @@ BEGIN
 		@ID_ActividadExtra,
         @HoraInicio,
         @HoraFin,
-        @Monto DECIMAL(10,2)
+        @Monto
 	)
 END;
 
@@ -972,7 +974,7 @@ END;
 --- 66 CREACION DE PROCEDURE eliminarColonia
 
 CREATE OR ALTER PROCEDURE eliminarColonia
-	@ID_ActividadExtra INT,
+	@ID_ActividadExtra INT
 AS
 BEGIN
 	DELETE
@@ -984,9 +986,9 @@ END;
 
 CREATE OR ALTER PROCEDURE ingresarAlquilerSUM
 	@ID_ActividadExtra INT,
-    @HoraInicio TIME,
-    @HoraFin TIME,
-    @Monto DECIMAL(10,2),
+	@HoraInicio TIME,
+    	@HoraFin TIME,
+    	@Monto DECIMAL(10,2)
 AS
 BEGIN
 	INSERT INTO Actividades.AlquilerSUM(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
@@ -1001,9 +1003,9 @@ END;
 
 CREATE OR ALTER PROCEDURE modificarAlquilerSUM
 	@ID_ActividadExtra INT,
-    @HoraInicio TIME = NULL,
-    @HoraFin TIME = NULL,
-    @Monto DECIMAL(10,2) = NULL
+   	@HoraInicio TIME = NULL,
+    	@HoraFin TIME = NULL,
+    	@Monto DECIMAL(10,2) = NULL
 AS
 BEGIN
 	UPDATE Actividades.AlquilerSUM SET
@@ -1014,6 +1016,8 @@ BEGIN
 END;
 
 --- 69 CREACION DE PROCEDURE eliminarAlquilerSUM
+
+CREATE OR ALTER PROCEDURE eliminarAlquilerSUM
 	@ID_ActividadExtra INT
 AS
 BEGIN
@@ -1036,6 +1040,8 @@ BEGIN
 END;
 
 --- 71 CREACION DE PROCEDURE modificarTarifaPileta
+
+CREATE OR ALTER PROCEDURE modificarTarifaPileta
 	@ID_TarifaPileta INT,
 	@Costo DECIMAL(10,2) = NULL
 AS
@@ -1079,10 +1085,10 @@ END;
 
 CREATE OR ALTER PROCEDURE modificarPiletaVerano
 	@ID_ActividadExtra INT,
-    @HoraInicio TIME = NULL,
-    @HoraFin TIME = NULL, 
-    @CapacidadMaxima INT = NULL,
-    @ID_TarifaPileta INT = NULL
+    	@HoraInicio TIME = NULL,
+    	@HoraFin TIME = NULL, 
+    	@CapacidadMaxima INT = NULL,
+    	@ID_TarifaPileta INT = NULL
 AS
 BEGIN
 	UPDATE Actividades.PiletaVerano SET
@@ -1095,7 +1101,7 @@ END;
 
 --- 75 CREACION DE PROCEDURE eliminarPiletaVerano
 
-CREATE OR ALTER eliminarPiletaVerano
+CREATE OR ALTER PROCEDURE eliminarPiletaVerano
 	@ID_ActividadExtra INT
 AS
 BEGIN
@@ -1106,7 +1112,7 @@ END;
 
 --- 76 CREACION DE PROCEDURE ingresarItemFactura
 
-CREATE OR ALTER ingresarItemFactura
+CREATE OR ALTER PROCEDURE ingresarItemFactura
 	@ID_Factura INT,           
     @ID_Item INT,          
     @ID_Actividad INT,
@@ -1129,11 +1135,11 @@ END;
 	
 CREATE OR ALTER PROCEDURE modificarItemFactura
 	@ID_Factura INT,           
-    @ID_Item INT = NULL,          
-    @ID_Actividad INT = NULL,
-    @ID_ActividadExtra INT = NULL,
-    @Descripcion VARCHAR(300) = NULL,
-    @Importe DECIMAL(10,2) = NULL
+    	@ID_Item INT = NULL,          
+    	@ID_Actividad INT = NULL,
+    	@ID_ActividadExtra INT = NULL,
+    	@Descripcion VARCHAR(300) = NULL,
+    	@Importe DECIMAL(10,2) = NULL
 AS
 BEGIN
 	UPDATE Facturacion.ItemFactura SET
@@ -1146,6 +1152,8 @@ BEGIN
 END;
 
 --- 78 CREACION DE PROCEDURE eliminarItemFactura
+
+CREATE OR ALTER PROCEDURE eliminarItemFactura
 	@ID_Factura INT
 AS
 BEGIN
@@ -1168,6 +1176,8 @@ BEGIN
 END;
 
 --- 80 CREACION DE PROCEDURE modificarInvitado
+
+CREATE OR ALTER PROCEDURE modificarInvitado
 		@ID_Invitado INT,
 		@ID_Usuario INT = NULL,
 		@ID_Pileta INT = NULL
@@ -1180,6 +1190,8 @@ BEGIN
 END;
 
 --- 81 CREACION DE PROCEDURE eliminarInvitado
+
+CREATE OR ALTER PROCEDURE eliminarInvitado
 	@ID_Invitado INT
 AS
 BEGIN
