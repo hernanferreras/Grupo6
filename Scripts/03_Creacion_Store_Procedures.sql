@@ -289,8 +289,8 @@ CREATE OR ALTER PROCEDURE ingresarCuenta
     	@Debito DECIMAL(10, 2),
     	@Credito DECIMAL(10, 2),
 		@Saldo DECIMAL(10, 2)
-BEGIN
-AS	
+AS
+BEGIN	
 	INSERT INTO Facturacion.Cuenta(ID_Socio, NroCuenta, FechaAlta, FechaBaja, Debito, Credito, Saldo) VALUES(
 		@ID_Socio,
 		@NroCuenta,
@@ -339,7 +339,7 @@ END;
 
 CREATE OR ALTER PROCEDURE ingresarMedioDePago
 	@ID_MedioDePago INT,
-	@Tipo VARCHAR(15),
+	@Tipo VARCHAR(15)
 AS
 BEGIN
 	INSERT INTO Facturacion.MedioDePago(ID_MedioDePago, Tipo) VALUES(
@@ -363,7 +363,7 @@ END;
 --- 24 CREACION PROCEDURE eliminarMedioDePago
 	
 CREATE OR ALTER PROCEDURE eliminarMedioDePago
-	@ID_MedioDePago
+	@ID_MedioDePago INT
 AS
 BEGIN
 	DELETE
@@ -389,16 +389,13 @@ BEGIN
 END;
 
 --- 26 CREACION PROCEDURE modificarTarjeta
-	@ID_MedioDePago INT,
-	@NroTarjeta CHAR(19) = NULL,
-	@FechaVenc DATE = NULL,
-	@DebitoAutomatico BIT = NULL
+
+CREATE OR ALTER PROCEDURE eliminarMedioDePago
+	@ID_MedioDePago INT
 AS
 BEGIN
-	UPDATE Facturacion.Tarjeta SET
-		NroTarjeta = ISNULL(@NroTarjeta, NroTarjeta),
-		FechaVenc = ISNULL(@FechaVenc, FechaVenc),
-		DebitoAutomatico = ISNULL(@DebitoAutomatico, DebitoAutomatico)
+	DELETE
+	FROM Facturacion.MedioDePago
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
 
@@ -441,24 +438,13 @@ END;
 --- 30 CREACION PROCEDURE eliminarTransferencia
 
 CREATE OR ALTER PROCEDURE eliminarTransferencia
-	@ID_MedioDePagoINT
+	@ID_MedioDePago INT
 AS
 BEGIN
 	DELETE
 	FROM Facturacion.Transferencia
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
-
-CREATE TABLE Facturacion.Factura (
-    		ID_Factura INT PRIMARY KEY,
-    		Numero VARCHAR(50),
-    		FechaEmision DATE,
-    		FechaVencimiento DATE,
-    		TotalImporte DECIMAL(10,2),
-    		Recargo DECIMAL(10,2),
-    		Estado VARCHAR(30),
-);
-
 
 --- 31 CREACION DE PROCEDURE ingresoFactura
 
