@@ -29,41 +29,6 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA USUARIO
-BEGIN TRY
-	CREATE TABLE Administracion.Usuario (
-    	ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
-	    DNI int CHECK (dni BETWEEN 100000 AND 99999999),
-    	Nombre VARCHAR(50),
-    	Apellido VARCHAR(50),
-    	Email VARCHAR(50),
-    	TelefonoContacto char(12),
-    	FechaNacimiento DATE,
-    	Contrasenia VARCHAR(100),
-    	ID_Rol INT,
-	);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Usuario ya existe'
-END CATCH;
-GO
-
--- TABLA USUARIO ROL
-BEGIN TRY
-    CREATE TABLE Administracion.UsuarioRol(
-        FechaAsignacion DATE NOT NULL,
-        ID_Rol INT NOT NULL,
-        ID_Usuario INT NOT NULL,
-        FOREIGN KEY (ID_Rol) REFERENCES Administracion.Rol(ID_Rol),
-        FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario),
-        PRIMARY KEY (ID_Usuario, ID_Rol)
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla UsuarioRol ya Existe'   
-END CATCH;
-GO
-
 -- TABLA GRUPO FAMILIAR
 BEGIN TRY
 	CREATE TABLE Personas.GrupoFamiliar (
@@ -93,13 +58,19 @@ GO
 -- TABLA SOCIO
 BEGIN TRY
 	CREATE TABLE Personas.Socio (
-		ID_Socio INT PRIMARY KEY,
-		TelefonoEmergencia char(10),
+		ID_Socio VARCHAR(15) PRIMARY KEY,
+        DNI int CHECK (DNI BETWEEN 100000 AND 99999999),
+        Nombre VARCHAR(50),
+        Apellido VARCHAR(50),
+    	Email VARCHAR(50),
+    	TelefonoContacto char(30),
+        TelefonoEmergencia char(30),
+    	FechaNacimiento DATE,
     	ObraSocial VARCHAR(50),
-    	NroSocioObraSocial INT,
-    	ID_Categoria INT NOT NULL,
+    	NroSocioObraSocial VARCHAR(25),
+        TelefonoEmergenciaObraSocial char(30),
+    	ID_Categoria INT,
 		ID_GrupoFamiliar INT,                    
-    	FOREIGN KEY (ID_Socio) REFERENCES Administracion.Usuario(ID_Usuario),
     	FOREIGN KEY (ID_Categoria) REFERENCES Personas.Categoria(ID_Categoria),
 		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES Personas.GrupoFamiliar(ID_GrupoFamiliar)
 	);
@@ -109,11 +80,46 @@ BEGIN CATCH
 END CATCH;	
 GO
 
+-- TABLA USUARIO
+BEGIN TRY
+	CREATE TABLE Administracion.Usuario (
+    	ID_Usuario INT IDENTITY (1,1),
+    	ID_Socio VARCHAR(15),
+        NombreUsuario VARCHAR(50),
+    	Contrasenia VARCHAR(100),
+        FechaVigenciaContrasenia DATE,
+        PRIMARY KEY (ID_Usuario, ID_Socio),
+        FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Usuario ya existe'
+END CATCH;
+GO
+
+-- TABLA USUARIO ROL
+BEGIN TRY
+    CREATE TABLE Administracion.UsuarioRol(
+        FechaAsignacion DATE NOT NULL,
+        ID_Rol INT NOT NULL,
+        ID_Usuario INT NOT NULL,
+        ID_Socio VARCHAR(15),
+        PRIMARY KEY (ID_Usuario, ID_Rol),
+        FOREIGN KEY (ID_Rol) REFERENCES Administracion.Rol(ID_Rol),
+        FOREIGN KEY (ID_Usuario, ID_Socio) REFERENCES Administracion.Usuario(ID_Usuario, ID_Socio)
+
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla UsuarioRol ya Existe'   
+END CATCH;
+GO
+
 -- TABLA SOCIO-TUTOR
 BEGIN TRY	
 	CREATE TABLE Personas.SocioTutor (
-		ID_Tutor INT,
-        ID_Menor INT,
+		ID_Tutor VARCHAR(15),
+        ID_Menor VARCHAR(15),
         PRIMARY KEY (ID_Tutor, ID_Menor),
         FOREIGN KEY (ID_Tutor) REFERENCES Personas.Socio(ID_Socio),
         FOREIGN KEY (ID_Menor) REFERENCES Personas.Socio(ID_Socio),
@@ -145,7 +151,7 @@ GO
 --TABLA CUENTA
 BEGIN TRY
 	CREATE TABLE Facturacion.Cuenta (
-    	ID_Socio INT,
+    	ID_Socio VARCHAR(15),
 		NroCuenta INT,
         FechaAlta DATE,
     	FechaBaja DATE,
@@ -164,7 +170,7 @@ GO
 -- TABLA MEDIO DE PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.MedioDePago (
-    		ID_MedioDePago INT PRIMARY KEY,
+    		ID_MedioDePago INT IDENTITY PRIMARY KEY,
     		Tipo VARCHAR(15) NOT NULL
 	);
 END TRY
@@ -202,6 +208,18 @@ BEGIN CATCH
 END CATCH;
 GO
 
+-- TABLA EFECTIVO
+BEGIN TRY
+	CREATE TABLE Facturacion.Efectivo(
+    		ID_MedioDePago INT PRIMARY KEY,  
+    		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago)
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La Tabla Efectivo ya existe'
+END CATCH;
+GO
+
 -- TABLA FACTURA
 BEGIN TRY
 	CREATE TABLE Facturacion.Factura (
@@ -222,12 +240,12 @@ GO
 -- TABLA PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.Pago (
-		ID_Pago INT IDENTITY(1,1) PRIMARY KEY,
+		ID_Pago VARCHAR(20) PRIMARY KEY,
 		FechaPago DATE,
 		Monto DECIMAL(15,2),
 		ID_MedioDePago INT,
 		NroCuenta INT,
-		ID_Socio INT,
+		ID_Socio VARCHAR(15),
 		ID_Factura INT,
 		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago),
 		FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura),
@@ -256,9 +274,9 @@ GO
 -- TABLA REEMBOLSO
 BEGIN TRY
 	CREATE TABLE Facturacion.Reembolso (
-    	ID_Reembolso INT PRIMARY KEY, 
+    	ID_Reembolso VARCHAR(20) PRIMARY KEY, 
 		Tipo NVARCHAR(30),   
-        ID_Pago INT UNIQUE,
+        ID_Pago VARCHAR(20) UNIQUE,
     	Descripcion VARCHAR(300),
     	FechaReembolso DATE,
     	FOREIGN KEY (ID_Pago) REFERENCES Facturacion.Pago(ID_Pago)
@@ -346,7 +364,7 @@ GO
 BEGIN TRY
 	CREATE TABLE Actividades.ActividadRealizada (
     		ID_Actividad INT,
-    		ID_Socio INT,
+    		ID_Socio VARCHAR(15),
             FechaActividad DATE NOT NULL,
     		PRIMARY KEY (ID_Socio, ID_Actividad),
     		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
@@ -454,9 +472,9 @@ GO
 BEGIN TRY
     CREATE TABLE Personas.Invitado (
         ID_Invitado INT IDENTITY(1,1) PRIMARY KEY,
-        ID_Usuario INT,
+        ID_Socio VARCHAR(15),
         ID_Pileta INT,
-        FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario),
+        FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
         FOREIGN KEY (ID_Pileta) REFERENCES Actividades.PiletaVerano(ID_ActividadExtra)
     );
 END TRY
