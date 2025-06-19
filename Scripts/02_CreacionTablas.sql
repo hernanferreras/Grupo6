@@ -134,7 +134,7 @@ GO
 -- TABLA PROFESOR
 BEGIN TRY
 	CREATE TABLE Personas.Profesor (
-		ID_Profesor INT IDENTITY(1,1)PRIMARY KEY,
+		ID_Profesor VARCHAR(15)PRIMARY KEY,
         DNI int CHECK (dni BETWEEN 100000 AND 99999999),
 		Especialidad VARCHAR(30),
         Nombre VARCHAR(50),
@@ -348,7 +348,7 @@ GO
 BEGIN TRY
 	CREATE TABLE Actividades.ClaseDictada (
     		ID_Clase INT,
-    		ID_Profesor INT,
+    		ID_Profesor VARCHAR(15),
             FechaClase DATE NOT NULL,
     		PRIMARY KEY (ID_Clase, ID_Profesor),
     		FOREIGN KEY (ID_Clase) REFERENCES Actividades.Clase(ID_Clase),
@@ -364,11 +364,14 @@ GO
 BEGIN TRY
 	CREATE TABLE Actividades.ActividadRealizada (
     		ID_Actividad INT,
+            ID_Profesor VARCHAR(15),
     		ID_Socio VARCHAR(15),
             FechaActividad DATE NOT NULL,
-    		PRIMARY KEY (ID_Socio, ID_Actividad),
+            Asistencia CHAR,
+    		PRIMARY KEY (ID_Socio, ID_Actividad, ID_Profesor, FechaActividad),
     		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
-    		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
+    		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
+            FOREIGN KEY (ID_Profesor) REFERENCES Personas.Profesor(ID_Profesor)
 );
 END TRY
 BEGIN CATCH
