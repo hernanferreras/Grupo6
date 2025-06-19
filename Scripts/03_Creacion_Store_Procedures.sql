@@ -1,8 +1,10 @@
 --- 01 CREA O MODIFICA SP insertar Rol
+USE Com5600G06;
+GO
 
 CREATE OR ALTER PROCEDURE insertarRol
-	@Nombre VARCHAR(60),    	
-	@Descripcion VARCHAR(30)
+	@Nombre VARCHAR(30),    	
+	@Descripcion VARCHAR(60)
 AS
 BEGIN
 	INSERT INTO Administración.Rol(Nombre, Descripcion) VALUES(
@@ -10,6 +12,7 @@ BEGIN
 		@Descripcion
 	);
 END;
+GO
 
 --- 02 CREA O MODIFICA SP para modificar Rol 
 
@@ -25,6 +28,7 @@ BEGIN
 		Descripcion = ISNULL(@Descripcion, Descripcion)
 	WHERE ID_Rol = @ID_Rol
 END;
+GO
 
 --- 03 CREA O MODIFICA SP para eliminar Rol
 
@@ -36,6 +40,7 @@ BEGIN
 	FROM Administración.Rol
 	WHERE ID_Rol = @ID_Rol
 END;
+GO
 
 --- 04 CREACION DE PROCEDURE ingresarUsuario
 
@@ -61,6 +66,7 @@ BEGIN
     		@ID_Rol
 	)
 END;
+GO
 
 --- 05 CREACION DE PROCEDURE modificarUsuario
 
@@ -87,6 +93,7 @@ BEGIN
     		@ID_Rol = ISNULL(@ID_Rol, ID_Rol)
 	WHERE ID_Usuario = @ID_Usuario
 END;
+GO
 
 --- 06 CREACION DE PROCEDURE eliminarUsuario
 
@@ -98,6 +105,7 @@ BEGIN
 	FROM Administración.Usuario
 	WHERE ID_Usuario = @ID_Usuario
 END;
+GO
 
 --- 07 CREACION PROCEDURE ingresarGrupoFamiliar
 	
@@ -111,6 +119,7 @@ BEGIN
 		@Nombre
 	)
 END;
+GO
 
 --- 08 CREACION PROCEDURE modificarGrupoFamiliar
 	
@@ -125,6 +134,7 @@ BEGIN
 		Nombre = ISNULL(@Nombre, Nombre)
 	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
 END;
+GO
 
 --- 09 CREACION PROCEDURE eliminarGrupoFamiliar
 CREATE OR ALTER PROCEDURE eliminarGrupoFamiliar
@@ -135,6 +145,7 @@ BEGIN
 	FROM Personas.GrupoFamiliar
 	WHERE ID_GrupoFamiliar = @ID_GrupoFamiliar
 END;
+GO
 
 --- 10 CREACION PROCEDURE ingresarCategoria
 
@@ -148,6 +159,7 @@ BEGIN
 		@Importe
 	)
 END;
+GO
 
 --- 11 CREACION PROCEDURE modificarCategoria
 	
@@ -162,6 +174,7 @@ BEGIN
 		Importe = ISNULL(@Importe, Importe)
 	WHERE ID_Categoria = @ID_Categoria
 END;
+GO
 
 --- 12 CREACION PROCEDURE eliminarCategoria
 CREATE OR ALTER PROCEDURE eliminarCategoria
@@ -172,6 +185,7 @@ BEGIN
 	FROM Personas.Categoria
 	WHERE ID_Categoria = @ID_Categoria
 END;
+GO
 
 --- 13 CREACION PROCEDURE ingresarSocio
 
@@ -193,6 +207,7 @@ BEGIN
 		@ID_GrupoFamiliar
 	)
 END;
+GO
 
 --- 14 CREACION PROCEDURE modificarSocio
 
@@ -213,6 +228,7 @@ BEGIN
 		ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar)
 	WHERE ID_Socio = @ID_Socio
 END;
+GO
 
 --- 15 CREACION PROCEDURE eliminarSocio
 
@@ -224,6 +240,7 @@ BEGIN
 	FROM Personas.Socio
 	WHERE ID_Socio = @ID_Socio
 END;
+GO
 
 --- 16 CREACION PROCEDURE ingresarProfesor
 
@@ -245,6 +262,7 @@ BEGIN
     		@TelefonoContacto
 	)
 END;
+GO
 
 --- 17 CREACION PROCEDURE modificarProfesor
 
@@ -267,6 +285,7 @@ BEGIN
 		TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto)
 	WHERE ID_PRofesor = @ID_Profesor
 END;
+GO
 
 --- 18 CREACION PROCEDURE eliminarProfesor
 
@@ -278,6 +297,7 @@ BEGIN
 	FROM Personas.Profesor
 	WHERE ID_Profesor = @ID_Profesor
 END;
+GO
 
 --- 19 CREACION PROCEDURE ingresarCuenta
 
@@ -301,6 +321,7 @@ BEGIN
 		@Saldo
 	)
 END;
+GO
 
 --- 20 CREACION PROCEDURE modificarCuenta
 
@@ -323,6 +344,7 @@ BEGIN
 		@Saldo = ISNULL(@Saldo, Saldo)
 	WHERE ID_Socio = @ID_Socio
 END;
+GO
 
 --- 21 CREACION PROCEDURE eliminarCuenta
 
@@ -334,6 +356,7 @@ BEGIN
 		FROM Facturacion.Cuenta
 		WHERE ID_Socio = @ID_Socio
 END;
+GO
 
 --- 22 CREACION PROCEDURE ingresarMedioDePago
 
@@ -347,6 +370,7 @@ BEGIN
 		@Tipo
 	)
 END;
+GO
 
 --- 23 CREACION PROCEDURE modificarMedioDePago
 	
@@ -359,6 +383,7 @@ BEGIN
 		Tipo = ISNULL(@Tipo, Tipo)
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+GO
 
 --- 24 CREACION PROCEDURE eliminarMedioDePago
 	
@@ -370,6 +395,7 @@ BEGIN
 	FROM Facturacion.MedioDePago
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+GO
 
 --- 25 CREACION PROCEDURE ingresoTarjeta
 	
@@ -387,6 +413,7 @@ BEGIN
 		@DebitoAutomatico
 	)
 END;
+GO
 
 --- 26 CREACION PROCEDURE modificarTarjeta
 
@@ -398,6 +425,7 @@ BEGIN
 	FROM Facturacion.MedioDePago
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+GO
 
 --- 27 CREACION PROCEDURE eliminarTarjeta
 
@@ -409,6 +437,7 @@ BEGIN
 	FROM Facturacion.Tarjeta
 	WHERE NroTarjeta = @NroTarjeta
 END;
+GO
 
 --- 28 CREACION PROCEDURE ingresarTransferencia
 	
@@ -422,6 +451,7 @@ BEGIN
 		@NumeroTransaccion
 	)
 END;
+GO
 
 --- 29 CREACION PROCEDURE modificarTransferencia
 
@@ -434,6 +464,7 @@ BEGIN
 		NumeroTransaccion = ISNULL(@NumeroTransaccion, NumeroTransaccion)
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+GO
 
 --- 30 CREACION PROCEDURE eliminarTransferencia
 
@@ -445,6 +476,7 @@ BEGIN
 	FROM Facturacion.Transferencia
 	WHERE ID_MedioDePago = @ID_MedioDePago
 END;
+GO
 
 --- 31 CREACION DE PROCEDURE ingresoFactura
 
@@ -468,6 +500,7 @@ BEGIN
 		@Estado
 	)
 END;
+GO
 
 --- 32 CREACION DE PROCEDURE modificarFactura
 
@@ -490,6 +523,7 @@ BEGIN
 		Estado = ISNULL(@Estado, Estado)
 	WHERE ID_Factura = @ID_Factura
 END;
+GO
 
 --- 33 CREACION DE PROCEDURE eliminarFactura
 
@@ -501,6 +535,7 @@ BEGIN
 	FROM Facturacion.Factura
 	WHERE ID_Factura = @ID_Factura
 END;
+GO
 
 --- 34 CREACION DE PROCEDURE ingresarPago
 
@@ -522,6 +557,7 @@ BEGIN
 		@ID_Factura
 	)
 END;
+GO
 
 --- 35 CREACION DE PROCEDURE modificarPago
 		
@@ -544,6 +580,7 @@ BEGIN
 		ID_Factura = ISNULL(@ID_Factura, ID_Factura)
 	WHERE ID_Pago = @ID_Pago
 END;
+GO
 
 --- 36 CREACION DE PROCEDURE eliminarPago
 
@@ -555,6 +592,7 @@ BEGIN
 	FROM Facturacion.Pago
 	WHERE ID_Pago = @ID_Pago
 END;
+GO
 
 --- 37 CREACION DE PROCEDURE ingresarDescuento
 
@@ -570,6 +608,7 @@ BEGIN
 		@ID_Factura
 	)
 END;
+GO
 
 --- 38 CREACION DE PROCEDURE modificarDescuento
 
@@ -584,6 +623,7 @@ BEGIN
 		ID_Factura = ISNULL(@ID_Factura, ID_Factura)
 	WHERE ID_Descuento = @ID_Descuento
 END;
+GO
 
 --- 39 CREACION DE PROCEDURE eliminarDescuento
 
@@ -595,6 +635,7 @@ BEGIN
 	FROM Facturacion.Descuento
 	WHERE ID_Descuento = @ID_Descuento
 END;
+GO
 
 --- 40 CREACION DE PROCEDURE ingresarReembolso
 
@@ -614,6 +655,7 @@ BEGIN
    		@FechaReembolso
 	)
 END;
+GO
 
 --- 41 CREACION DE PROCEDURE modificarReembolso
 
@@ -632,6 +674,7 @@ BEGIN
     		FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
+GO
 
 --- 42 CREACION DE PROCEDURE eliminarReembolso
 
@@ -643,7 +686,7 @@ BEGIN
 	FROM Facturacion.Reembolso
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
-
+GO
 
 --- 43 CREACION DE PROCEDURE ingresarCosto
 
@@ -661,6 +704,7 @@ BEGIN
 		@Monto
 	)
 END;
+GO
 
 --- 44 CREACION DE PROCEDURE modificarCosto
 
@@ -677,6 +721,7 @@ BEGIN
 		Monto = ISNULL(@Monto, Monto)
 	WHERE ID_Costo = @ID_Costo
 END;
+GO
 
 --- 45 CREACION DE PROCEDURE eliminarCosto
 
@@ -688,6 +733,7 @@ BEGIN
 	FROM Facturacion.Costo
 	WHERE ID_Costo = @ID_Costo
 END;
+GO
 
 --- 46 CREACION DE PROCEDURE ingresarCuota
 
@@ -703,7 +749,7 @@ BEGIN
 		@Estado
 	)
 END;
-
+GO
 
 --- 47 CREACION DE PROCEDURE modificarCuota
 
@@ -718,6 +764,7 @@ BEGIN
 		Estado = ISNULL(@Estado, Estado)
 	WHERE ID_Cuota = @ID_Cuota
 END;
+GO
 
 --- 48 CREACION DE PROCEDURE eliminarCuota
 
@@ -729,6 +776,7 @@ BEGIN
 	FROM Facturacion.Cuota
 	WHERE ID_Cuota = @ID_Cuota
 END;
+GO
 
 --- 49 CREACION DE PROCEDURE ingresarActividad
 
@@ -746,6 +794,7 @@ BEGIN
 		@CostoMensual
 	)
 END;
+GO
 
 --- 50 CREACION DE PROCEDURE modificarActividad
 
@@ -762,6 +811,7 @@ BEGIN
 		CostoMensual = ISNULL(@CostoMensual, CostoMensual)
 	WHERE ID_Actividad = @ID_Actividad
 END;
+GO
 
 --- 51 CREACION DE PROCEDURE eliminarActividad
 
@@ -773,6 +823,7 @@ BEGIN
 	FROM Actividades.Actividad
 	WHERE ID_Actividad = @ID_Actividad
 END;
+GO
 
 --- 52 CREACION DE PROCEDURE ingresarClase
 
@@ -792,6 +843,7 @@ BEGIN
 		@ID_Actividad
 	)
 END;
+GO
 
 --- 53 CREACION DE PROCEDURE modificarClase
 
@@ -810,6 +862,7 @@ BEGIN
 		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad)
 	WHERE ID_Clase = @ID_Clase
 END;
+GO
 
 --- 54 CREACION DE PROCEDURE eliminarClase
 
@@ -821,6 +874,7 @@ BEGIN
 	FROM Actividades.Clase
 	WHERE ID_Clase = @ID_Clase
 END;
+GO
 
 --- 55 CREACION DE PROCEDURE ingresarClaseDictada
 
@@ -836,6 +890,7 @@ BEGIN
 		@FechaClase
 	)
 END;
+GO
 
 --- 56 CREACION DE PROCEDURE modificarClaseDictada
 
@@ -850,6 +905,7 @@ BEGIN
 		FechaClase = ISNULL(@FechaClase, FechaClase)
 	WHERE ID_Clase = @ID_Clase
 END;
+GO
 
 --- 57 CREACION DE PROCEDURE eliminarClaseDictada
 
@@ -861,6 +917,7 @@ BEGIN
 	FROM Actividades.ClaseDictada
 	WHERE ID_Clase = @ID_Clase
 END;
+GO
 
 --- 58 CREACION DE PROCEDURE ingresarActividadRealizada
 
@@ -876,6 +933,7 @@ BEGIN
 		@FechaActividad
 	)
 END;
+GO
 
 --- 59 CREACION DE PROCEDURE modificarActividadRealizada
 
@@ -890,6 +948,7 @@ BEGIN
 		FechaActividad = ISNULL(@FechaActividad, FechaActividad)
 	WHERE ID_Actividad = @ID_Actividad
 END;
+GO
 
 --- 60 CREACION DE PROCEDURE eliminarActividadRealizada
 
@@ -901,6 +960,7 @@ BEGIN
 	FROM Actividades.Actividad
 	WHERE ID_Actividad = @ID_Actividad
 END;
+GO
 
 --- 61 CREACION DE PROCEDURE ingresarActividadExtra
 
@@ -914,6 +974,7 @@ BEGIN
 		@FechaActividadExtra
 	)
 END;
+GO
 
 --- 62 CREACION DE PROCEDURE modificarActividadExtra
 
@@ -926,6 +987,7 @@ BEGIN
 		FechaActividadExtra = ISNULL(@FechaActividadExtra, FechaActividadExtra)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 63 CREACION DE PROCEDURE eliminarActividadExtra
 
@@ -937,6 +999,7 @@ BEGIN
 	FROM Actividades.ActividadExtra
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 64 CREACION DE PROCEDURE ingresarColonia
 
@@ -954,6 +1017,7 @@ BEGIN
         @Monto
 	)
 END;
+GO
 
 --- 65 CREACION DE PROCEDURE modificarColonia
 
@@ -970,6 +1034,7 @@ BEGIN
 		Monto = ISNULL(@Monto, Monto)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 66 CREACION DE PROCEDURE eliminarColonia
 
@@ -981,6 +1046,7 @@ BEGIN
 	FROM Actividades.Colonia
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 67 CREACION DE PROCEDURE ingresarAlquilerSUM
 
@@ -998,6 +1064,7 @@ BEGIN
 		@Monto
 	)
 END;
+GO
 
 --- 68 CREACION DE PROCEDURE modificarAlquilerSUM
 
@@ -1014,6 +1081,7 @@ BEGIN
 		Monto = ISNULL(@Monto, Monto)	
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 69 CREACION DE PROCEDURE eliminarAlquilerSUM
 
@@ -1025,6 +1093,7 @@ BEGIN
 	FROM ActividadExtra.AlquilerSUM
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 70 CREACION DE PROCEDURE ingresarTarifaPileta
 
@@ -1038,6 +1107,7 @@ BEGIN
 		@Costo
 	)
 END;
+GO
 
 --- 71 CREACION DE PROCEDURE modificarTarifaPileta
 
@@ -1050,6 +1120,7 @@ BEGIN
 		Costo = ISNULL(@Costo, Costo)
 	WHERE ID_TarifaPileta = @ID_TarifaPileta
 END;
+GO
 
 --- 72 CREACION DE PROCEDURE eliminarTarifaPileta
 
@@ -1061,7 +1132,8 @@ BEGIN
 	FROM Actividades.TarifaPileta
 	WHERE ID_TarifaPileta = @ID_TarifaPileta
 END;
-	
+GO
+
 --- 73 CREACION DE PROCEDURE ingresarPiletaVerano
 
 CREATE OR ALTER PROCEDURE ingresarPiletaVerano
@@ -1080,6 +1152,7 @@ BEGIN
 		@ID_TarifaPileta
 	)
 END;
+GO
 
 --- 74 CREACION DE PROCEDURE modificarPiletaVerano
 
@@ -1098,6 +1171,7 @@ BEGIN
 		ID_TarifaPileta = ISNULL(@ID_TarifaPileta, ID_TarifaPileta)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 75 CREACION DE PROCEDURE eliminarPiletaVerano
 
@@ -1109,6 +1183,7 @@ BEGIN
 	FROM Actividades.PiletaVerano
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
+GO
 
 --- 76 CREACION DE PROCEDURE ingresarItemFactura
 
@@ -1130,6 +1205,7 @@ BEGIN
 		@Importe
 	)
 END;
+GO
 
 --- 77 CREACION DE PROCEDURE modificarItemFactura
 	
@@ -1150,6 +1226,7 @@ BEGIN
 		Importe = ISNULL(@Importe, Importe)
 	WHERE ID_Factura = @ID_Factura
 END;
+GO
 
 --- 78 CREACION DE PROCEDURE eliminarItemFactura
 
@@ -1161,6 +1238,7 @@ BEGIN
 	FROM Facturacion.ItemFactura
 	WHERE ID_Factura = @ID_Factura
 END;
+GO
 
 --- 79 CREACION DE PROCEDURE ingresarInvitado
 
@@ -1174,6 +1252,7 @@ BEGIN
 		@ID_Pileta
 	)
 END;
+GO
 
 --- 80 CREACION DE PROCEDURE modificarInvitado
 
@@ -1188,6 +1267,7 @@ BEGIN
 		ID_Pileta = ISNULL(@ID_Pileta, ID_Pileta)
 	WHERE ID_Invitado = @ID_Invitado
 END;
+GO
 
 --- 81 CREACION DE PROCEDURE eliminarInvitado
 
