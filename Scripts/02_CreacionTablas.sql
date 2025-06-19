@@ -83,13 +83,10 @@ GO
 -- TABLA USUARIO
 BEGIN TRY
 	CREATE TABLE Administracion.Usuario (
-    	ID_Usuario INT IDENTITY (1,1),
-    	ID_Socio VARCHAR(15),
+    	ID_Usuario INT IDENTITY (1,1) PRIMARY KEY,
         NombreUsuario VARCHAR(50),
     	Contrasenia VARCHAR(100),
         FechaVigenciaContrasenia DATE,
-        PRIMARY KEY (ID_Usuario, ID_Socio),
-        FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
 	);
 END TRY
 BEGIN CATCH
@@ -103,10 +100,9 @@ BEGIN TRY
         FechaAsignacion DATE NOT NULL,
         ID_Rol INT NOT NULL,
         ID_Usuario INT NOT NULL,
-        ID_Socio VARCHAR(15),
         PRIMARY KEY (ID_Usuario, ID_Rol),
         FOREIGN KEY (ID_Rol) REFERENCES Administracion.Rol(ID_Rol),
-        FOREIGN KEY (ID_Usuario, ID_Socio) REFERENCES Administracion.Usuario(ID_Usuario, ID_Socio)
+        FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario)
 
     );
 END TRY

@@ -45,26 +45,13 @@ GO
 --- 04 CREACION DE PROCEDURE ingresarUsuario
 
 CREATE OR ALTER PROCEDURE ingresarUsuario
-    	@DNI int,
-    	@Nombre VARCHAR(50),
-    	@Apellido VARCHAR(50),
-    	@Email VARCHAR(50),
-    	@TelefonoContacto char(12),
-    	@FechaNacimiento DATE,
-    	@Contrasenia VARCHAR(100),
-    	@ID_Rol INT
+    @NombreUsuario VARCHAR(50),
+    @Contrasenia VARCHAR(100),
+    @FechaVigenciaContrasenia DATE
 AS
 BEGIN
-	INSERT INTO Administracion.Usuario(DNI, Nombre, Apellido, Email, TelefonoContacto, FechaNacimiento, Contrasenia, ID_Rol) VALUES(
-		@DNI,
-    		@Nombre,
-    		@Apellido,
-    		@Email,
-    		@TelefonoContacto,
-    		@FechaNacimiento,
-    		@Contrasenia,
-    		@ID_Rol
-	)
+    INSERT INTO Administracion.Usuario (NombreUsuario, Contrasenia, FechaVigenciaContrasenia)
+    VALUES (@NombreUsuario, @Contrasenia, @FechaVigenciaContrasenia);
 END;
 GO
 
@@ -72,26 +59,17 @@ GO
 
 CREATE OR ALTER PROCEDURE modificarUsuario
 	@ID_Usuario INT,
-	@DNI INT = NULL,
-    	@Nombre VARCHAR(50) = NULL,
-    	@Apellido VARCHAR(50) = NULL,
-    	@Email VARCHAR(50) = NULL,
-    	@TelefonoContacto CHAR(12) = NULL,
-    	@FechaNacimiento DATE = NULL,
-    	@Contrasenia VARCHAR(100) = NULL,
-    	@ID_Rol INT = NULL
+    @NombreUsuario VARCHAR(50) = NULL,
+    @Contrasenia VARCHAR(100) = NULL,
+    @FechaVigenciaContrasenia DATE = NULL
 AS
 BEGIN
-	UPDATE Administración.Usuario SET
-		DNI = ISNULL(@DNI, DNI),
-    		Nombre = ISNULL(@Nombre, Nombre),
-    		Apellido = ISNULL(@Apellido, Apellido),
-    		Email = ISNULL(@Email,Email),
-    		TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto),
-    		FechaNacimiento = ISNULL(@FechaNacimiento, FechaNacimiento),
-    		Contrasenia = ISNULL(@Contrasenia, Contrasenia),
-    		@ID_Rol = ISNULL(@ID_Rol, ID_Rol)
-	WHERE ID_Usuario = @ID_Usuario
+    UPDATE Administracion.Usuario
+    SET
+        NombreUsuario = ISNULL(@NombreUsuario, NombreUsuario),
+        Contrasenia = ISNULL(@Contrasenia, Contrasenia),
+        FechaVigenciaContrasenia = ISNULL(@FechaVigenciaContrasenia, FechaVigenciaContrasenia)
+    WHERE ID_Usuario = @ID_Usuario;
 END;
 GO
 
@@ -190,42 +168,65 @@ GO
 --- 13 CREACION PROCEDURE ingresarSocio
 
 CREATE OR ALTER PROCEDURE ingresarSocio
-	@ID_Socio INT,
-	@TelefonoEmergencia CHAR(12),
-	@ObraSocial VARCHAR(50),
-	@NroSocioObraSocial INT,
-	@ID_Categoria INT,
-	@ID_GrupoFamiliar INT
+	@ID_Socio VARCHAR(15),
+    @DNI INT,
+    @Nombre VARCHAR(50),
+    @Apellido VARCHAR(50),
+    @Email VARCHAR(50),
+    @TelefonoContacto CHAR(30),
+    @TelefonoEmergencia CHAR(30),
+    @FechaNacimiento DATE,
+    @ObraSocial VARCHAR(50),
+    @NroSocioObraSocial VARCHAR(25),
+    @TelefonoEmergenciaObraSocial CHAR(30),
+    @ID_Categoria INT,
+    @ID_GrupoFamiliar INT
 AS
 BEGIN
-	INSERT INTO Personas.Socio(ID_Socio, TelefonoEmergencia, ObraSocial, NroObraSocial, ID_Categoria, ID_GrupoFamiliar) VALUES(
-		@ID_Socio,
-		@TelefonoEmergencia,
-		@ObraSocial,
-		@NroSocioObraSocial,
-		@ID_Categoria,
-		@ID_GrupoFamiliar
-	)
+    INSERT INTO Personas.Socio (
+        ID_Socio, DNI, Nombre, Apellido, Email, TelefonoContacto,
+        TelefonoEmergencia, FechaNacimiento, ObraSocial, NroSocioObraSocial,
+        TelefonoEmergenciaObraSocial, ID_Categoria, ID_GrupoFamiliar
+    )
+    VALUES (
+        @ID_Socio, @DNI, @Nombre, @Apellido, @Email, @TelefonoContacto,
+        @TelefonoEmergencia, @FechaNacimiento, @ObraSocial, @NroSocioObraSocial,
+        @TelefonoEmergenciaObraSocial, @ID_Categoria, @ID_GrupoFamiliar
+    );
 END;
 GO
 
 --- 14 CREACION PROCEDURE modificarSocio
 
 CREATE OR ALTER PROCEDURE modificarSocio
-	@ID_Socio INT,
-	@TelefonoEmergencia CHAR(12) = NULL,
-	@ObraSocial VARCHAR(50) = NULL,
-	@NroSocioObraSocial INT = NULL,
-	@ID_Categoria INT = NULL,
-	@ID_GrupoFamiliar INT = NULL
+    @ID_Socio VARCHAR(15),
+    @DNI INT = NULL,
+    @Nombre VARCHAR(50) = NULL,
+    @Apellido VARCHAR(50) = NULL,
+    @Email VARCHAR(50) = NULL,
+    @TelefonoContacto CHAR(30) = NULL,
+    @TelefonoEmergencia CHAR(30) = NULL,
+    @FechaNacimiento DATE = NULL,
+    @ObraSocial VARCHAR(50) = NULL,
+    @NroSocioObraSocial VARCHAR(25) = NULL,
+    @TelefonoEmergenciaObraSocial CHAR(30) = NULL,
+    @ID_Categoria INT = NULL,
+    @ID_GrupoFamiliar INT = NULL
 AS
 BEGIN
 	UPDATE Personas.Socio SET
-		TelefonoEmergencia = ISNULL(@TelefonoEmergencia, TelefonoEmergencia),
-		ObraSocial = ISNULL(@ObraSocial, ObraSocial),
-		NroSocioObraSocial = ISNULL(@NroSocioObraSocial, NroSocioObraSocial),
-		ID_Categoria = ISNULL(@ID_Categoria, ID_Categoria),
-		ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar)
+		DNI = ISNULL(@DNI, DNI),
+        Nombre = ISNULL(@Nombre, Nombre),
+        Apellido = ISNULL(@Apellido, Apellido),
+        Email = ISNULL(@Email, Email),
+        TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto),
+        TelefonoEmergencia = ISNULL(@TelefonoEmergencia, TelefonoEmergencia),
+        FechaNacimiento = ISNULL(@FechaNacimiento, FechaNacimiento),
+        ObraSocial = ISNULL(@ObraSocial, ObraSocial),
+        NroSocioObraSocial = ISNULL(@NroSocioObraSocial, NroSocioObraSocial),
+        TelefonoEmergenciaObraSocial = ISNULL(@TelefonoEmergenciaObraSocial, TelefonoEmergenciaObraSocial),
+        ID_Categoria = ISNULL(@ID_Categoria, ID_Categoria),
+        ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar)
 	WHERE ID_Socio = @ID_Socio
 END;
 GO
@@ -302,7 +303,7 @@ GO
 --- 19 CREACION PROCEDURE ingresarCuenta
 
 CREATE OR ALTER PROCEDURE ingresarCuenta
-		@ID_Socio INT,
+		@ID_Socio VARCHAR(15),
 		@NroCuenta INT,
         @FechaAlta DATE,
     	@FechaBaja DATE,
@@ -326,7 +327,7 @@ GO
 --- 20 CREACION PROCEDURE modificarCuenta
 
 CREATE OR ALTER PROCEDURE modificarCuenta
-		@ID_Socio INT = NULL,
+		@ID_Socio VARCHAR(15),
 		@NroCuenta INT = NULL,
         @FechaAlta DATE = NULL,
     	@FechaBaja DATE = NULL,
@@ -336,12 +337,12 @@ CREATE OR ALTER PROCEDURE modificarCuenta
 AS
 BEGIN
 	UPDATE Facturacion.Cuenta SET
-		@NroCuenta = ISNULL(@NroCuenta, NroCuenta),
-        @FechaAlta = ISNULL(@FechaAlta, FechaAlta),
-    	@FechaBaja = ISNULL(@FechaBaja, FechaBaja),
-    	@Debito = ISNULL(@Debito, Debito),
-    	@Credito = ISNULL(@Credito, Credito),
-		@Saldo = ISNULL(@Saldo, Saldo)
+		NroCuenta = ISNULL(@NroCuenta, NroCuenta),
+        FechaAlta = ISNULL(@FechaAlta, FechaAlta),
+    	FechaBaja = ISNULL(@FechaBaja, FechaBaja),
+    	Debito = ISNULL(@Debito, Debito),
+    	Credito = ISNULL(@Credito, Credito),
+		Saldo = ISNULL(@Saldo, Saldo)
 	WHERE ID_Socio = @ID_Socio
 END;
 GO
@@ -349,7 +350,7 @@ GO
 --- 21 CREACION PROCEDURE eliminarCuenta
 
 CREATE OR ALTER PROCEDURE eliminarCuenta
-		@ID_Socio INT
+		@ID_Socio VARCHAR(15)
 AS
 BEGIN
 		DELETE
@@ -544,7 +545,7 @@ CREATE OR ALTER PROCEDURE ingresarPago
 		@Monto DECIMAL(10,2),
 		@ID_MedioDePago INT,
 		@NroCuenta INT,
-		@ID_Socio INT,
+		@ID_Socio VARCHAR(15),
 		@ID_Factura INT
 AS
 BEGIN
@@ -567,7 +568,7 @@ CREATE OR ALTER PROCEDURE modificarPago
 		@Monto DECIMAL(10,2),
 		@ID_MedioDePago INT,
 		@NroCuenta INT,
-		@ID_Socio INT,
+		@ID_Socio VARCHAR(15),
 		@ID_Factura INT
 AS
 BEGIN
@@ -923,7 +924,7 @@ GO
 
 CREATE OR ALTER PROCEDURE ingresarActividadRealizada
 	@ID_Actividad INT,
-	@ID_Socio INT,
+	@ID_Socio VARCHAR(15),
 	@FechaActividad DATE
 AS
 BEGIN
@@ -938,27 +939,38 @@ GO
 --- 59 CREACION DE PROCEDURE modificarActividadRealizada
 
 CREATE OR ALTER PROCEDURE modificarActividadRealizada
-		@ID_Actividad INT,
-		@ID_Socio INT = NULL,
-		@FechaActividad DATE = NULL
+	@ID_Socio VARCHAR(15),
+	@ID_Actividad INT,
+	@ID_Profesor VARCHAR(15),
+	@FechaActividad DATE,
+	@Asistencia CHAR(1) = NULL
 AS
 BEGIN
 	UPDATE Actividades.ActividadRealizada SET
-		ID_Socio = ISNULL(@ID_Socio, ID_Socio),
-		FechaActividad = ISNULL(@FechaActividad, FechaActividad)
-	WHERE ID_Actividad = @ID_Actividad
+		Asistencia = ISNULL(@Asistencia, Asistencia)
+    WHERE
+        ID_Socio = @ID_Socio
+        AND ID_Actividad = @ID_Actividad
+        AND ID_Profesor = @ID_Profesor
+        AND FechaActividad = @FechaActividad;
 END;
 GO
 
 --- 60 CREACION DE PROCEDURE eliminarActividadRealizada
 
 CREATE OR ALTER PROCEDURE eliminarActividadRealizada
-	@ID_Actividad INT
+	@ID_Socio VARCHAR(15),
+    @ID_Actividad INT,
+    @ID_Profesor VARCHAR(15),
+    @FechaActividad DATE
 AS
 BEGIN
 	DELETE
 	FROM Actividades.Actividad
-	WHERE ID_Actividad = @ID_Actividad
+	WHERE ID_Socio = @ID_Socio AND
+        ID_Actividad = @ID_Actividad AND
+        ID_Profesor = @ID_Profesor AND
+        FechaActividad = @FechaActividad;
 END;
 GO
 
@@ -1243,12 +1255,12 @@ GO
 --- 79 CREACION DE PROCEDURE ingresarInvitado
 
 CREATE OR ALTER PROCEDURE ingresarInvitado
-		@ID_Usuario INT,
+		@ID_Socio VARCHAR(15),
         @ID_Pileta INT
 AS
 BEGIN
-	INSERT INTO Personas.Invitado(ID_Usuario, ID_Pileta) VALUES (
-		@ID_Usuario,
+	INSERT INTO Personas.Invitado(@ID_Socio, ID_Pileta) VALUES (
+		@ID_Socio,
 		@ID_Pileta
 	)
 END;
@@ -1258,12 +1270,12 @@ GO
 
 CREATE OR ALTER PROCEDURE modificarInvitado
 		@ID_Invitado INT,
-		@ID_Usuario INT = NULL,
+		@ID_Socio INT = NULL,
 		@ID_Pileta INT = NULL
 AS
 BEGIN
 	UPDATE Personas.Invitado SET
-		ID_Usuario = ISNULL(@ID_Usuario, ID_Usuario),
+		ID_Socio = ISNULL(@ID_Socio, ID_Socio),
 		ID_Pileta = ISNULL(@ID_Pileta, ID_Pileta)
 	WHERE ID_Invitado = @ID_Invitado
 END;
