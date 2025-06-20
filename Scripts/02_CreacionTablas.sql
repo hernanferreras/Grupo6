@@ -207,12 +207,43 @@ GO
 -- TABLA EFECTIVO
 BEGIN TRY
 	CREATE TABLE Facturacion.Efectivo(
-    		ID_MedioDePago INT PRIMARY KEY,  
+    		ID_MedioDePago INT PRIMARY KEY, 
+			NombreSucursal VARCHAR (20),
+			DireccionSucursal VARCHAR(30),
     		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago)
 	);
 END TRY
 BEGIN CATCH
 	PRINT 'La Tabla Efectivo ya existe'
+END CATCH;
+GO
+
+-- TABLA COSTO
+BEGIN TRY
+	CREATE TABLE Facturacion.Costo (
+    		ID_Costo INT PRIMARY KEY,
+    		FechaIni DATE,
+    		FechaFin DATE,
+    		Monto DECIMAL(10,2)
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Costo ya existe'
+END CATCH;
+GO
+
+-- TABLA CUOTA
+BEGIN TRY
+	CREATE TABLE Facturacion.Cuota (
+    		ID_Cuota INT PRIMARY KEY,
+    		nroCuota INT,
+    		Estado NVARCHAR(50),
+			ID_Costo INT NOT NULL,
+			FOREIGN KEY (ID_Costo) REFERENCES Facturacion.Costo(ID_Costo)
+);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Cuota ya existe'
 END CATCH;
 GO
 
@@ -226,6 +257,8 @@ BEGIN TRY
     		TotalImporte DECIMAL(15,2),
     		Recargo DECIMAL(10,2),
     		Estado VARCHAR(30),
+			ID_Cuota INT UNIQUE NULL,
+			FOREIGN KEY (ID_Cuota) REFERENCES Facturacion.Cuota(ID_Cuota)
 );
 END TRY
 BEGIN CATCH
@@ -272,7 +305,7 @@ BEGIN TRY
 	CREATE TABLE Facturacion.Reembolso (
     	ID_Reembolso VARCHAR(20) PRIMARY KEY, 
 		Tipo NVARCHAR(30),   
-        ID_Pago VARCHAR(20) UNIQUE,
+        ID_Pago VARCHAR(20) NOT NULL UNIQUE,
     	Descripcion VARCHAR(300),
     	FechaReembolso DATE,
     	FOREIGN KEY (ID_Pago) REFERENCES Facturacion.Pago(ID_Pago)
@@ -280,33 +313,6 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
 	PRINT 'La Tabla Reembolso ya existe'
-END CATCH;
-GO
-
--- TABLA COSTO
-BEGIN TRY
-	CREATE TABLE Facturacion.Costo (
-    		ID_Costo INT PRIMARY KEY,
-    		FechaIni DATE,
-    		FechaFin DATE,
-    		Monto DECIMAL(10,2)
-	);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Costo ya existe'
-END CATCH;
-GO
-
--- TABLA CUOTA
-BEGIN TRY
-	CREATE TABLE Facturacion.Cuota (
-    		ID_Cuota INT PRIMARY KEY,
-    		nroCuota INT,
-    		Estado NVARCHAR(50),
-);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Cuota ya existe'
 END CATCH;
 GO
 
@@ -332,6 +338,7 @@ BEGIN TRY
     		HoraInicio TIME,
 		    HoraFin TIME,
     		ID_Actividad INT,
+			Descripcion VARCHAR(200),
     		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad)
 	);
 END TRY
@@ -479,5 +486,20 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
     PRINT 'La tabla Invitado ya existe';
+END CATCH;
+GO
+
+BEGIN TRY
+    CREATE TABLE Actividades.SocioRealizaActividadExtra (
+        ID_Socio VARCHAR(15),
+        ID_ActividadExtra INT,
+        FechaRealizacion DATE,
+        PRIMARY KEY (ID_Socio, ID_ActividadExtra),
+        FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
+        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla SocioRealizaActividadExtra ya existe';
 END CATCH;
 GO
