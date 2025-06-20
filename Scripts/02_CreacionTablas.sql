@@ -503,3 +503,20 @@ BEGIN CATCH
     PRINT 'La tabla SocioRealizaActividadExtra ya existe';
 END CATCH;
 GO
+
+BEGIN TRY
+    CREATE TABLE Actividades.InvitacionPileta (
+        ID_Socio_Invitante VARCHAR(15),
+        ID_Socio_Invitado VARCHAR(15),
+        ID_ActividadExtra INT,
+        FechaInvitacion DATE,
+        PRIMARY KEY (ID_Socio_Invitante, ID_Socio_Invitado, ID_ActividadExtra),
+        FOREIGN KEY (ID_Socio_Invitante) REFERENCES Personas.Socio(ID_Socio),
+        FOREIGN KEY (ID_Socio_Invitado) REFERENCES Personas.Socio(ID_Socio),
+        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.PiletaVerano(ID_ActividadExtra)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla InvitacionPileta ya existe';
+END CATCH;
+GO
