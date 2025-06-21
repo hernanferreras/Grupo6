@@ -34,7 +34,8 @@ ELSE
 BEGIN
 	PRINT 'El schema ya existe'
 END;
-
+GO
+	
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Facturacion')
 BEGIN
 	EXEC('CREATE SCHEMA Facturacion')
@@ -44,7 +45,8 @@ ELSE
 BEGIN
 	PRINT 'El schema ya existe'
 END;
-
+GO
+	
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Administracion')
 BEGIN
 	EXEC('CREATE SCHEMA Administracion')
@@ -54,3 +56,4 @@ ELSE
 BEGIN
 	PRINT 'El schema ya existe'
 END;
+GO
