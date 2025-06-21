@@ -152,7 +152,7 @@ CREATE OR ALTER PROCEDURE ingresarCategoria
 	@Importe DECIMAL(10,2)
 AS
 BEGIN
-	INSERT INTO Personas.Categoria(Descripción, Importe) VALUES(
+	INSERT INTO Personas.Categoria(Descripcion, Importe) VALUES(
 		@Descripcion,
 		@Importe
 	)
@@ -168,7 +168,7 @@ CREATE OR ALTER PROCEDURE modificarCategoria
 AS
 BEGIN
 	UPDATE Personas.Categoria SET
-		Descripción = ISNULL(@Descripcion, Descripción),
+		Descripción = ISNULL(@Descripcion, Descripcion),
 		Importe = ISNULL(@Importe, Importe)
 	WHERE ID_Categoria = @ID_Categoria
 END;
@@ -200,7 +200,7 @@ CREATE OR ALTER PROCEDURE ingresarSocio
     @NroSocioObraSocial VARCHAR(25),
     @TelefonoEmergenciaObraSocial CHAR(30),
     @ID_Categoria INT,
-    @ID_GrupoFamiliar INT
+    @ID_GrupoFamiliar INT,
 	@ID_Usuario INT
 AS
 BEGIN
