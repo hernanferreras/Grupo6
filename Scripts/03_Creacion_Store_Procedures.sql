@@ -908,7 +908,7 @@ CREATE OR ALTER PROCEDURE ingresarClaseDictada
     @FechaClase DATE
 AS
 BEGIN
-	INSERT INTO Actividades.ClaseDictada(ID_Clase, Profesor, FechaClase) VALUES(
+	INSERT INTO Actividades.ClaseDictada(ID_Clase, ID_Profesor, FechaClase) VALUES(
 		@ID_Clase,
 		@ID_Profesor,
 		@FechaClase
