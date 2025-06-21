@@ -61,11 +61,118 @@ EXEC eliminarRol @ID_Rol = -1;
 ----------------------------------TABLA USUARIO----------------------------------
 --INSERTAR USUARIO
 
--- Inserta un usuario válido con fecha actual
+-- PRUEBA 1: Inserta un usuario válido con fecha actual
 EXEC ingresarUsuario 
-    @NombreUsuario = 'juan.perez', 
+    @NombreUsuario = 'Josecito', 
     @Contrasenia = 'Segura123!', 
-    @FechaVigenciaContrasenia = GETDATE();
+    @FechaVigenciaContrasenia = '2025-12-01'
 
 -- Resultado esperado: Se inserta correctamente un nuevo usuario.
 -- Verificación: SELECT * FROM Administracion.Usuario;
+
+-- PRUEBA 2: Inserción de nombre duplicado
+EXEC ingresarUsuario 
+    @NombreUsuario = 'Josecito',  -- mismo nombre que en PRUEBA 1
+    @Contrasenia = 'OtraClave456',
+    @FechaVigenciaContrasenia = '2025-06-01';
+
+-- Resultado esperado: Falla por restricción UNIQUE sobre NombreUsuario.
+
+--PRUEBA 3: Inserción con nombre NULL
+EXEC ingresarUsuario 
+    @NombreUsuario = NULL,
+    @Contrasenia = 'Clave1234',
+    @FechaVigenciaContrasenia = '2025-01-01';
+
+-- Resultado esperado: Falla porque NombreUsuario no acepta NULL.
+
+--PRUEBA 4: Modificamos el usuario con datos válidos
+EXEC modificarUsuario 
+	@ID_Usuario = 1,
+    @NombreUsuario = 'Josecito', 
+    @Contrasenia = 'SEguRA12', 
+    @FechaVigenciaContrasenia = '2025-12-12'
+
+-- Resultado esperado: Se modifican los campos.
+
+--PRUEBA 5: Eliminamos usuario válido
+EXEC eliminarUsuario @ID_Usuario = 1;
+
+-- Resultado esperado: Se elimina el usuario con ID = 1.
+
+--PRUEBA 6: Eliminamos usuario inaválido
+EXEC eliminarUsuario @ID_Usuario = -1;
+
+-- Resultado esperado: No hay error, pero no se elimina nada porque no existe ese ID.
+
+----------------------------------TABLA GRUPO FAMILIAR----------------------------------
+
+-- PRUEBA 1: Inserción válida
+
+EXEC ingresarGrupoFamiliar 
+	@Tamaño = 4, 
+	@Nombre = 'Familia López';
+
+-- Resultado esperado: Inserta correctamente el grupo familiar.
+
+--PRUEBA 2: Modificación válida
+
+EXEC modificarGrupoFamiliar 
+	@ID_GrupoFamiliar = 1,
+	@Nombre = 'Familia Gómez';
+
+-- Resultado esperado: Solo se modifica el nombre, el tamaño se mantiene igual.
+
+-- PRUEBA 3: Eliminación válida
+
+EXEC eliminarGrupoFamiliar 
+	@ID_GrupoFamiliar = 1;
+-- Resultado esperado: Se elimina el grupo familiar con ID 1.
+
+-- PRUEBA 4: Eliminación inválida
+
+EXEC eliminarGrupoFamiliar 
+	@ID_GrupoFamiliar = -1;
+-- Resultado esperado: No da error, pero no elimina nada
+
+----------------------------------TABLA CATEGORIA----------------------------------
+
+-- PRUEBA 1: Inserción válida de categoría
+
+EXEC ingresarCategoria 
+	@Descripcion = 'Mayor',
+	@Importe = 3500.50;
+
+-- Resultado esperado: Se inserta correctamente una nueva categoría.
+
+-- PRUEBA 2: Inserción inválida de categoría
+
+EXEC ingresarCategoria 
+	@Descripcion = 'Mayor',
+	@Importe = -100.00;
+
+-- Resultado esperado: Falla porque hay un CHECK que no permite importes negativos.
+
+-- PRUEBA 3: Modificación del importe solamente
+-- Suponiendo que la categoría con ID 1 existe
+
+EXEC modificarCategoria 
+	@ID_Categoria = 1,
+	@Importe = 4200.00;
+
+-- Resultado esperado: Se modifica solo el importe.
+
+-- PRUEBA 4: Modificación de la descripción únicamente
+
+EXEC modificarCategoria 
+	@ID_Categoria = 1,
+	@Descripcion = 'Categoría Actualizada';
+
+-- Resultado esperado: Se actualiza la descripción, el importe queda igual.
+
+--PRUEBA 5: Eliminación válida
+
+EXEC eliminarCategoria 
+	@ID_Categoria = 1;
+
+--  Resultado esperado: Se elimina la categoría con ID 1.

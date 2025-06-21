@@ -47,7 +47,7 @@ BEGIN TRY
 	CREATE TABLE Personas.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
     	Descripcion VARCHAR(100),
-    	Importe DECIMAL(10, 2)
+    	Importe DECIMAL(10, 2) CHECK (Importe > 0)
 );
 END TRY
 BEGIN CATCH
@@ -59,9 +59,9 @@ GO
 BEGIN TRY
 	CREATE TABLE Administracion.Usuario (
     	ID_Usuario INT IDENTITY (1,1) PRIMARY KEY,
-        NombreUsuario VARCHAR(50),
+        NombreUsuario VARCHAR(50) NOT NULL UNIQUE,
     	Contrasenia VARCHAR(100),
-        FechaVigenciaContrasenia DATE,
+        FechaVigenciaContrasenia DATE
 	);
 END TRY
 BEGIN CATCH
@@ -88,7 +88,7 @@ BEGIN TRY
     	ID_Usuario INT,
 		FOREIGN KEY (ID_Categoria) REFERENCES Personas.Categoria(ID_Categoria),
 		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES Personas.GrupoFamiliar(ID_GrupoFamiliar),
-		FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario),
+		FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario)
 	);
 END TRY
 BEGIN CATCH

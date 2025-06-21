@@ -73,7 +73,18 @@ CREATE OR ALTER PROCEDURE modificarUsuario
     @FechaVigenciaContrasenia DATE = NULL
 AS
 BEGIN
-    UPDATE Administracion.Usuario
+    IF @NombreUsuario IS NOT NULL AND EXISTS (
+        SELECT 1
+        FROM Administracion.Usuario
+        WHERE NombreUsuario = @NombreUsuario
+        AND ID_Usuario <> @ID_Usuario
+    )
+    BEGIN
+        PRINT 'ERROR: El nombre de usuario ya está en uso por otro usuario.';
+        RETURN;
+    END;
+
+UPDATE Administracion.Usuario
     SET
         NombreUsuario = ISNULL(@NombreUsuario, NombreUsuario),
         Contrasenia = ISNULL(@Contrasenia, Contrasenia),
@@ -98,7 +109,7 @@ GO
 	
 CREATE OR ALTER PROCEDURE ingresarGrupoFamiliar
 	@Tamaño INT,
-	@Nombre VARCHAR(100),
+	@Nombre VARCHAR(100)
 AS
 BEGIN	
 	INSERT INTO Personas.GrupoFamiliar(Tamaño, Nombre) VALUES(
@@ -190,17 +201,18 @@ CREATE OR ALTER PROCEDURE ingresarSocio
     @TelefonoEmergenciaObraSocial CHAR(30),
     @ID_Categoria INT,
     @ID_GrupoFamiliar INT
+	@ID_Usuario INT
 AS
 BEGIN
     INSERT INTO Personas.Socio (
         ID_Socio, DNI, Nombre, Apellido, Email, TelefonoContacto,
         TelefonoEmergencia, FechaNacimiento, ObraSocial, NroSocioObraSocial,
-        TelefonoEmergenciaObraSocial, ID_Categoria, ID_GrupoFamiliar
+        TelefonoEmergenciaObraSocial, ID_Categoria, ID_GrupoFamiliar, ID_Usuario
     )
     VALUES (
         @ID_Socio, @DNI, @Nombre, @Apellido, @Email, @TelefonoContacto,
         @TelefonoEmergencia, @FechaNacimiento, @ObraSocial, @NroSocioObraSocial,
-        @TelefonoEmergenciaObraSocial, @ID_Categoria, @ID_GrupoFamiliar
+        @TelefonoEmergenciaObraSocial, @ID_Categoria, @ID_GrupoFamiliar, @ID_Usuario
     );
 END;
 GO
@@ -220,7 +232,8 @@ CREATE OR ALTER PROCEDURE modificarSocio
     @NroSocioObraSocial VARCHAR(25) = NULL,
     @TelefonoEmergenciaObraSocial CHAR(30) = NULL,
     @ID_Categoria INT = NULL,
-    @ID_GrupoFamiliar INT = NULL
+    @ID_GrupoFamiliar INT = NULL,
+	@ID_Usuario INT = NULL
 AS
 BEGIN
 	UPDATE Personas.Socio SET
@@ -235,7 +248,8 @@ BEGIN
         NroSocioObraSocial = ISNULL(@NroSocioObraSocial, NroSocioObraSocial),
         TelefonoEmergenciaObraSocial = ISNULL(@TelefonoEmergenciaObraSocial, TelefonoEmergenciaObraSocial),
         ID_Categoria = ISNULL(@ID_Categoria, ID_Categoria),
-        ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar)
+        ID_GrupoFamiliar = ISNULL(@ID_GrupoFamiliar, ID_GrupoFamiliar),
+		ID_Usuario = ISNULL(@ID_Usuario, ID_Usuario)
 	WHERE ID_Socio = @ID_Socio
 END;
 GO
