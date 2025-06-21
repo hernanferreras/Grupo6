@@ -1,5 +1,4 @@
 ﻿USE  Com5600G06
-
 -- Habilita la visualización de opciones avanzadas en SQL Server para poder configurarlas
 EXEC sp_configure 'show advanced options', 1;
 RECONFIGURE;
@@ -76,10 +75,6 @@ GO
 DROP TABLE #ImportacionSocios;
 GO
 -------------------------------
-SELECT * FROM Personas.Socio
-
-
-
 
 
 --╔════════════════════════════╗
@@ -186,11 +181,6 @@ GO
 DROP TABLE #ImportacionGrupoFamiliar
 GO
 -------------------------------
-SELECT * FROM Personas.Socio
-SELECT * FROM Personas.SocioTutor
-SELECT * FROM Personas.GrupoFamiliar
-
-
 
 
 --╔════════════════════════════╗
@@ -253,11 +243,123 @@ GO
 DROP TABLE #ImportacionPagos
 GO
 -------------------------------
-SELECT * FROM Facturacion.Pago p
-JOIN Facturacion.MedioDePago mp ON p.ID_MedioDePago = mp.ID_MedioDePago
 
 
+--╔════════════════════════╗
+--║ IMPORTACION DE TARIFAS ║
+--╚════════════════════════╝
 
+-- TARIFAS ACTVIDADES 
+
+--CREO TABLA TEMPORAL
+DROP TABLE IF EXISTS #ImportcionTarifasActividades;
+
+CREATE TABLE #ImportcionTarifasActividades(
+    Nombre VARCHAR(50),
+    CostoMensual VARCHAR(50),
+    FechaVigenciaCosto VARCHAR(50)
+);
+
+INSERT INTO #ImportcionTarifasActividades              --INSERTO TODA LA TABLA
+SELECT *
+FROM OPENROWSET(
+    'Microsoft.ACE.OLEDB.12.0',
+    'Excel 12.0;Database=C:\ImportacionesSQL\Datos socios.xlsx;HDR=NO;IMEX=1',
+    'SELECT * FROM [Tarifas$B3:D8]'
+);
+GO
+
+-- INSERTO EN LA TABLA DE ACTIVIDADES
+INSERT INTO Actividades.Actividad (Nombre, CostoMensual, FecVigenciaCosto) 
+SELECT 
+    LTRIM(RTRIM(Nombre)),                                                -- Nombre                            
+    TRY_CAST(CostoMensual AS DECIMAL(18, 2)),                            -- Monto
+    TRY_CONVERT(DATE, FechaVigenciaCosto, 103)                           -- Fecha vigencia de costo 
+FROM #ImportcionTarifasActividades
+GO
+
+DROP TABLE #ImportcionTarifasActividades
+GO
+
+
+-- TARIFAS CATEGORIAS
+
+--CREO TABLA TEMPORAL
+DROP TABLE IF EXISTS #ImportacionCuotaCategoria;
+GO
+
+CREATE TABLE #ImportacionCuotaCategoria(
+    Categoria VARCHAR(50),
+    CostoMensual VARCHAR(50),
+    FechaVigenciaCosto VARCHAR(50)
+);
+GO
+
+INSERT INTO #ImportacionCuotaCategoria               --INSERTO TODA LA TABLA
+SELECT *
+FROM OPENROWSET(
+    'Microsoft.ACE.OLEDB.12.0',
+    'Excel 12.0;Database=C:\ImportacionesSQL\Datos socios.xlsx;HDR=NO;IMEX=1',
+    'SELECT * FROM [Tarifas$B11:D13]'
+);
+GO
+
+-- INSERTO EN LA TABLA DE CATEGORIAS
+INSERT INTO Personas.Categoria (Descripcion,  Importe, FecVigenciaCosto) 
+SELECT 
+    LTRIM(RTRIM(Categoria)),                                             -- Nombre                            
+    TRY_CAST(CostoMensual AS DECIMAL(18, 2)),                            -- Monto
+    TRY_CONVERT(DATE, FechaVigenciaCosto, 103)                           -- Fecha vigencia de costo 
+FROM #ImportacionCuotaCategoria 
+GO
+
+DROP TABLE #ImportacionCuotaCategoria
+GO
+----
+
+-- COSTOS PILETA
+
+--CREO TABLA TEMPORAL
+DROP TABLE IF EXISTS #ImportacionCostoPileta;
+GO
+
+CREATE TABLE #ImportacionCostoPileta (
+    Socio VARCHAR(50),
+    Invitado VARCHAR(50),
+    VigenteHasta VARCHAR(50)
+);
+GO
+
+INSERT INTO #ImportacionCostoPileta               --INSERTO TODA LA TABLA
+SELECT *
+FROM OPENROWSET(
+    'Microsoft.ACE.OLEDB.12.0',
+    'Excel 12.0;Database=C:\ImportacionesSQL\Datos socios.xlsx;HDR=NO;IMEX=1',
+    'SELECT * FROM [Tarifas$D17:F18]'
+);
+GO
+
+-- INSERTO EN LA TABLA DE CATEGORIAS
+WITH Datos AS (                         -- SEPARO LOS DATOS POR FILAS
+    SELECT
+        ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS fila,
+        Socio,
+        Invitado,
+        VigenteHasta
+    FROM #ImportacionCostoPileta
+)
+INSERT INTO Actividades.CostosPileta (CostoSocio, CostoSocioMenor, CostoInvitado, CostoInvitadoMenor, FecVigenciaCostos)
+SELECT             -- INSERTO SEGUN LA FILA, PARA GENERAR UNA UNICA FILA
+    TRY_CAST(MAX(CASE WHEN fila = 1 THEN Socio END) AS DECIMAL(18,2)),       -- Adulto socio
+    TRY_CAST(MAX(CASE WHEN fila = 2 THEN Socio END) AS DECIMAL(18,2)),       -- Menor socio
+    TRY_CAST(MAX(CASE WHEN fila = 1 THEN Invitado END) AS DECIMAL(18,2)),    -- Adulto invitado
+    TRY_CAST(MAX(CASE WHEN fila = 2 THEN Invitado END) AS DECIMAL(18,2)),    -- Menor invitado
+    TRY_CONVERT(DATE, MAX(VigenteHasta), 103)                                -- Fecha común
+FROM Datos;
+GO
+DROP TABLE #ImportacionCostoPileta
+GO
+-------------------------------
 
 
 --╔════════════════════════════╗
@@ -279,21 +381,6 @@ FROM (
 ) AS v(ID_Profesor, Nombre, Apellido)
 WHERE NOT EXISTS (
     SELECT 1 FROM Personas.Profesor p WHERE p.ID_Profesor = v.ID_Profesor
-);
-
-INSERT INTO Actividades.Actividad (ID_Actividad, Nombre, Descripcion, CostoMensual)
-SELECT *
-FROM (
-    VALUES
-        (1, 'Futsal', 'Cancha de futsal', 5000),
-        (2, 'Vóley', 'Cancha de vóley', 4500),
-        (3, 'Taekwondo', 'Clases de Taekwondo', 4000),
-        (4, 'Baile artístico', 'Clases de baile', 5500),
-        (5, 'Natación', 'Clases en pileta', 6000),
-        (6, 'Ajedrez', 'Clases de ajedrez', 5200)
-) AS v(ID_Actividad, Nombre, Descripcion, CostoMensual)
-WHERE NOT EXISTS (
-    SELECT 1 FROM Actividades.Actividad a WHERE a.ID_Actividad = v.ID_Actividad
 );
 
 
@@ -352,4 +439,21 @@ WHERE EXISTS (
 DROP TABLE #ImportacionPresentismo
 GO
 -------------------------------
+
+
+SELECT * FROM Personas.Socio
+
+SELECT * FROM Personas.Socio
+SELECT * FROM Personas.SocioTutor
+SELECT * FROM Personas.GrupoFamiliar
+
+SELECT * FROM Facturacion.Pago p
+JOIN Facturacion.MedioDePago mp ON p.ID_MedioDePago = mp.ID_MedioDePago
+
 SELECT * FROM Actividades.ActividadRealizada
+
+SELECT * FROM Actividades.Actividad
+SELECT * FROM Personas.Categoria
+SELECT * FROM Actividades.CostosPileta
+
+GO

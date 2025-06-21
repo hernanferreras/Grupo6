@@ -47,7 +47,8 @@ BEGIN TRY
 	CREATE TABLE Personas.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
     	Descripcion VARCHAR(100),
-    	Importe DECIMAL(10, 2) CHECK (Importe > 0)
+    	Importe DECIMAL(10, 2) NOT NULL CHECK (Importe > 0),
+        FecVigenciaCosto DATE
 );
 END TRY
 BEGIN CATCH
@@ -321,10 +322,11 @@ GO
 -- TABLA ACTIVIDAD
 BEGIN TRY
 	CREATE TABLE Actividades.Actividad (
-    		ID_Actividad INT PRIMARY KEY,
+    		ID_Actividad INT IDENTITY (1,1) PRIMARY KEY,
     		Nombre VARCHAR(60),
     		Descripcion VARCHAR(255),
-    		CostoMensual DECIMAL(18, 2) NOT NULL
+    		CostoMensual DECIMAL(18, 2) NOT NULL,
+            FecVigenciaCosto DATE
 );
 END TRY
 BEGIN CATCH
@@ -427,15 +429,19 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA TARIFA PILETA
+-- TABLA COSTOS PILETA
 BEGIN TRY
-    CREATE TABLE Actividades.TarifaPileta (
-        ID_TarifaPileta INT PRIMARY KEY,
-        Costo DECIMAL (10,2) NOT NULL,
+    CREATE TABLE Actividades.CostosPileta (
+        ID_CostosPileta INT IDENTITY(1,1) PRIMARY KEY,
+        CostoSocio DECIMAL (10,2) NOT NULL,
+        CostoSocioMenor DECIMAL (10,2) NOT NULL,
+        CostoInvitado DECIMAL (10,2) NOT NULL,
+        CostoInvitadoMenor DECIMAL (10,2) NOT NULL,
+        FecVigenciaCostos DATE
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla TarifaPileta ya existe';
+    PRINT 'La tabla CostosPileta ya existe';
 END CATCH;
 GO
 
@@ -446,9 +452,9 @@ BEGIN TRY
         HoraInicio TIME,
         HoraFin TIME,
         CapacidadMaxima INT,
-        ID_TarifaPileta INT NOT NULL,
+        ID_CostosPileta INT NOT NULL,
         FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra),
-        FOREIGN KEY (ID_TarifaPileta) REFERENCES Actividades.TarifaPileta (ID_TarifaPileta)
+        FOREIGN KEY (ID_CostosPileta) REFERENCES Actividades.CostosPileta (ID_CostosPileta)
     );
 END TRY
 BEGIN CATCH
@@ -491,6 +497,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
+-- TABLA SOCIO REALIZA ACTIVIDAD EXTRA
 BEGIN TRY
     CREATE TABLE Actividades.SocioRealizaActividadExtra (
         ID_Socio VARCHAR(15),
@@ -506,6 +513,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
+-- TABLA INVITACION PILETA
 BEGIN TRY
     CREATE TABLE Actividades.InvitacionPileta (
         ID_Socio_Invitante VARCHAR(15),
