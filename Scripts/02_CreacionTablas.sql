@@ -3,8 +3,8 @@
 Integrantes:
 DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 46291918  Almada  Keila Mariel  kei.alma01@gmail.com  Kei3131
-38670422  Céspedes  Leonel  ldc.mail2@gmail.com  ldcvelez
 23103568  Ferreras  Hernan  maxher73@gmail.com  hernanferreras
+44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
 -- ╔════════════════════╗
@@ -20,12 +20,12 @@ GO
 BEGIN TRY
 	CREATE TABLE Administracion.Rol (
     	ID_Rol INT IDENTITY (1,1) PRIMARY KEY,
-    	Descripcion VARCHAR(30),
-	    Nombre VARCHAR(60)
+    	Descripcion VARCHAR(60),
+	    Nombre VARCHAR(30) NOT NULL
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla ya Rol existe'
+	PRINT 'La tabla Rol ya existe'
 END CATCH;
 GO
 
@@ -55,6 +55,20 @@ BEGIN CATCH
 END CATCH;
 GO
 
+-- TABLA USUARIO
+BEGIN TRY
+	CREATE TABLE Administracion.Usuario (
+    	ID_Usuario INT IDENTITY (1,1) PRIMARY KEY,
+        NombreUsuario VARCHAR(50),
+    	Contrasenia VARCHAR(100),
+        FechaVigenciaContrasenia DATE,
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Usuario ya existe'
+END CATCH;
+GO
+
 -- TABLA SOCIO
 BEGIN TRY
 	CREATE TABLE Personas.Socio (
@@ -71,27 +85,15 @@ BEGIN TRY
         TelefonoEmergenciaObraSocial char(30),
     	ID_Categoria INT,
 		ID_GrupoFamiliar INT,                    
-    	FOREIGN KEY (ID_Categoria) REFERENCES Personas.Categoria(ID_Categoria),
-		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES Personas.GrupoFamiliar(ID_GrupoFamiliar)
+    	ID_Usuario INT,
+		FOREIGN KEY (ID_Categoria) REFERENCES Personas.Categoria(ID_Categoria),
+		FOREIGN KEY (ID_GrupoFamiliar) REFERENCES Personas.GrupoFamiliar(ID_GrupoFamiliar),
+		FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario(ID_Usuario),
 	);
 END TRY
 BEGIN CATCH
 	PRINT 'La tabla Socio ya existe'
 END CATCH;	
-GO
-
--- TABLA USUARIO
-BEGIN TRY
-	CREATE TABLE Administracion.Usuario (
-    	ID_Usuario INT IDENTITY (1,1) PRIMARY KEY,
-        NombreUsuario VARCHAR(50),
-    	Contrasenia VARCHAR(100),
-        FechaVigenciaContrasenia DATE,
-	);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Usuario ya existe'
-END CATCH;
 GO
 
 -- TABLA USUARIO ROL

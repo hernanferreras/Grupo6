@@ -1,3 +1,12 @@
+/*
+# Grupo6
+Integrantes:
+DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
+46291918  Almada  Keila Mariel  kei.alma01@gmail.com  Kei3131
+23103568  Ferreras  Hernan  maxher73@gmail.com  hernanferreras
+44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
+*/
+
 --- 01 CREA O MODIFICA SP insertar Rol
 USE Com5600G06;
 GO
@@ -7,7 +16,7 @@ CREATE OR ALTER PROCEDURE insertarRol
 	@Descripcion VARCHAR(60)
 AS
 BEGIN
-	INSERT INTO Administración.Rol(Nombre, Descripcion) VALUES(
+	INSERT INTO Administracion.Rol(Nombre, Descripcion) VALUES(
 		@Nombre,
 		@Descripcion
 	);
@@ -18,11 +27,11 @@ GO
 
 CREATE OR ALTER PROCEDURE modificarRol
 	@ID_Rol INT,
-	@Nombre VARCHAR(60) = NULL,    	
-	@Descripcion VARCHAR(30) = NULL
+	@Nombre VARCHAR(30) = NULL,    	
+	@Descripcion VARCHAR(60) = NULL
 AS
 BEGIN
-	UPDATE Administración.Rol 
+	UPDATE Administracion.Rol 
 	SET
 		Nombre = ISNULL(@Nombre, Nombre), 
 		Descripcion = ISNULL(@Descripcion, Descripcion)
@@ -37,7 +46,7 @@ CREATE OR ALTER PROCEDURE eliminarRol
 AS
 BEGIN
 	DELETE
-	FROM Administración.Rol
+	FROM Administracion.Rol
 	WHERE ID_Rol = @ID_Rol
 END;
 GO
@@ -80,7 +89,7 @@ CREATE OR ALTER PROCEDURE eliminarUsuario
 AS
 BEGIN
 	DELETE
-	FROM Administración.Usuario
+	FROM Administracion.Usuario
 	WHERE ID_Usuario = @ID_Usuario
 END;
 GO
