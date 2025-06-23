@@ -24,6 +24,7 @@ ELSE
 BEGIN
 	PRINT 'El schema ya existe'
 END;
+GO
 
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Actividades')
 BEGIN
@@ -50,6 +51,17 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Administracion')
 BEGIN
 	EXEC('CREATE SCHEMA Administracion')
+	PRINT 'El schema se creo correctamente'
+END
+ELSE
+BEGIN
+	PRINT 'El schema ya existe'
+END;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Reportes')
+BEGIN
+	EXEC('CREATE SCHEMA Reportes')
 	PRINT 'El schema se creo correctamente'
 END
 ELSE

@@ -259,9 +259,11 @@ BEGIN TRY
     		FechaVencimiento DATE,
     		TotalImporte DECIMAL(15,2),
     		Recargo DECIMAL(10,2),
-    		Estado VARCHAR(30),
-			ID_Cuota INT UNIQUE NULL,
-			FOREIGN KEY (ID_Cuota) REFERENCES Facturacion.Cuota(ID_Cuota)
+    		Estado VARCHAR(30) CHECK (Estado IN ('Pagada', 'Impaga')),
+			ID_Cuota INT,
+			ID_Socio VARCHAR(15),
+            FOREIGN KEY (ID_Cuota) REFERENCES Facturacion.Cuota(ID_Cuota),
+            FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio)
 );
 END TRY
 BEGIN CATCH
@@ -528,5 +530,21 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
     PRINT 'La tabla InvitacionPileta ya existe';
+END CATCH;
+GO
+
+-- TABLA CLIMA
+
+BEGIN TRY
+    CREATE TABLE Actividades.Clima (
+        Fecha DATETIME PRIMARY KEY,
+        Temperatura FLOAT,
+        Lluvia FLOAT,
+        Humedad INT,
+        Viento FLOAT
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Clima ya existe';
 END CATCH;
 GO
