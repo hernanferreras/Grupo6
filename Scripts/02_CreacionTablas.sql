@@ -15,12 +15,12 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 USE Com5600G06;
 GO
 
-
--- TABLA ROL
+-- 1 TABLA ROL
 BEGIN TRY
 	CREATE TABLE Administracion.Rol (
     	ID_Rol INT IDENTITY (1,1) PRIMARY KEY,
     	Descripcion VARCHAR(60),
+        Area VARCHAR(50),
 	    Nombre VARCHAR(30) NOT NULL
 	);
 END TRY
@@ -29,7 +29,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA GRUPO FAMILIAR
+-- 2 TABLA GRUPO FAMILIAR
 BEGIN TRY
 	CREATE TABLE Personas.GrupoFamiliar (
     		ID_GrupoFamiliar INT IDENTITY(1,1) PRIMARY KEY,
@@ -42,7 +42,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA CATEGORIA
+-- 3 TABLA CATEGORIA
 BEGIN TRY
 	CREATE TABLE Personas.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
@@ -56,7 +56,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA USUARIO
+-- 4 TABLA USUARIO
 BEGIN TRY
 	CREATE TABLE Administracion.Usuario (
     	ID_Usuario INT IDENTITY (1,1) PRIMARY KEY,
@@ -70,7 +70,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA SOCIO
+-- 5 TABLA SOCIO
 BEGIN TRY
 	CREATE TABLE Personas.Socio (
 		ID_Socio VARCHAR(15) PRIMARY KEY,
@@ -97,7 +97,7 @@ BEGIN CATCH
 END CATCH;	
 GO
 
--- TABLA USUARIO ROL
+-- 6 TABLA USUARIO ROL
 BEGIN TRY
     CREATE TABLE Administracion.UsuarioRol(
         FechaAsignacion DATE NOT NULL,
@@ -114,7 +114,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA SOCIO-TUTOR
+-- 7 TABLA SOCIO-TUTOR
 BEGIN TRY	
 	CREATE TABLE Personas.SocioTutor (
 		ID_Tutor VARCHAR(15),
@@ -130,7 +130,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA PROFESOR
+-- 8 TABLA PROFESOR
 BEGIN TRY
 	CREATE TABLE Personas.Profesor (
 		ID_Profesor VARCHAR(15)PRIMARY KEY,
@@ -147,7 +147,7 @@ BEGIN CATCH
 END CATCH;
 GO
     
---TABLA CUENTA
+-- 9 TABLA CUENTA
 BEGIN TRY
 	CREATE TABLE Facturacion.Cuenta (
     	ID_Socio VARCHAR(15),
@@ -166,7 +166,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA MEDIO DE PAGO
+-- 10 TABLA MEDIO DE PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.MedioDePago (
     		ID_MedioDePago INT IDENTITY PRIMARY KEY,
@@ -178,7 +178,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA TARJETA
+-- 11 TABLA TARJETA
 BEGIN TRY
 	CREATE TABLE Facturacion.Tarjeta (
     		ID_MedioDePago INT PRIMARY KEY,  
@@ -194,7 +194,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA TRANSFERENCIA
+-- 12 TABLA TRANSFERENCIA
 BEGIN TRY
 	CREATE TABLE Facturacion.Transferencia (
     		ID_MedioDePago INT PRIMARY KEY,  
@@ -207,7 +207,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA EFECTIVO
+-- 13 TABLA EFECTIVO
 BEGIN TRY
 	CREATE TABLE Facturacion.Efectivo(
     		ID_MedioDePago INT PRIMARY KEY, 
@@ -221,28 +221,11 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA COSTO
-BEGIN TRY
-	CREATE TABLE Facturacion.Costo (
-    		ID_Costo INT PRIMARY KEY,
-    		FechaIni DATE,
-    		FechaFin DATE,
-    		Monto DECIMAL(10,2)
-	);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Costo ya existe'
-END CATCH;
-GO
-
--- TABLA CUOTA
+-- 14 TABLA CUOTA
 BEGIN TRY
 	CREATE TABLE Facturacion.Cuota (
     		ID_Cuota INT PRIMARY KEY,
-    		nroCuota INT,
-    		Estado NVARCHAR(50),
-			ID_Costo INT NOT NULL,
-			FOREIGN KEY (ID_Costo) REFERENCES Facturacion.Costo(ID_Costo)
+    		FechaCuota DATE
 );
 END TRY
 BEGIN CATCH
@@ -250,7 +233,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA FACTURA
+-- 15 TABLA FACTURA
 BEGIN TRY
 	CREATE TABLE Facturacion.Factura (
     		ID_Factura INT PRIMARY KEY,
@@ -271,7 +254,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA PAGO
+-- 16 TABLA PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.Pago (
 		ID_Pago VARCHAR(20) PRIMARY KEY,
@@ -291,11 +274,11 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA DESCUENTO
+-- 17 TABLA DESCUENTO
 BEGIN TRY
 	CREATE TABLE Facturacion.Descuento (
     		ID_Descuento INT PRIMARY KEY,
-    		Porcentaje DECIMAL(5, 2) CHECK (Porcentaje BETWEEN 0 AND 100),
+    		Porcentaje DECIMAL(5, 2),
             ID_Factura INT NOT NULL,
             FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura)
 	);
@@ -305,7 +288,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA REEMBOLSO
+-- 18 TABLA REEMBOLSO
 BEGIN TRY
 	CREATE TABLE Facturacion.Reembolso (
     	ID_Reembolso VARCHAR(20) PRIMARY KEY, 
@@ -321,7 +304,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA ACTIVIDAD
+-- 19 TABLA ACTIVIDAD
 BEGIN TRY
 	CREATE TABLE Actividades.Actividad (
     		ID_Actividad INT IDENTITY (1,1) PRIMARY KEY,
@@ -336,7 +319,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA CLASE
+-- 20 TABLA CLASE
 BEGIN TRY
 	CREATE TABLE Actividades.Clase (
     		ID_Clase INT PRIMARY KEY,
@@ -353,7 +336,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA CLASE DICTADA
+-- 21 TABLA CLASE DICTADA
 BEGIN TRY
 	CREATE TABLE Actividades.ClaseDictada (
     		ID_Clase INT,
@@ -369,14 +352,14 @@ BEGIN CATCH
 END CATCH;  
 GO
 
--- TABLA ACTIVIDAD REALIZADA
+-- 22 TABLA ACTIVIDAD REALIZADA
 BEGIN TRY
 	CREATE TABLE Actividades.ActividadRealizada (
     		ID_Actividad INT,
             ID_Profesor VARCHAR(15),
     		ID_Socio VARCHAR(15),
             FechaActividad DATE NOT NULL,
-            Asistencia CHAR(1),
+            Asistencia CHAR,
     		PRIMARY KEY (ID_Socio, ID_Actividad, ID_Profesor, FechaActividad),
     		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
     		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
@@ -389,7 +372,7 @@ END CATCH;
 GO
 
 
--- TABLA ACTIVIDAD EXTRA
+-- 23 TABLA ACTIVIDAD EXTRA
 BEGIN TRY
     CREATE TABLE Actividades.ActividadExtra (
         ID_ActividadExtra INT PRIMARY KEY,
@@ -401,7 +384,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA COLONIA
+-- 24 TABLA COLONIA
 BEGIN TRY
     CREATE TABLE Actividades.Colonia (
         ID_ActividadExtra INT PRIMARY KEY,
@@ -416,7 +399,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA ALQUILER SUM
+-- 25 TABLA ALQUILER SUM
 BEGIN TRY
     CREATE TABLE Actividades.AlquilerSUM (
         ID_ActividadExtra INT PRIMARY KEY,
@@ -431,7 +414,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA COSTOS PILETA
+-- 26 TABLA COSTOS PILETA
 BEGIN TRY
     CREATE TABLE Actividades.CostosPileta (
         ID_CostosPileta INT IDENTITY(1,1) PRIMARY KEY,
@@ -447,7 +430,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA PILETA VERANO
+-- 27 TABLA PILETA VERANO
 BEGIN TRY
     CREATE TABLE Actividades.PiletaVerano (
         ID_ActividadExtra INT PRIMARY KEY,
@@ -464,7 +447,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA ITEM FACTURA
+-- 28 TABLA ITEM FACTURA
 BEGIN TRY
     CREATE TABLE Facturacion.ItemFactura (
         ID_Factura INT,           
@@ -484,7 +467,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA INVITADO
+-- 29 TABLA INVITADO
 BEGIN TRY
     CREATE TABLE Personas.Invitado (
         ID_Invitado INT IDENTITY(1,1) PRIMARY KEY,
@@ -499,7 +482,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA SOCIO REALIZA ACTIVIDAD EXTRA
+-- 30 TABLA SOCIO REALIZA ACTIVIDAD EXTRA
 BEGIN TRY
     CREATE TABLE Actividades.SocioRealizaActividadExtra (
         ID_Socio VARCHAR(15),
@@ -515,7 +498,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA INVITACION PILETA
+-- 31 TABLA INVITACION PILETA
 BEGIN TRY
     CREATE TABLE Actividades.InvitacionPileta (
         ID_Socio_Invitante VARCHAR(15),
@@ -533,7 +516,23 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- TABLA EMPLEADO
+-- 32 TABLA CLIMA
+
+BEGIN TRY
+    CREATE TABLE Actividades.Clima (
+        Fecha DATETIME PRIMARY KEY,
+        Temperatura FLOAT,
+        Lluvia FLOAT,
+        Humedad INT,
+        Viento FLOAT
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Clima ya existe';
+END CATCH;
+GO
+
+-- 33 TABLA EMPLEADO
 BEGIN TRY
     CREATE TABLE Administracion.Empleado(
 		ID_Empleado VARCHAR(15)PRIMARY KEY,
@@ -553,20 +552,5 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
     PRINT 'La tabla Empleado ya existe';
-END CATCH;
-GO
-	
--- TABLA CLIMA
-BEGIN TRY
-    CREATE TABLE Actividades.Clima (
-        Fecha DATETIME PRIMARY KEY,
-        Temperatura FLOAT,
-        Lluvia FLOAT,
-        Humedad INT,
-        Viento FLOAT
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla Clima ya existe';
 END CATCH;
 GO
