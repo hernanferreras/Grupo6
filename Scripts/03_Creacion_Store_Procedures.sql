@@ -821,7 +821,7 @@ CREATE OR ALTER PROCEDURE ingresarActividad
    	@Nombre VARCHAR(50),
     @Descripcion VARCHAR(100),
     @CostoMensual DECIMAL(10, 2),
-	FecVigenciaCosto DATE = NULL,
+	@FecVigenciaCosto DATE = NULL
 AS
 BEGIN
 	INSERT INTO Actividades.Actividad(ID_Actividad, Nombre, Descripcion, CostoMensual, FecVigenciaCosto) VALUES(
@@ -1321,7 +1321,7 @@ CREATE OR ALTER PROCEDURE ingresarInvitado
         @ID_Pileta INT
 AS
 BEGIN
-	INSERT INTO Personas.Invitado(@ID_Socio, ID_Pileta) VALUES (
+	INSERT INTO Personas.Invitado(ID_Socio, ID_Pileta) VALUES (
 		@ID_Socio,
 		@ID_Pileta
 	)

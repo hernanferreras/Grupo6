@@ -376,7 +376,7 @@ BEGIN TRY
             ID_Profesor VARCHAR(15),
     		ID_Socio VARCHAR(15),
             FechaActividad DATE NOT NULL,
-            Asistencia CHAR,
+            Asistencia CHAR(1),
     		PRIMARY KEY (ID_Socio, ID_Actividad, ID_Profesor, FechaActividad),
     		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
     		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
