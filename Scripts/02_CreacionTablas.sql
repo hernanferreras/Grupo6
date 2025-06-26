@@ -533,8 +533,30 @@ BEGIN CATCH
 END CATCH;
 GO
 
+-- TABLA EMPLEADO
+BEGIN TRY
+    CREATE TABLE Administracion.Empleado(
+		ID_Empleado VARCHAR(15)PRIMARY KEY,
+        DNI VARBINARY(MAX),
+		FechaNacimiento DATE,
+        FechaIngreso DATE,
+        FechaBaja DATE,
+        Nombre VARBINARY(MAX),
+    	Apellido VARBINARY(MAX),
+    	Email VARBINARY(MAX),
+    	TelefonoContacto VARBINARY(MAX),
+        ID_Rol INT,
+        ID_Usuario INT,
+        FOREIGN KEY (ID_Rol) REFERENCES Administracion.Rol (ID_Rol),
+        FOREIGN KEY (ID_Usuario) REFERENCES Administracion.Usuario (ID_Usuario)
+	)
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Empleado ya existe';
+END CATCH;
+GO
+	
 -- TABLA CLIMA
-
 BEGIN TRY
     CREATE TABLE Actividades.Clima (
         Fecha DATETIME PRIMARY KEY,
