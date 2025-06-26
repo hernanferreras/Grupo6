@@ -295,7 +295,7 @@ GO
 BEGIN TRY
 	CREATE TABLE Facturacion.Descuento (
     		ID_Descuento INT PRIMARY KEY,
-    		Porcentaje DECIMAL(5, 2),
+    		Porcentaje DECIMAL(5, 2) CHECK (Porcentaje BETWEEN 0 AND 100),
             ID_Factura INT NOT NULL,
             FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura)
 	);

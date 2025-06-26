@@ -511,7 +511,9 @@ CREATE OR ALTER PROCEDURE ingresoFactura
 	@FechaVencimiento DATE,
 	@TotalImporte DECIMAL(10,2),
 	@Recargo DECIMAL(10,2),
-	@Estado VARCHAR(30)
+	@Estado VARCHAR(30),
+	@ID_Cuota INT,
+	@ID_Socio VARCHAR(15)
 AS
 BEGIN
 	INSERT INTO Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado) VALUES(
@@ -521,7 +523,9 @@ BEGIN
 		@FechaVencimiento,
 		@TotalImporte,
 		@Recargo,
-		@Estado
+		@Estado,
+		@ID_Cuota,
+		@ID_Socio
 	)
 END;
 GO
@@ -535,7 +539,9 @@ CREATE OR ALTER PROCEDURE modificarFactura
 	@FechaVencimiento DATE = NULL,
 	@TotalImporte DECIMAL(10,2)= NULL,
 	@Recargo DECIMAL(10,2)= NULL,
-	@Estado VARCHAR(30) = NULL
+	@Estado VARCHAR(30) = NULL,
+	@ID_Cuota INT = NULL,
+	@ID_Socio VARCHAR(15) = NULL
 AS
 BEGIN
 	UPDATE Facturacion.Factura SET
@@ -544,7 +550,9 @@ BEGIN
 		FechaVencimiento = ISNULL(@FechaVencimiento, FechaVencimiento),
 		TotalImporte = ISNULL(@TotalImporte, TotalImporte),
 		Recargo = ISNULL(@Recargo, Recargo),
-		Estado = ISNULL(@Estado, Estado)
+		Estado = ISNULL(@Estado, Estado),
+		ID_Cuota = ISNULL(@ID_Cuota, ID_Cuota),
+		ID_Socio = ISNULL(@ID_Socio, ID_Socio)
 	WHERE ID_Factura = @ID_Factura
 END;
 GO
@@ -664,8 +672,8 @@ GO
 --- 40 CREACION DE PROCEDURE ingresarReembolso
 
 CREATE OR ALTER PROCEDURE ingresarReembolso
-	@ID_Reembolso INT, 
-	@Tipo NVARCHAR(30),   
+		@ID_Reembolso INT, 
+		@Tipo NVARCHAR(30),   
         @ID_Pago INT,
     	@Descripcion VARCHAR(100),
     	@FechaReembolso DATE
@@ -674,8 +682,8 @@ BEGIN
 	INSERT INTO Facturacion.Reembolso(ID_Reembolso, Tipo, ID_Pago, Descripcion, FechaReembolso) VALUES(
 		@ID_Reembolso, 
 		@Tipo,   
-        	@ID_Pago,
-    		@Descripcion,
+        @ID_Pago,
+    	@Descripcion,
    		@FechaReembolso
 	)
 END;
@@ -684,8 +692,8 @@ GO
 --- 41 CREACION DE PROCEDURE modificarReembolso
 
 CREATE OR ALTER PROCEDURE modificarReembolso
-	@ID_Reembolso INT = NULL, 
-	@Tipo NVARCHAR(30) = NULL,   
+		@ID_Reembolso INT = NULL, 
+		@Tipo NVARCHAR(30) = NULL,   
         @ID_Pago INT = NULL,
     	@Descripcion VARCHAR(100) = NULL,
     	@FechaReembolso DATE = NULL
@@ -693,9 +701,9 @@ AS
 BEGIN
 	UPDATE Facturacion.Reembolso SET 
 		Tipo = ISNULL(@Tipo, Tipo),   
-        	ID_Pago = ISNULL(@ID_Pago, ID_Pago),
-    		Descripcion = ISNULL(@Descripcion, Descripcion),
-    		FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
+        ID_Pago = ISNULL(@ID_Pago, ID_Pago),
+    	Descripcion = ISNULL(@Descripcion, Descripcion),
+    	FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
 	WHERE ID_Reembolso = @ID_Reembolso
 END;
 GO
@@ -764,13 +772,15 @@ GO
 CREATE OR ALTER PROCEDURE ingresarCuota
 	@ID_Cuota INT,
 	@nroCuota INT,
-	@Estado NVARCHAR(50)
+	@Estado NVARCHAR(50),
+	@ID_Costo INT
 AS
 BEGIN
-	INSERT INTO Facturacion.Cuota(ID_Cuota, nroCuota, Estado) VALUES(
+	INSERT INTO Facturacion.Cuota(ID_Cuota, nroCuota, Estado, ID_Costo) VALUES(
 		@ID_Cuota,
 		@nroCuota,
-		@Estado
+		@Estado,
+		@ID_Costo
 	)
 END;
 GO
@@ -780,12 +790,14 @@ GO
 CREATE OR ALTER PROCEDURE modificarCuota
 	@ID_Cuota INT,
 	@nroCuota INT = NULL,
-	@Estado NVARCHAR(50) = NULL
+	@Estado NVARCHAR(50) = NULL,
+	@ID_Costo INT = NULL
 AS
 BEGIN
 	UPDATE Facturacion.Cuota SET
 		nroCuota = ISNULL(@nroCuota, nroCuota),
-		Estado = ISNULL(@Estado, Estado)
+		Estado = ISNULL(@Estado, Estado),
+		ID_Costo = ISNULL(@ID_Costo, ID_Costo)
 	WHERE ID_Cuota = @ID_Cuota
 END;
 GO
@@ -807,15 +819,17 @@ GO
 CREATE OR ALTER PROCEDURE ingresarActividad
 	@ID_Actividad INT,
    	@Nombre VARCHAR(50),
-    	@Descripcion VARCHAR(100),
-    	@CostoMensual DECIMAL(10, 2)
+    @Descripcion VARCHAR(100),
+    @CostoMensual DECIMAL(10, 2),
+	FecVigenciaCosto DATE = NULL,
 AS
 BEGIN
-	INSERT INTO Actividades.Actividad(ID_Actividad, Nombre, Descripcion, CostoMensual) VALUES(
+	INSERT INTO Actividades.Actividad(ID_Actividad, Nombre, Descripcion, CostoMensual, FecVigenciaCosto) VALUES(
 		@ID_Actividad,
 		@Nombre,
 		@Descripcion,
-		@CostoMensual
+		@CostoMensual,
+		@FecVigenciaCosto
 	)
 END;
 GO
@@ -826,13 +840,15 @@ CREATE OR ALTER PROCEDURE modificarActividad
 	@ID_Actividad INT = NULL,
     @Nombre VARCHAR(50) = NULL,
     @Descripcion VARCHAR(100) = NULL,
-    @CostoMensual DECIMAL(10, 2) = NULL
+    @CostoMensual DECIMAL(10, 2) = NULL,
+	@FecVigenciaCosto DATE = NULL
 AS
 BEGIN
 	UPDATE Actividades.Actividad SET
 		Nombre = ISNULL(@Nombre, Nombre),
 		Descripcion = ISNULL(@Descripcion, Descripcion),
-		CostoMensual = ISNULL(@CostoMensual, CostoMensual)
+		CostoMensual = ISNULL(@CostoMensual, CostoMensual),
+		FecVigenciaCosto = ISNULL(@FecVigenciaCosto, FecVigenciaCosto)
 	WHERE ID_Actividad = @ID_Actividad
 END;
 GO
@@ -856,15 +872,17 @@ CREATE OR ALTER PROCEDURE ingresarClase
     @Dia DATE,
     @HoraInicio TIME,
 	@HoraFin TIME,
-    @ID_Actividad INT
+    @ID_Actividad INT,
+	@Descripcion VARCHAR(200)
 AS
 BEGIN
-	INSERT INTO Actividades.Clase(ID_Clase, Dia, HoraInicio, HoraFin, ID_Actividad) VALUES(
+	INSERT INTO Actividades.Clase(ID_Clase, Dia, HoraInicio, HoraFin, ID_Actividad, Descripcion) VALUES(
 		@ID_Clase,
 		@Dia,
 		@HoraInicio,
 		@HoraFin,
-		@ID_Actividad
+		@ID_Actividad,
+		@Descripcion
 	)
 END;
 GO
@@ -876,14 +894,16 @@ CREATE OR ALTER PROCEDURE modificarClase
     @Dia DATE = NULL,
     @HoraInicio TIME = NULL,
 	@HoraFin TIME = NULL,
-    @ID_Actividad INT = NULL
+    @ID_Actividad INT = NULL,
+	@Descripcion VARCHAR(200) = NULL
 AS
 BEGIN
 	UPDATE Actividades.Clase SET
 		Dia = ISNULL(@Dia, Dia),
 		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
 		HoraFin = ISNULL(@HoraFin, HoraFin),
-		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad)
+		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad),
+		Descripcion = ISNULL(@Descripcion, Descripcion)
 	WHERE ID_Clase = @ID_Clase
 END;
 GO
@@ -904,7 +924,7 @@ GO
 
 CREATE OR ALTER PROCEDURE ingresarClaseDictada
 	@ID_Clase INT,
-    @ID_Profesor INT,
+    @ID_Profesor VARCHAR(15),
     @FechaClase DATE
 AS
 BEGIN
@@ -920,26 +940,26 @@ GO
 
 CREATE OR ALTER PROCEDURE modificarClaseDictada
 	@ID_Clase INT,
-    @ID_Profesor INT = NULL,
+    @ID_Profesor VARCHAR(15) = NULL,
     @FechaClase DATE = NULL
 AS
 BEGIN
 	UPDATE Actividades.ClaseDictada SET
-		ID_Profesor = ISNULL(@ID_Profesor, ID_Profesor),
 		FechaClase = ISNULL(@FechaClase, FechaClase)
-	WHERE ID_Clase = @ID_Clase
+	WHERE ID_Clase = @ID_Clase AND ID_Profesor = @ID_Profesor;
 END;
 GO
 
 --- 57 CREACION DE PROCEDURE eliminarClaseDictada
 
 CREATE OR ALTER PROCEDURE eliminarClaseDictada
-	@ID_Clase INT
+	@ID_Clase INT,
+	@ID_Profesor VARCHAR(15)
 AS
 BEGIN
 	DELETE
 	FROM Actividades.ClaseDictada
-	WHERE ID_Clase = @ID_Clase
+	WHERE ID_Clase = @ID_Clase AND ID_Profesor = @ID_Profesor;
 END;
 GO
 
@@ -948,13 +968,17 @@ GO
 CREATE OR ALTER PROCEDURE ingresarActividadRealizada
 	@ID_Actividad INT,
 	@ID_Socio VARCHAR(15),
-	@FechaActividad DATE
+	@ID_Profesor VARCHAR(15),
+	@FechaActividad DATE,
+	@Asistencia CHAR(1) = NULL
 AS
 BEGIN
-	INSERT INTO Actividades.ActividadRealizada(ID_Actividad, ID_Socio, FechaActividad) VALUES(
+	INSERT INTO Actividades.ActividadRealizada(ID_Actividad, ID_Socio, ID_Profesor, FechaActividad, Asistencia) VALUES(
 		@ID_Actividad,
 		@ID_Socio,
-		@FechaActividad
+		@ID_Profesor,
+		@FechaActividad,
+		@Asistencia
 	)
 END;
 GO
@@ -1088,8 +1112,8 @@ GO
 CREATE OR ALTER PROCEDURE ingresarAlquilerSUM
 	@ID_ActividadExtra INT,
 	@HoraInicio TIME,
-    	@HoraFin TIME,
-    	@Monto DECIMAL(10,2)
+    @HoraFin TIME,
+    @Monto DECIMAL(10,2)
 AS
 BEGIN
 	INSERT INTO Actividades.AlquilerSUM(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
@@ -1130,42 +1154,56 @@ BEGIN
 END;
 GO
 
---- 70 CREACION DE PROCEDURE ingresarTarifaPileta
+--- 70 CREACION DE PROCEDURE ingresarCostosPileta
 
-CREATE OR ALTER PROCEDURE ingresarTarifaPileta
-	@ID_TarifaPileta INT,
-	@Costo DECIMAL(10,2) 
+CREATE OR ALTER PROCEDURE ingresarCostosPileta
+	@CostoSocio DECIMAL(10,2),
+	@CostoSocioMenor DECIMAL(10,2),
+	@CostoInvitado DECIMAL(10,2),
+	@CostoInvitadoMenor DECIMAL(10,2),
+	@FecVigenciaCostos DATE 
 AS
 BEGIN
-	INSERT INTO Actividades.TarifaPileta(ID_TarifaPileta, Costo) VALUES(
-		@ID_TarifaPileta,
-		@Costo
+	INSERT INTO Actividades.CostosPileta(CostoSocio, CostoSocioMenor, CostoInvitado, CostoInvitadoMenor, FecVigenciaCostos) VALUES(
+		@CostoSocio,
+		@CostoSocioMenor,
+		@CostoInvitado,
+		@CostoInvitadoMenor,
+		@FecVigenciaCostos
 	)
 END;
 GO
 
---- 71 CREACION DE PROCEDURE modificarTarifaPileta
+--- 71 CREACION DE PROCEDURE modificarCostosPileta
 
-CREATE OR ALTER PROCEDURE modificarTarifaPileta
-	@ID_TarifaPileta INT,
-	@Costo DECIMAL(10,2) = NULL
+CREATE OR ALTER PROCEDURE modificarCostosPileta
+	@ID_CostosPileta INT,
+	@CostoSocio DECIMAL(10,2) = NULL,
+	@CostoSocioMenor DECIMAL(10,2) = NULL,
+	@CostoInvitado DECIMAL(10,2) = NULL,
+	@CostoInvitadoMenor DECIMAL(10,2) = NULL,
+	@FecVigenciaCostos DATE = NULL
 AS
 BEGIN
-	UPDATE Actividades.TarifaPileta SET
-		Costo = ISNULL(@Costo, Costo)
-	WHERE ID_TarifaPileta = @ID_TarifaPileta
+	UPDATE Actividades.CostosPileta SET
+		CostoSocio = ISNULL(@CostoSocio, CostoSocio),
+		CostoSocioMenor = ISNULL(@CostoSocioMenor, CostoSocioMenor),
+		CostoInvitado = ISNULL(@CostoInvitado, CostoInvitado),
+		CostoInvitadoMenor = ISNULL(@CostoInvitadoMenor, CostoInvitadoMenor),
+		FecVigenciaCostos = ISNULL(@FecVigenciaCostos, FecVigenciaCostos)
+	WHERE ID_CostosPileta = @ID_CostosPileta;
 END;
 GO
 
---- 72 CREACION DE PROCEDURE eliminarTarifaPileta
+--- 72 CREACION DE PROCEDURE eliminarCostosPileta
 
-CREATE OR ALTER PROCEDURE eliminarTarifaPileta
-	@ID_TarifaPileta INT
+CREATE OR ALTER PROCEDURE eliminarCostosPileta
+	@ID_CostosPileta INT
 AS
 BEGIN	
 	DELETE
-	FROM Actividades.TarifaPileta
-	WHERE ID_TarifaPileta = @ID_TarifaPileta
+	FROM Actividades.CostosPileta
+	WHERE ID_CostosPileta = @ID_CostosPileta
 END;
 GO
 
@@ -1245,7 +1283,7 @@ GO
 --- 77 CREACION DE PROCEDURE modificarItemFactura
 	
 CREATE OR ALTER PROCEDURE modificarItemFactura
-	@ID_Factura INT,           
+		@ID_Factura INT,           
     	@ID_Item INT = NULL,          
     	@ID_Actividad INT = NULL,
     	@ID_ActividadExtra INT = NULL,
@@ -1259,19 +1297,20 @@ BEGIN
 		ID_ActividadExtra= ISNULL(@ID_ActividadExtra, ID_ActividadExtra),
 		Descripcion = ISNULL(@Descripcion, Descripcion),
 		Importe = ISNULL(@Importe, Importe)
-	WHERE ID_Factura = @ID_Factura
+	WHERE ID_Factura = @ID_Factura AND ID_Item = @ID_Item
 END;
 GO
 
 --- 78 CREACION DE PROCEDURE eliminarItemFactura
 
 CREATE OR ALTER PROCEDURE eliminarItemFactura
-	@ID_Factura INT
+	@ID_Factura INT,
+	@ID_Item INT
 AS
 BEGIN
 	DELETE
 	FROM Facturacion.ItemFactura
-	WHERE ID_Factura = @ID_Factura
+	WHERE ID_Factura = @ID_Factura AND ID_Item = @ID_Item
 END;
 GO
 
