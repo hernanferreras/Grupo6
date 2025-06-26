@@ -1353,3 +1353,80 @@ BEGIN
 	FROM Personas.Invitado
 	WHERE ID_Invitado = @ID_Invitado
 END;
+
+--- 82 CREACION DE PROCEDURE ingresarEmpleado
+CREATE OR ALTER PROCEDURE ingresarEmpleado
+    @ID_Empleado VARCHAR(15),
+	@DNI VARCHAR(50),
+	@FecNac DATETIME,
+	@FecIngreso DATETIME,
+	@FecBaja DATETIME,
+	@Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+	@Email NVARCHAR(100),
+    @TelContacto VARCHAR(12),
+	@ID_Rol INT,
+	@ID_Usuario INT
+AS
+BEGIN
+    DECLARE @FraseSecreta NVARCHAR(128) = 'ClaveSegura2025!';
+
+    INSERT INTO Administracion.Empleado (ID_Empleado, DNI, FechaNacimiento,
+										FechaIngreso, FechaBaja, Nombre, Apellido, 
+										Email, TelefonoContacto, ID_Rol, ID_Usuario)
+    VALUES (
+	@ID_Empleado,
+	EncryptByPassPhrase(@FraseSecreta, @DNI),
+	@FecNac,
+	@FecIngreso,
+	@FecBaja,
+        EncryptByPassPhrase(@FraseSecreta, @Nombre),
+        EncryptByPassPhrase(@FraseSecreta, @Apellido),
+	ENCRYPTBYPASSPHRASE(@FraseSecreta, @Email),
+	ENCRYPTBYPASSPHRASE(@FraseSecreta, @TelContacto),
+	@ID_Rol,
+	@ID_Usuario
+    );
+END;
+
+
+--- 83 CREACION DE PROCEDURE ModificarEmpleado
+CREATE OR ALTER PROCEDURE modificarEmpleado
+    @ID_Empleado VARCHAR(15),
+	@DNI INT,
+	@FecNac DATE,
+	@FecIngreso DATE,
+	@FecBaja DATE,
+	@Nombre NVARCHAR(50),
+    @Apellido NVARCHAR(50),
+	@Email NVARCHAR(100),
+    @TelContacto VARCHAR(12),
+	@ID_Rol INT,
+	@ID_Usuario INT
+AS
+BEGIN
+    DECLARE @FraseSecreta NVARCHAR(128) = 'ClaveSegura2025!';
+
+    UPDATE Administracion.Empleado
+    SET
+        DNI                 = EncryptByPassPhrase(@FraseSecreta, CONVERT(NVARCHAR, @DNI)),
+        FechaNacimiento     = @FecNac,
+        FechaIngreso        = @FecIngreso,
+        FechaBaja           = @FecBaja,
+        Nombre              = EncryptByPassPhrase(@FraseSecreta, @Nombre),
+        Apellido            = EncryptByPassPhrase(@FraseSecreta, @Apellido),
+        Email               = EncryptByPassPhrase(@FraseSecreta, @Email),
+        TelefonoContacto    = EncryptByPassPhrase(@FraseSecreta, @TelContacto),
+        ID_Rol              = @ID_Rol,
+        ID_Usuario          = @ID_Usuario
+    WHERE ID_Empleado = @ID_Empleado;
+END;
+
+--- 83 CREACION DE PROCEDURE eliminarEmpleado
+CREATE OR ALTER PROCEDURE eliminarEmpleado
+    @ID_Empleado VARCHAR(15)
+AS
+BEGIN
+    DELETE FROM Administracion.Empleado
+    WHERE ID_Empleado = @ID_Empleado;
+END;
