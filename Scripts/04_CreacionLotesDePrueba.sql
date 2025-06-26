@@ -299,3 +299,37 @@ SELECT * FROM Facturacion.Pago
 
 SELECT * FROM Personas.Profesor
 */
+
+
+-- ╔════════════════════════════════════════════╗ 
+-- ║ LOTE DE PRUEBA PARA VERIFICAR ENCRIPTACION ║ 
+-- ╚════════════════════════════════════════════╝ 
+
+EXEC ingresarUsuario @NombreUsuario = 'hola',
+					@Contrasenia = 'hola123',
+					@FechaVigenciaContrasenia = '10-10-2026'
+
+
+
+EXEC IngresarEmpleado @ID_Empleado = 'EM-123', @DNI = '11111111', @FecNac = '1-1-2000', @FecIngreso = '1-1-2020', 
+					  @FecBaja = NULL, @Nombre = 'Juan', @Apellido = 'Perez', @Email = 'JuanPerez@gmail.com',
+					  @TelContacto = '1155556666', @ID_Rol = NULL, @ID_Usuario = NULL;
+
+/*
+SELECT * FROM Administracion.Usuario
+
+SELECT * FROM Administracion.Empleado
+SELECT
+ID_Empleado,
+CONVERT(VARCHAR(8), DecryptByPassPhrase('ClaveSegura2025!', DNI)) AS DNI,
+FechaNacimiento,
+FechaIngreso,
+FechaBaja,
+CONVERT(NVARCHAR(50), DecryptByPassPhrase('ClaveSegura2025!', Nombre)) AS Nombre,
+CONVERT(NVARCHAR(50), DecryptByPassPhrase('ClaveSegura2025!', Apellido)) AS Apellido,
+CONVERT(NVARCHAR(100), DecryptByPassPhrase('ClaveSegura2025!', Email)) AS Email,
+CONVERT(VARCHAR(12), DecryptByPassPhrase('ClaveSegura2025!', TelefonoContacto)) AS TelContacto,
+ID_Rol,
+ID_Usuario
+FROM Administracion.Empleado;
+*/
