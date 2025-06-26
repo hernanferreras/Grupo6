@@ -149,12 +149,14 @@ GO
 
 CREATE OR ALTER PROCEDURE ingresarCategoria
 	@Descripcion VARCHAR(100),
-	@Importe DECIMAL(10,2)
+	@Importe DECIMAL(10,2),
+	@FecVigenciaCosto DATE = NULL
 AS
 BEGIN
-	INSERT INTO Personas.Categoria(Descripcion, Importe) VALUES(
+	INSERT INTO Personas.Categoria(Descripcion, Importe, FecVigenciaCosto) VALUES(
 		@Descripcion,
-		@Importe
+		@Importe,
+		@FecVigenciaCosto
 	)
 END;
 GO
@@ -168,7 +170,7 @@ CREATE OR ALTER PROCEDURE modificarCategoria
 AS
 BEGIN
 	UPDATE Personas.Categoria SET
-		Descripción = ISNULL(@Descripcion, Descripcion),
+		Descripcion = ISNULL(@Descripcion, Descripcion),
 		Importe = ISNULL(@Importe, Importe)
 	WHERE ID_Categoria = @ID_Categoria
 END;
@@ -516,7 +518,7 @@ CREATE OR ALTER PROCEDURE ingresoFactura
 	@ID_Socio VARCHAR(15)
 AS
 BEGIN
-	INSERT INTO Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado) VALUES(
+	INSERT INTO Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, TotalImporte, Recargo, Estado, ID_Cuota, ID_Socio) VALUES(
 		@ID_Factura,
 		@Numero,
 		@FechaEmision,
@@ -1013,7 +1015,7 @@ CREATE OR ALTER PROCEDURE eliminarActividadRealizada
 AS
 BEGIN
 	DELETE
-	FROM Actividades.Actividad
+	FROM Actividades.ActividadRealizada
 	WHERE ID_Socio = @ID_Socio AND
         ID_Actividad = @ID_Actividad AND
         ID_Profesor = @ID_Profesor AND
@@ -1214,15 +1216,15 @@ CREATE OR ALTER PROCEDURE ingresarPiletaVerano
     @HoraInicio TIME,
     @HoraFin TIME,
     @CapacidadMaxima INT,
-    @ID_TarifaPileta INT
+    @ID_CostosPileta INT
 AS
 BEGIN
-	INSERT INTO Actividades.PiletaVerano(ID_ActividadExtra, HoraInicio, HoraFin, CapacidadMaxima, ID_TarifaPileta) VALUES(
+	INSERT INTO Actividades.PiletaVerano(ID_ActividadExtra, HoraInicio, HoraFin, CapacidadMaxima, ID_CostosPileta) VALUES(
 		@ID_ActividadExtra,
 		@HoraInicio,
 		@HoraFin,
 		@CapacidadMaxima,
-		@ID_TarifaPileta
+		@ID_CostosPileta
 	)
 END;
 GO
@@ -1234,14 +1236,14 @@ CREATE OR ALTER PROCEDURE modificarPiletaVerano
     	@HoraInicio TIME = NULL,
     	@HoraFin TIME = NULL, 
     	@CapacidadMaxima INT = NULL,
-    	@ID_TarifaPileta INT = NULL
+    	@ID_CostosPileta INT = NULL
 AS
 BEGIN
 	UPDATE Actividades.PiletaVerano SET
 		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
 		HoraFin = ISNULL(@HoraFin, HoraFin),
 		CapacidadMaxima = ISNULL(@CapacidadMaxima, CapacidadMaxima),
-		ID_TarifaPileta = ISNULL(@ID_TarifaPileta, ID_TarifaPileta)
+		ID_CostosPileta = ISNULL(@ID_CostosPileta, ID_CostosPileta)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 GO
@@ -1332,7 +1334,7 @@ GO
 
 CREATE OR ALTER PROCEDURE modificarInvitado
 		@ID_Invitado INT,
-		@ID_Socio INT = NULL,
+		@ID_Socio VARCHAR(15) = NULL,
 		@ID_Pileta INT = NULL
 AS
 BEGIN
@@ -1346,13 +1348,14 @@ GO
 --- 81 CREACION DE PROCEDURE eliminarInvitado
 
 CREATE OR ALTER PROCEDURE eliminarInvitado
-	@ID_Invitado INT
+	@ID_Invitado VARCHAR(15)
 AS
 BEGIN
 	DELETE
 	FROM Personas.Invitado
-	WHERE ID_Invitado = @ID_Invitado
+	WHERE ID_Invitado = @ID_Invitado;
 END;
+GO
 
 --- 82 CREACION DE PROCEDURE ingresarEmpleado
 CREATE OR ALTER PROCEDURE ingresarEmpleado
