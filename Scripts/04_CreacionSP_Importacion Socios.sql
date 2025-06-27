@@ -57,7 +57,7 @@ BEGIN
     SELECT * FROM OPENROWSET(
         ''Microsoft.ACE.OLEDB.12.0'',
         ''Excel 12.0;Database=' + @RutaArchivo + ';HDR=NO;IMEX=1'',
-        ''SELECT * FROM [Responsables de Pago$]''
+        ''SELECT * FROM [Responsables de Pago$A2:K]''
     );';
 
     EXEC(@sql);

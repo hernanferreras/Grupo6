@@ -31,7 +31,7 @@ BEGIN
         WITH (
             FIRSTROW = 4,
             FIELDTERMINATOR = '','',
-            ROWTERMINATOR = ''\n'',
+            ROWTERMINATOR = ''0x0a'',
             CODEPAGE = ''65001''
         );';
 
