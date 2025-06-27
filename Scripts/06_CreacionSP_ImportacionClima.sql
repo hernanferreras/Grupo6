@@ -75,16 +75,4 @@ BEGIN
     END CATCH
 END
 GO
-
-/*
-EXECUTE ImportarClimaDesdeCSV
-@ruta_archivo = 'C:\ImportacionesSQL\open-meteo-buenosaires_2024.csv'
-
-EXECUTE ImportarClimaDesdeCSV
-@ruta_archivo = 'C:\ImportacionesSQL\open-meteo-buenosaires_2025.csv'
-
-
-
-SELECT * FROM Actividades.Clima
-DELETE FROM Actividades.Clima
-*/
+----------------------------------------------------------------------

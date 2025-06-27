@@ -46,7 +46,7 @@ BEGIN
     SELECT * FROM OPENROWSET(
         ''Microsoft.ACE.OLEDB.12.0'',
         ''Excel 12.0;Database=' + @RutaArchivo + ';HDR=NO;IMEX=1'',
-        ''SELECT * FROM [Responsables de Pago$A2:K]''
+        ''SELECT * FROM [Responsables de Pago$]''
     );';
 
     EXEC(@sql);
@@ -438,30 +438,3 @@ BEGIN
 END
 GO
 -----------------------------------------------------------------
-
-/*
-USE Com5600G06
-GO
-
-EXEC ImportarDatosDesdeExcel
-    @RutaArchivo = 'C:\ImportacionesSQL\Datos socios.xlsx'
-GO
-
-----
-
-SELECT * FROM Personas.Socio
-----
-SELECT * FROM Personas.SocioTutor
-SELECT * FROM Personas.GrupoFamiliar
-----
-SELECT * FROM Facturacion.Pago p
-JOIN Facturacion.MedioDePago mp ON p.ID_MedioDePago = mp.ID_MedioDePago
-----
-SELECT * FROM Actividades.ActividadRealizada
-----
-SELECT * FROM Actividades.Actividad
-SELECT * FROM Personas.Categoria
-SELECT * FROM Actividades.CostosPileta
-
-GO
-*/

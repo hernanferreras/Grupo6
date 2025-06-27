@@ -182,23 +182,3 @@ BEGIN
 END;
 
 -----------------------------------------------------
-
-/*
-EXEC Reportes.MorososRecurrentes
-    @FechaInicio = '2025-01-01',
-    @FechaFin = '2025-12-31';
-GO
-EXEC Reportes.InasistenciasPorCategoriaYActividad
-GO
-EXEC Reportes.SociosConInasistenciasAActividades
-GO
-EXEC Reportes.AcumuladoMensualPorActividad
-GO
-
-SELECT * FROM Personas.Socio
-SELECT * FROM Facturacion.Cuenta
-SELECT * FROM Facturacion.Factura
-SELECT * FROM Facturacion.ItemFactura
-SELECT * FROM Facturacion.Pago
-SELECT * FROM Actividades.Actividad
-*/

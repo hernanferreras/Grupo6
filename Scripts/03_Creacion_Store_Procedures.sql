@@ -204,6 +204,7 @@ BEGIN
 END;
 GO
 
+-- ═══════════════ TABLA SOCIO ═══════════════ --
 --- 13 CREACION PROCEDURE ingresarSocio
 
 CREATE OR ALTER PROCEDURE ingresarSocio
@@ -236,7 +237,6 @@ BEGIN
 END;
 GO
 
--- ═══════════════ TABLA SOCIO ═══════════════ --
 --- 14 CREACION PROCEDURE modificarSocio
 
 CREATE OR ALTER PROCEDURE modificarSocio
@@ -277,7 +277,7 @@ GO
 --- 15 CREACION PROCEDURE eliminarSocio
 
 CREATE OR ALTER PROCEDURE eliminarSocio
-	@ID_Socio INT
+	@ID_Socio VARCHAR(15)
 AS
 BEGIN
 	DELETE
@@ -286,9 +286,12 @@ BEGIN
 END;
 GO
 
+
+-- ═══════════════ TABLA PROFESOR ═══════════════ --
 --- 16 CREACION PROCEDURE ingresarProfesor
 
 CREATE OR ALTER PROCEDURE ingresarProfesor
+	@ID_Profesor VARCHAR(15),
 	@DNI INT,
 	@Especialidad VARCHAR(30),
 	@Nombre VARCHAR(50),
@@ -297,45 +300,45 @@ CREATE OR ALTER PROCEDURE ingresarProfesor
     @TelefonoContacto CHAR(12)
 AS
 BEGIN
-	INSERT INTO Personas.Profesor(DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) VALUES(
+	INSERT INTO Personas.Profesor(ID_Profesor, DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) VALUES(
+		@ID_Profesor,
 		@DNI,
 		@Especialidad,
 		@Nombre,
-    		@Apellido,
-    		@Email,
-    		@TelefonoContacto
+    	@Apellido,
+    	@Email,
+    	@TelefonoContacto
 	)
 END;
 GO
 
--- ═══════════════ TABLA PROFESOR ═══════════════ --
 --- 17 CREACION PROCEDURE modificarProfesor
 
 CREATE OR ALTER PROCEDURE modificarProfesor
-	@ID_Profesor INT = NULL,
+	@ID_Profesor VARCHAR(15) = NULL,
 	@DNI INT = NULL,
 	@Especialidad VARCHAR(30) = NULL,
 	@Nombre VARCHAR(50) = NULL,
-    	@Apellido VARCHAR(50) = NULL,
-    	@Email VARCHAR(50) = NULL,
-    	@TelefonoContacto CHAR(12) = NULL
+    @Apellido VARCHAR(50) = NULL,
+    @Email VARCHAR(50) = NULL,
+    @TelefonoContacto CHAR(12) = NULL
 AS
 BEGIN
 	UPDATE Personas.Profesor SET
-		DNI = ISNULL(@DNI, DNI),
-		Especialidad = ISNULL(@Especialidad, Especialidad),
-		Nombre = ISNULL(@Nombre, Nombre),
-		Apellido = ISNULL(@Apellido, Apellido),
-		Email = ISNULL(@Email, Email),
-		TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto)
-	WHERE ID_PRofesor = @ID_Profesor
+	DNI = ISNULL(@DNI, DNI),
+	Especialidad = ISNULL(@Especialidad, Especialidad),
+	Nombre = ISNULL(@Nombre, Nombre),
+	Apellido = ISNULL(@Apellido, Apellido),
+	Email = ISNULL(@Email, Email),
+	TelefonoContacto = ISNULL(@TelefonoContacto, TelefonoContacto)
+	WHERE ID_Profesor = @ID_Profesor
 END;
 GO
 
 --- 18 CREACION PROCEDURE eliminarProfesor
 
 CREATE OR ALTER PROCEDURE eliminarProfesor
-	@ID_Profesor INT
+	@ID_Profesor VARCHAR(15)
 AS
 BEGIN
 	DELETE
@@ -409,7 +412,7 @@ GO
 
 CREATE OR ALTER PROCEDURE ingresarMedioDePago
 	@ID_MedioDePago INT,
-	@Tipo VARCHAR(15)
+	@Tipo VARCHAR(30)
 AS
 BEGIN
 	INSERT INTO Facturacion.MedioDePago(ID_MedioDePago, Tipo) VALUES(
@@ -423,7 +426,7 @@ GO
 	
 CREATE OR ALTER PROCEDURE modificarMedioDePago	
 	@ID_MedioDePago INT,
-	@Tipo VARCHAR(15) = NULL
+	@Tipo VARCHAR(30) = NULL
 AS
 BEGIN
 	UPDATE Facturacion.MedioDePago SET
@@ -530,7 +533,7 @@ GO
 -- ═══════════════ TABLA FACTURA ═══════════════ --
 --- 31 CREACION DE PROCEDURE ingresoFactura
 
-CREATE OR ALTER PROCEDURE ingresoFactura
+CREATE OR ALTER PROCEDURE ingresarFactura
 	@ID_Factura INT,
 	@Numero VARCHAR(50),
 	@FechaEmision DATE,
@@ -596,6 +599,7 @@ GO
 --- 34 CREACION DE PROCEDURE ingresarPago
 
 CREATE OR ALTER PROCEDURE ingresarPago
+		@ID_Pago INT,
 		@FechaPago DATE,
 		@Monto DECIMAL(10,2),
 		@ID_MedioDePago INT,
@@ -604,7 +608,8 @@ CREATE OR ALTER PROCEDURE ingresarPago
 		@ID_Factura INT
 AS
 BEGIN
-	INSERT INTO Facturacion.Pago(FechaPago, Monto, ID_MedioDePago, NroCuenta, ID_Socio, ID_Factura) VALUES(
+	INSERT INTO Facturacion.Pago(ID_Pago, FechaPago, Monto, ID_MedioDePago, NroCuenta, ID_Socio, ID_Factura) VALUES(
+		@ID_Pago,
 		@FechaPago,
 		@Monto,
 		@ID_MedioDePago,
