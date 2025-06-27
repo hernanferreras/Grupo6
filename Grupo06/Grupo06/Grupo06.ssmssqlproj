@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Grupo06">
+  <Items>
+    <LogicalFolder Name="Connections" Type="2" Sorted="true">
+      <Items />
+    </LogicalFolder>
+    <LogicalFolder Name="Queries" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="00_CreacionBaseDeDatos.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>00_CreacionBaseDeDatos.sql</FullPath>
+        </FileNode>
+        <FileNode Name="01_CreacionEsquemas.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>01_CreacionEsquemas.sql</FullPath>
+        </FileNode>
+        <FileNode Name="02_CreacionTablas.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>02_CreacionTablas.sql</FullPath>
+        </FileNode>
+        <FileNode Name="03_Creacion_Store_Procedures.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>03_Creacion_Store_Procedures.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04_CreacionSP_Importacion Socios.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>04_CreacionSP_Importacion Socios.sql</FullPath>
+        </FileNode>
+        <FileNode Name="05_CreacionSP_ImportacionClima.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>05_CreacionSP_ImportacionClima.sql</FullPath>
+        </FileNode>
+        <FileNode Name="06_CreacionSP_Reportes.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>06_CreacionSP_Reportes.sql</FullPath>
+        </FileNode>
+        <FileNode Name="07_JuegosDePrueba.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>07_JuegosDePrueba.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
+      <Items />
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>
