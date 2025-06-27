@@ -1,6 +1,17 @@
 ﻿USE Com5600G06
 GO
 
+-- Habilita la visualización de opciones avanzadas en SQL Server para poder configurarlas
+EXEC sp_configure 'show advanced options', 1;
+-- Permite ejecutar consultas ad hoc como OPENROWSET para importar datos desde archivos externos como Excel.
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
+
+RECONFIGURE;
+GO
+
+-- ACLARACION: EL USUARIO DE SQL DEBE POSEER PERMISOS DE LECTURA SOBRE EL ARCHIVO .xlsx
+-- EN ESTE CASO EN PARTICULAR TODOS LOS ARCHIVOS DE IMPORTACIÓN ESTAN EN UNA MISMA CARPETA CON LOS PERMISOS CORRESPONDIENTES
+
 --╔═════════════════════════════════════════════════════════════════╗
 --║ CREACION STORE PROCEDURE PARA IMPORTACION DE SOCIOS DESDE .xlsx ║
 --╚═════════════════════════════════════════════════════════════════╝

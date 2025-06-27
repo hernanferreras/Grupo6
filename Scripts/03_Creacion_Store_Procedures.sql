@@ -15,11 +15,11 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 
 -- ═══════════════ TABLA ROL ═══════════════ --
 
---- 01 CREA O MODIFICA SP insertar Rol
+--- 01 CREA O MODIFICA SP ingresar Rol
 USE Com5600G06;
 GO
 
-CREATE OR ALTER PROCEDURE insertarRol
+CREATE OR ALTER PROCEDURE ingresarRol
 	@Nombre VARCHAR(30),    	
 	@Descripcion VARCHAR(60),
 	@Area VARCHAR(50)
