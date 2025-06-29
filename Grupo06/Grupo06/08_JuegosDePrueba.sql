@@ -50,6 +50,10 @@ EXEC Facturacion.VerificarEstadoFactura
 
 EXEC Facturacion.ConsultarSaldoFactura
     @ID_Factura = 100
+    
+-- Intento insertar un reembolso a una factura impaga
+EXEC Facturacion.InsertarReembolso
+    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Dia de lluvia'
 
 -- Inserto un pago para completar el importe total
 EXEC Facturacion.InsertarPago
@@ -61,10 +65,17 @@ EXEC Facturacion.InsertarPago
 EXEC Facturacion.VerificarEstadoFactura 
     @ID_Factura = 100
 
+EXEC Facturacion.ConsultarSaldoFactura
+    @ID_Factura = 100
+
+-- Inserto un reembolso con la factura ya totalmente pagada
+EXEC Facturacion.InsertarReembolso
+    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Dia de lluvia'
 
 SELECT * FROM Facturacion.Factura
 SELECT * FROM Facturacion.Pago
 SELECT * FROM Facturacion.Descuento
+SELECT * FROM Facturacion.Reembolso
 
 
 -- PRUEBAS PARA REEMBOLSOS

@@ -291,17 +291,17 @@ GO
 
 -- 18 TABLA REEMBOLSO
 BEGIN TRY
-	CREATE TABLE Facturacion.Reembolso (
-    	ID_Reembolso VARCHAR(20) PRIMARY KEY, 
-		Tipo NVARCHAR(30),   
-        ID_Pago VARCHAR(20) NOT NULL UNIQUE,
-    	Descripcion VARCHAR(300),
-    	FechaReembolso DATE,
-    	FOREIGN KEY (ID_Pago) REFERENCES Facturacion.Pago(ID_Pago)
-	);
+    CREATE TABLE Facturacion.Reembolso (
+        ID_Reembolso INT IDENTITY(1,1) PRIMARY KEY,               
+        ID_Factura INT NOT NULL,                                 
+        FechaReembolso DATE NOT NULL,                             
+        ImporteReembolso DECIMAL(15,2) NOT NULL CHECK (ImporteReembolso > 0),
+        Descripcion NVARCHAR(300),                                
+        FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura)
+    );
 END TRY
 BEGIN CATCH
-	PRINT 'La Tabla Reembolso ya existe'
+    PRINT 'La tabla Reembolso ya existe.';
 END CATCH;
 GO
 

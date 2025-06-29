@@ -861,54 +861,78 @@ GO
 --- 40 CREACION DE PROCEDURE INSERTAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.InsertarReembolso
-	@ID_Reembolso INT, 
-	@Tipo NVARCHAR(30),   
-    @ID_Pago INT,
-    @Descripcion VARCHAR(100),
-    @FechaReembolso DATE
+    @ID_Factura INT,
+    @FechaReembolso DATE,
+    @ImporteReembolso DECIMAL(15,2),
+    @Descripcion NVARCHAR(300) = NULL
 AS
 BEGIN
-	INSERT INTO Facturacion.Reembolso(ID_Reembolso, Tipo, ID_Pago, Descripcion, FechaReembolso) VALUES(
-		@ID_Reembolso, 
-		@Tipo,   
-        @ID_Pago,
-    	@Descripcion,
-   		@FechaReembolso
-	)
+    -- Verifica que exista la factura
+    IF NOT EXISTS (SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
+    BEGIN
+        PRINT 'La factura asociada no existe.';
+        RETURN;
+    END
+	
+    -- Verifica que la factura esté pagada antes de permitir reembolso
+    IF EXISTS (
+        SELECT 1 
+        FROM Facturacion.Factura 
+        WHERE ID_Factura = @ID_Factura AND Estado <> 'Pagada'
+    )
+    BEGIN
+        PRINT 'Solo se pueden reembolsar facturas completamente pagadas.';
+        RETURN;
+    END
+
+    -- Inserta el reembolso
+    INSERT INTO Facturacion.Reembolso(ID_Factura, FechaReembolso, ImporteReembolso, Descripcion)
+    VALUES (@ID_Factura, @FechaReembolso, @ImporteReembolso, @Descripcion);
 END;
 GO
 
 --- 41 CREACION DE PROCEDURE MODIFICAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.ModificarReembolso
-	@ID_Reembolso INT = NULL, 
-	@Tipo NVARCHAR(30) = NULL,   
-        @ID_Pago INT = NULL,
-    	@Descripcion VARCHAR(100) = NULL,
-    	@FechaReembolso DATE = NULL
+    @ID_Reembolso INT,
+    @ID_Factura INT = NULL,
+    @FechaReembolso DATE = NULL,
+    @ImporteReembolso DECIMAL(15,2) = NULL,
+    @Descripcion NVARCHAR(300) = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Reembolso SET 
-		Tipo = ISNULL(@Tipo, Tipo),   
-        	ID_Pago = ISNULL(@ID_Pago, ID_Pago),
-    		Descripcion = ISNULL(@Descripcion, Descripcion),
-    		FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso)
-	WHERE ID_Reembolso = @ID_Reembolso
+    IF NOT EXISTS (SELECT 1 FROM Facturacion.Reembolso WHERE ID_Reembolso = @ID_Reembolso)
+    BEGIN
+        PRINT 'No se encontró el reembolso especificado.';
+        RETURN;
+    END
+
+    UPDATE Facturacion.Reembolso
+    SET 
+        ID_Factura = ISNULL(@ID_Factura, ID_Factura),
+        FechaReembolso = ISNULL(@FechaReembolso, FechaReembolso),
+        ImporteReembolso = ISNULL(@ImporteReembolso, ImporteReembolso),
+        Descripcion = ISNULL(@Descripcion, Descripcion)
+    WHERE ID_Reembolso = @ID_Reembolso;
 END;
 GO
 
 --- 42 CREACION DE PROCEDURE ELIMINAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.EliminarReembolso
-	@ID_Reembolso INT
+    @ID_Reembolso INT
 AS
 BEGIN
-	DELETE
-	FROM Facturacion.Reembolso
-	WHERE ID_Reembolso = @ID_Reembolso
+    IF NOT EXISTS (SELECT 1 FROM Facturacion.Reembolso WHERE ID_Reembolso = @ID_Reembolso)
+    BEGIN
+        PRINT 'No se encontró el reembolso a eliminar.';
+        RETURN;
+    END
+
+    DELETE FROM Facturacion.Reembolso
+    WHERE ID_Reembolso = @ID_Reembolso;
 END;
 GO
-
 
 -- ═══════════════ TABLA CUOTA ═══════════════ --
 
