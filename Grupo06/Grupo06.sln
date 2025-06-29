@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# SQL Server Management Studio Version 21
+VisualStudioVersion = 17.14.36109.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Grupo06", "Grupo06\Grupo06.ssmssqlproj", "{23561D16-85F3-89F2-7A85-16DEECF21E6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creación de la Base De Datos", "Creación de la Base De Datos", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+	ProjectSection(SolutionItems) = preProject
+		Grupo06\00_CreacionBaseDeDatos.sql = Grupo06\00_CreacionBaseDeDatos.sql
+		Grupo06\01_CreacionEsquemas.sql = Grupo06\01_CreacionEsquemas.sql
+		Grupo06\02_CreacionTablas.sql = Grupo06\02_CreacionTablas.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Creación de SP", "Creación de SP", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Grupo06\03_Creacion_Store_Procedures.sql = Grupo06\03_Creacion_Store_Procedures.sql
+		Grupo06\04_CreacionSP_Importacion Socios.sql = Grupo06\04_CreacionSP_Importacion Socios.sql
+		Grupo06\05_CreacionSP_ImportacionClima.sql = Grupo06\05_CreacionSP_ImportacionClima.sql
+		Grupo06\06_CreacionSP_Reportes.sql = Grupo06\06_CreacionSP_Reportes.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Juegos de prueba", "Juegos de prueba", "{6D2524B0-AF47-44C7-B176-43D27FE11EAF}"
+	ProjectSection(SolutionItems) = preProject
+		Grupo06\07_PruebasImportaciones.sql = Grupo06\07_PruebasImportaciones.sql
+		Grupo06\08_JuegosDePrueba.sql = Grupo06\08_JuegosDePrueba.sql
+		Grupo06\09_PruebasRoles.sql = Grupo06\09_PruebasRoles.sql
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Default = Default|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23561D16-85F3-89F2-7A85-16DEECF21E6A}.Default|Default.ActiveCfg = Default
+		{D9B7FFF2-3542-43CE-AD77-54EDEDC06BAF}.Default|Default.ActiveCfg = Default
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0EAD6A25-2B0B-4DF3-8BB9-2A0D9BB0CEDD}
+	EndGlobalSection
+EndGlobal
