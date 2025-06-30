@@ -221,19 +221,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- 14 TABLA CUOTA
-BEGIN TRY
-	CREATE TABLE Facturacion.Cuota (
-    		ID_Cuota INT PRIMARY KEY,
-    		FechaCuota DATE
-);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Cuota ya existe'
-END CATCH;
-GO
-
--- 15 TABLA DESCUENTO
+-- 14 TABLA DESCUENTO
 BEGIN TRY
 	CREATE TABLE Facturacion.Descuento (
     		ID_Descuento INT PRIMARY KEY,
@@ -246,7 +234,161 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- 16 TABLA FACTURA
+-- 15 TABLA ACTIVIDAD
+BEGIN TRY
+	CREATE TABLE Actividades.Actividad (
+    		ID_Actividad INT IDENTITY (1,1) PRIMARY KEY,
+    		Nombre VARCHAR(60),
+    		Descripcion VARCHAR(255),
+    		CostoMensual DECIMAL(18, 2) NOT NULL,
+            FecVigenciaCosto DATE
+);
+END TRY
+BEGIN CATCH
+	PRINT 'La Tabla Actividad ya existe'
+END CATCH;
+GO
+
+-- 16 TABLA CLASE
+BEGIN TRY
+	CREATE TABLE Actividades.Clase (
+    		ID_Clase INT PRIMARY KEY,
+            Dia DATE,
+    		HoraInicio TIME,
+		    HoraFin TIME,
+    		ID_Actividad INT,
+			Descripcion VARCHAR(200),
+    		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad)
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Clase ya existe'
+END CATCH;
+GO
+
+-- 17 TABLA CLASE DICTADA
+BEGIN TRY
+	CREATE TABLE Actividades.ClaseDictada (
+    		ID_Clase INT,
+    		ID_Profesor VARCHAR(15),
+            FechaClase DATE NOT NULL,
+    		PRIMARY KEY (ID_Clase, ID_Profesor),
+    		FOREIGN KEY (ID_Clase) REFERENCES Actividades.Clase(ID_Clase),
+    		FOREIGN KEY (ID_Profesor) REFERENCES Personas.Profesor(ID_Profesor)
+);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla ClaseDictada ya existe'
+END CATCH;  
+GO
+
+-- 18 TABLA ACTIVIDAD REALIZADA
+BEGIN TRY
+	CREATE TABLE Actividades.ActividadRealizada (
+    		ID_Actividad INT,
+            ID_Profesor VARCHAR(15),
+    		ID_Socio VARCHAR(15),
+            FechaActividad DATE NOT NULL,
+            Asistencia CHAR,
+    		PRIMARY KEY (ID_Socio, ID_Actividad, ID_Profesor, FechaActividad),
+    		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
+    		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
+            FOREIGN KEY (ID_Profesor) REFERENCES Personas.Profesor(ID_Profesor)
+);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla ActividadRealizada ya existe'
+END CATCH;  
+GO
+
+
+-- 19 TABLA ACTIVIDAD EXTRA
+BEGIN TRY
+    CREATE TABLE Actividades.ActividadExtra (
+        ID_ActividadExtra INT PRIMARY KEY,
+        Tipo VARCHAR(50)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla ActividadExtra ya existe';
+END CATCH;
+GO
+
+-- 20 TABLA COLONIA
+BEGIN TRY
+    CREATE TABLE Actividades.Colonia (
+        ID_ActividadExtra INT PRIMARY KEY,
+        Costo DECIMAL(10,2),
+        FechaVigenciaCosto DATE,
+        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla Colonia ya existe';
+END CATCH;
+GO
+
+-- 21 TABLA ALQUILER SUM
+BEGIN TRY
+    CREATE TABLE Actividades.AlquilerSUM (
+        ID_ActividadExtra INT PRIMARY KEY,
+        Costo DECIMAL(10,2),
+        FechaVigenciaCosto DATE,
+        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla AlquilerSUM ya existe';
+END CATCH;
+GO
+
+-- 22 TABLA COSTOS PILETA
+BEGIN TRY
+    CREATE TABLE Actividades.CostosPileta (
+        ID_CostosPileta INT IDENTITY(1,1) PRIMARY KEY,
+        CostoSocio DECIMAL (10,2) NOT NULL,
+        CostoSocioMenor DECIMAL (10,2) NOT NULL,
+        CostoInvitado DECIMAL (10,2) NOT NULL,
+        CostoInvitadoMenor DECIMAL (10,2) NOT NULL,
+        FecVigenciaCostos DATE
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla CostosPileta ya existe';
+END CATCH;
+GO
+
+-- 23 TABLA PILETA VERANO
+BEGIN TRY
+    CREATE TABLE Actividades.PiletaVerano (
+        ID_ActividadExtra INT PRIMARY KEY,
+        CapacidadMaxima INT,
+        ID_CostosPileta INT NOT NULL,
+        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra),
+        FOREIGN KEY (ID_CostosPileta) REFERENCES Actividades.CostosPileta (ID_CostosPileta)
+    );
+END TRY
+BEGIN CATCH
+    PRINT 'La tabla PiletaVerano ya existe';
+END CATCH;
+GO
+
+-- 24 TABLA CUOTA
+BEGIN TRY
+	CREATE TABLE Facturacion.Cuota (
+    	ID_Cuota INT PRIMARY KEY,
+    	FechaCuota DATE,
+    	Descripcion VARCHAR(100),
+    	ID_Actividad INT NOT NULL,
+    	FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad)
+	);
+END TRY
+BEGIN CATCH
+	PRINT 'La tabla Cuota ya existe';
+END CATCH;
+GO
+
+-- 25 TABLA FACTURA
 BEGIN TRY
 	CREATE TABLE Facturacion.Factura (
     		ID_Factura INT PRIMARY KEY,
@@ -269,7 +411,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- 17 TABLA PAGO
+-- 26 TABLA PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.Pago (
 		ID_Pago VARCHAR(20) PRIMARY KEY,
@@ -289,7 +431,7 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- 18 TABLA REEMBOLSO
+-- 27 TABLA REEMBOLSO
 BEGIN TRY
     CREATE TABLE Facturacion.Reembolso (
         ID_Reembolso INT IDENTITY(1,1) PRIMARY KEY,               
@@ -305,161 +447,15 @@ BEGIN CATCH
 END CATCH;
 GO
 
--- 19 TABLA ACTIVIDAD
-BEGIN TRY
-	CREATE TABLE Actividades.Actividad (
-    		ID_Actividad INT IDENTITY (1,1) PRIMARY KEY,
-    		Nombre VARCHAR(60),
-    		Descripcion VARCHAR(255),
-    		CostoMensual DECIMAL(18, 2) NOT NULL,
-            FecVigenciaCosto DATE
-);
-END TRY
-BEGIN CATCH
-	PRINT 'La Tabla Actividad ya existe'
-END CATCH;
-GO
-
--- 20 TABLA CLASE
-BEGIN TRY
-	CREATE TABLE Actividades.Clase (
-    		ID_Clase INT PRIMARY KEY,
-            Dia DATE,
-    		HoraInicio TIME,
-		    HoraFin TIME,
-    		ID_Actividad INT,
-			Descripcion VARCHAR(200),
-    		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad)
-	);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla Clase ya existe'
-END CATCH;
-GO
-
--- 21 TABLA CLASE DICTADA
-BEGIN TRY
-	CREATE TABLE Actividades.ClaseDictada (
-    		ID_Clase INT,
-    		ID_Profesor VARCHAR(15),
-            FechaClase DATE NOT NULL,
-    		PRIMARY KEY (ID_Clase, ID_Profesor),
-    		FOREIGN KEY (ID_Clase) REFERENCES Actividades.Clase(ID_Clase),
-    		FOREIGN KEY (ID_Profesor) REFERENCES Personas.Profesor(ID_Profesor)
-);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla ClaseDictada ya existe'
-END CATCH;  
-GO
-
--- 22 TABLA ACTIVIDAD REALIZADA
-BEGIN TRY
-	CREATE TABLE Actividades.ActividadRealizada (
-    		ID_Actividad INT,
-            ID_Profesor VARCHAR(15),
-    		ID_Socio VARCHAR(15),
-            FechaActividad DATE NOT NULL,
-            Asistencia CHAR,
-    		PRIMARY KEY (ID_Socio, ID_Actividad, ID_Profesor, FechaActividad),
-    		FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
-    		FOREIGN KEY (ID_Socio) REFERENCES Personas.Socio(ID_Socio),
-            FOREIGN KEY (ID_Profesor) REFERENCES Personas.Profesor(ID_Profesor)
-);
-END TRY
-BEGIN CATCH
-	PRINT 'La tabla ActividadRealizada ya existe'
-END CATCH;  
-GO
-
-
--- 23 TABLA ACTIVIDAD EXTRA
-BEGIN TRY
-    CREATE TABLE Actividades.ActividadExtra (
-        ID_ActividadExtra INT PRIMARY KEY,
-        FechaActividadExtra DATE
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla ActividadExtra ya existe';
-END CATCH;
-GO
-
--- 24 TABLA COLONIA
-BEGIN TRY
-    CREATE TABLE Actividades.Colonia (
-        ID_ActividadExtra INT PRIMARY KEY,
-        HoraInicio TIME,
-        HoraFin TIME,
-        Monto DECIMAL(10,2),
-        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla Colonia ya existe';
-END CATCH;
-GO
-
--- 25 TABLA ALQUILER SUM
-BEGIN TRY
-    CREATE TABLE Actividades.AlquilerSUM (
-        ID_ActividadExtra INT PRIMARY KEY,
-        HoraInicio TIME,
-        HoraFin TIME,
-        Monto DECIMAL(10,2),
-        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla AlquilerSUM ya existe';
-END CATCH;
-GO
-
--- 26 TABLA COSTOS PILETA
-BEGIN TRY
-    CREATE TABLE Actividades.CostosPileta (
-        ID_CostosPileta INT IDENTITY(1,1) PRIMARY KEY,
-        CostoSocio DECIMAL (10,2) NOT NULL,
-        CostoSocioMenor DECIMAL (10,2) NOT NULL,
-        CostoInvitado DECIMAL (10,2) NOT NULL,
-        CostoInvitadoMenor DECIMAL (10,2) NOT NULL,
-        FecVigenciaCostos DATE
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla CostosPileta ya existe';
-END CATCH;
-GO
-
--- 27 TABLA PILETA VERANO
-BEGIN TRY
-    CREATE TABLE Actividades.PiletaVerano (
-        ID_ActividadExtra INT PRIMARY KEY,
-        HoraInicio TIME,
-        HoraFin TIME,
-        CapacidadMaxima INT,
-        ID_CostosPileta INT NOT NULL,
-        FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra),
-        FOREIGN KEY (ID_CostosPileta) REFERENCES Actividades.CostosPileta (ID_CostosPileta)
-    );
-END TRY
-BEGIN CATCH
-    PRINT 'La tabla PiletaVerano ya existe';
-END CATCH;
-GO
-
 -- 28 TABLA ITEM FACTURA
 BEGIN TRY
     CREATE TABLE Facturacion.ItemFactura (
-        ID_Factura INT,           
-        ID_Item INT,          
-        ID_Actividad INT,
-        ID_ActividadExtra INT,
+        ID_Factura INT NOT NULL,
+        ID_Item INT NOT NULL,
+        ID_ActividadExtra INT NULL,
         Descripcion VARCHAR(300),
-        Importe DECIMAL(10,2),
         PRIMARY KEY (ID_Factura, ID_Item),
         FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura),
-        FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad),
         FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
     );
 END TRY
@@ -467,6 +463,7 @@ BEGIN CATCH
     PRINT 'La tabla ItemFactura ya existe';
 END CATCH;
 GO
+
 
 -- 29 TABLA INVITADO
 BEGIN TRY

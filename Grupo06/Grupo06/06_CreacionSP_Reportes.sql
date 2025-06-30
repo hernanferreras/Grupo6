@@ -81,18 +81,17 @@ BEGIN
     SET NOCOUNT ON;
 
     WITH PagosPorActividad AS (
-        SELECT
-            a.ID_Actividad,
-            a.Nombre AS Actividad,
-            FORMAT(p.FechaPago, 'yyyy-MM') AS Periodo,
-            SUM(p.Monto) AS MontoMes
-        FROM Facturacion.Pago p
-        INNER JOIN Facturacion.Factura f ON p.ID_Factura = f.ID_Factura
-        INNER JOIN Facturacion.ItemFactura itf ON itf.ID_Factura = f.ID_Factura
-        INNER JOIN Actividades.Actividad a ON a.ID_Actividad = itf.ID_Actividad
-        WHERE p.FechaPago IS NOT NULL
-        GROUP BY a.ID_Actividad, a.Nombre, FORMAT(p.FechaPago, 'yyyy-MM')
-    ),
+    SELECT
+        a.ID_Actividad,
+        a.Nombre AS Actividad,
+        FORMAT(p.FechaPago, 'yyyy-MM') AS Periodo,
+        SUM(p.Monto) AS MontoMes
+    FROM Facturacion.Pago p
+    INNER JOIN Facturacion.Factura f ON p.ID_Factura = f.ID_Factura
+    INNER JOIN Facturacion.Cuota c ON f.ID_Cuota = c.ID_Cuota
+    INNER JOIN Actividades.Actividad a ON c.ID_Actividad = a.ID_Actividad
+    GROUP BY a.ID_Actividad, a.Nombre, FORMAT(p.FechaPago, 'yyyy-MM')
+),
     PagosConMesInt AS (
         SELECT *,
             CAST(LEFT(Periodo, 4) AS INT) AS Anio,

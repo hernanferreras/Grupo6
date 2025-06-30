@@ -131,7 +131,7 @@ CREATE OR ALTER PROCEDURE Personas.InsertarGrupoFamiliar
 AS
 BEGIN	
 	INSERT INTO Personas.GrupoFamiliar(Tamaño, Nombre) VALUES(
-        	@Tamaño,
+        @Tamaño,
 		@Nombre
 	)
 END;
@@ -217,12 +217,12 @@ CREATE OR ALTER PROCEDURE Personas.InsertarSocio
     @Nombre VARCHAR(50),
     @Apellido VARCHAR(50),
     @Email VARCHAR(50),
-    @TelefonoContacto CHAR(30),
-    @TelefonoEmergencia CHAR(30),
+    @TelefonoContacto VARCHAR(30),
+    @TelefonoEmergencia VARCHAR(30),
     @FechaNacimiento DATE,
     @ObraSocial VARCHAR(50),
     @NroSocioObraSocial VARCHAR(25),
-    @TelefonoEmergenciaObraSocial CHAR(30),
+    @TelefonoEmergenciaObraSocial VARCHAR(30),
     @ID_Categoria INT,
     @ID_GrupoFamiliar INT,
 	@ID_Usuario INT
@@ -249,12 +249,12 @@ CREATE OR ALTER PROCEDURE Personas.ModificarSocio
     @Nombre VARCHAR(50) = NULL,
     @Apellido VARCHAR(50) = NULL,
     @Email VARCHAR(50) = NULL,
-    @TelefonoContacto CHAR(30) = NULL,
-    @TelefonoEmergencia CHAR(30) = NULL,
+    @TelefonoContacto VARCHAR(30) = NULL,
+    @TelefonoEmergencia VARCHAR(30) = NULL,
     @FechaNacimiento DATE = NULL,
     @ObraSocial VARCHAR(50) = NULL,
     @NroSocioObraSocial VARCHAR(25) = NULL,
-    @TelefonoEmergenciaObraSocial CHAR(30) = NULL,
+    @TelefonoEmergenciaObraSocial VARCHAR(30) = NULL,
     @ID_Categoria INT = NULL,
     @ID_GrupoFamiliar INT = NULL,
 	@ID_Usuario INT = NULL
@@ -302,7 +302,7 @@ CREATE OR ALTER PROCEDURE Personas.InsertarProfesor
 	@Nombre VARCHAR(50),
     @Apellido VARCHAR(50),
     @Email VARCHAR(50),
-    @TelefonoContacto CHAR(12)
+    @TelefonoContacto VARCHAR(30)
 AS
 BEGIN
 	INSERT INTO Personas.Profesor(ID_Profesor, DNI, Especialidad, Nombre, Apellido, Email, TelefonoContacto) VALUES(
@@ -326,7 +326,7 @@ CREATE OR ALTER PROCEDURE Personas.ModificarProfesor
 	@Nombre VARCHAR(50) = NULL,
     @Apellido VARCHAR(50) = NULL,
     @Email VARCHAR(50) = NULL,
-    @TelefonoContacto CHAR(12) = NULL
+    @TelefonoContacto VARCHAR(30) = NULL
 AS
 BEGIN
 	UPDATE Personas.Profesor SET
@@ -540,22 +540,113 @@ GO
 
 -- ═══════════════ TABLA FACTURA ═══════════════ --
 
---- 31 CREACION DE PROCEDURE INSERTAR FACTURA
+--- 31 CREACION DE PROCEDURE INSERTAR FACTURA PARA ACTIVIDAD
 
-CREATE OR ALTER PROCEDURE Facturacion.InsertarFactura
+CREATE OR ALTER PROCEDURE Facturacion.InsertarFacturaActividad
 	@ID_Factura INT,
 	@Numero VARCHAR(50),
 	@FechaEmision DATE,
 	@FechaVencimiento DATE,
-	@Importe DECIMAL(10,2),
 	@Recargo DECIMAL(10,2),
 	@ID_Cuota INT,
 	@ID_Socio VARCHAR(15),
-	@ID_Descuento INT
+	@ID_Descuento INT = NULL
 AS
 BEGIN
-	INSERT INTO Facturacion.Factura(ID_Factura, Numero, FechaEmision, FechaVencimiento, Importe, 
-									Recargo, Estado, ID_Cuota, ID_Socio, ID_Descuento) VALUES(
+	SET NOCOUNT ON;
+
+	DECLARE @ImporteActividad DECIMAL(10,2);
+
+	IF NOT EXISTS (
+	SELECT 1 FROM Personas.Socio WHERE ID_Socio = @ID_Socio)
+	BEGIN
+		PRINT 'El socio especificado no existe.';
+		RETURN;
+	END
+
+	-- Obtener el importe desde la actividad asociada a la cuota
+	SELECT @ImporteActividad = A.CostoMensual
+	FROM Facturacion.Cuota C
+	INNER JOIN Actividades.Actividad A ON C.ID_Actividad = A.ID_Actividad
+	WHERE C.ID_Cuota = @ID_Cuota;
+
+	IF @ImporteActividad IS NULL
+	BEGIN
+		PRINT 'No se encontró una cuota válida con una actividad asociada.';
+		RETURN;
+	END
+
+	-- Insertar la factura con el importe de la actividad mensual
+	INSERT INTO Facturacion.Factura (
+		ID_Factura, Numero, FechaEmision, FechaVencimiento, Importe,
+		Recargo, Estado, ID_Cuota, ID_Socio, ID_Descuento
+	)
+	VALUES (
+		@ID_Factura,
+		@Numero,
+		@FechaEmision,
+		@FechaVencimiento,
+		@ImporteActividad,
+		@Recargo,
+		'Impaga',
+		@ID_Cuota,
+		@ID_Socio,
+		@ID_Descuento
+	);
+END;
+GO
+
+--- 32 CREACION DE PROCEDURE INSERTAR FACTURA PARA ACTIVIDAD EXTRA
+CREATE OR ALTER PROCEDURE Facturacion.InsertarFacturaActividadExtra
+	@ID_Factura INT,
+	@Numero VARCHAR(50),
+	@FechaEmision DATE,
+	@FechaVencimiento DATE,
+	@Importe DECIMAL(15,2),
+	@Recargo DECIMAL(10,2),
+	@ID_ActividadExtra INT,
+	@ID_Socio VARCHAR(15),
+	@ID_Descuento INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF NOT EXISTS (
+	SELECT 1 FROM Personas.Socio WHERE ID_Socio = @ID_Socio)
+	BEGIN
+		PRINT 'El socio especificado no existe.';
+		RETURN;
+	END
+
+	-- Validar que exista la actividad extra
+	IF NOT EXISTS (
+		SELECT 1 FROM Actividades.ActividadExtra WHERE ID_ActividadExtra = @ID_ActividadExtra)
+	BEGIN
+		PRINT 'La actividad extra indicada no existe.';
+		RETURN;
+	END
+
+	-- Validar que exista el socio
+	IF NOT EXISTS (
+		SELECT 1 FROM Personas.Socio WHERE ID_Socio = @ID_Socio)
+	BEGIN
+		PRINT 'El socio indicado no existe.';
+		RETURN;
+	END
+
+	-- Validar si existe el descuento (si fue proporcionado)
+	IF @ID_Descuento IS NOT NULL AND NOT EXISTS (
+		SELECT 1 FROM Facturacion.Descuento WHERE ID_Descuento = @ID_Descuento)
+	BEGIN
+		PRINT 'El descuento indicado no existe.';
+		RETURN;
+	END
+
+	-- Insertar factura sin ID_Cuota
+	INSERT INTO Facturacion.Factura (
+		ID_Factura, Numero, FechaEmision, FechaVencimiento, Importe,
+		Recargo, Estado, ID_Cuota, ID_Socio, ID_Descuento)
+	VALUES (
 		@ID_Factura,
 		@Numero,
 		@FechaEmision,
@@ -563,12 +654,13 @@ BEGIN
 		@Importe,
 		@Recargo,
 		'Impaga',
-		@ID_Cuota,
+		NULL,
 		@ID_Socio,
 		@ID_Descuento
-	)
+	);
 END;
 GO
+
 /*
 --- 32 CREACION DE PROCEDURE MODIFICAR FACTURA
 
@@ -606,9 +698,9 @@ END;
 GO
 */
 
---- 32 CREACION DE PROCEDURE VERIFICAR ESTADO FACTURA
+--- 33 CREACION DE PROCEDURE ACTUALIZAR ESTADO FACTURA
 
-CREATE OR ALTER PROCEDURE Facturacion.VerificarEstadoFactura
+CREATE OR ALTER PROCEDURE Facturacion.ActualizarEstadoFactura
 	@ID_Factura INT
 AS
 BEGIN
@@ -667,7 +759,7 @@ BEGIN
 END;
 GO
 
---- 32 CREACION DE PROCEDURE CONSULTAR SALDO DE FACTURA
+--- 34 CREACION DE PROCEDURE CONSULTAR SALDO DE FACTURA
 CREATE OR ALTER PROCEDURE Facturacion.ConsultarSaldoFactura
 	@ID_Factura INT
 AS
@@ -675,65 +767,64 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalFactura DECIMAL(15,2);
-    DECLARE @Recargo DECIMAL(10,2);
-    DECLARE @Pagado DECIMAL(15,2);
-    DECLARE @ID_Descuento INT;
-    DECLARE @PorcentajeDescuento INT = 0;
-    DECLARE @TotalConRecargo DECIMAL(15,2);
-    DECLARE @DescuentoAplicado DECIMAL(15,2);
-    DECLARE @TotalFinal DECIMAL(15,2);
-    DECLARE @SaldoPendiente DECIMAL(15,2);
+	DECLARE @Recargo DECIMAL(10,2);
+	DECLARE @Pagado DECIMAL(15,2);
+	DECLARE @ID_Descuento INT;
+	DECLARE @PorcentajeDescuento INT = 0;
+	DECLARE @DescuentoAplicado DECIMAL(15,2);
+	DECLARE @TotalFinal DECIMAL(15,2);
+	DECLARE @SaldoPendiente DECIMAL(15,2);
 
-    -- Verificar existencia de la factura
-    IF NOT EXISTS (SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
-    BEGIN
-        PRINT 'Factura no encontrada.';
-        RETURN;
-    END
+	-- Verificar existencia de la factura
+	IF NOT EXISTS (SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
+	BEGIN
+		PRINT 'Factura no encontrada.';
+		RETURN;
+	END
 
-    -- Obtener datos de la factura
-    SELECT 
-        @TotalFactura = Importe,
-        @Recargo = ISNULL(Recargo, 0),
-        @ID_Descuento = ID_Descuento
-    FROM Facturacion.Factura
-    WHERE ID_Factura = @ID_Factura;
+	-- Obtener datos de la factura
+	SELECT 
+		@TotalFactura = Importe,
+		@Recargo = ISNULL(Recargo, 0),
+		@ID_Descuento = ID_Descuento
+	FROM Facturacion.Factura
+	WHERE ID_Factura = @ID_Factura;
 
-    -- Obtener porcentaje de descuento si existe
-    IF @ID_Descuento IS NOT NULL
-    BEGIN
-        SELECT @PorcentajeDescuento = ISNULL(Porcentaje, 0)
-        FROM Facturacion.Descuento
-        WHERE ID_Descuento = @ID_Descuento;
-    END
+	-- Obtener porcentaje de descuento si existe
+	IF @ID_Descuento IS NOT NULL
+	BEGIN
+		SELECT @PorcentajeDescuento = ISNULL(Porcentaje, 0)
+		FROM Facturacion.Descuento
+		WHERE ID_Descuento = @ID_Descuento;
+	END
 
-    -- Calcular totales
-    SET @TotalConRecargo = @TotalFactura + @Recargo;
-    SET @DescuentoAplicado = @TotalConRecargo * (@PorcentajeDescuento / 100.0);
-    SET @TotalFinal = @TotalConRecargo - @DescuentoAplicado;
+	-- Calcular descuentos y totales
+	SET @DescuentoAplicado = (@TotalFactura + @Recargo) * (@PorcentajeDescuento / 100.0);
+	SET @TotalFinal = (@TotalFactura + @Recargo) - @DescuentoAplicado;
 
-    -- Obtener total pagado
-    SELECT @Pagado = ISNULL(SUM(Monto), 0)
-    FROM Facturacion.Pago
-    WHERE ID_Factura = @ID_Factura;
+	-- Obtener total pagado
+	SELECT @Pagado = ISNULL(SUM(Monto), 0)
+	FROM Facturacion.Pago
+	WHERE ID_Factura = @ID_Factura;
 
-    -- Calcular saldo pendiente
-    SET @SaldoPendiente = @TotalFinal - @Pagado;
+	-- Calcular saldo pendiente
+	SET @SaldoPendiente = @TotalFinal - @Pagado;
 
-    -- Devolver resultados
-    SELECT 
-        @TotalConRecargo AS ImporteOriginal,
-        @PorcentajeDescuento AS PorcentajeDescuento,
-        @DescuentoAplicado AS DescuentoAplicado,
-        @TotalFinal AS ImporteConDescuento,
-        @Pagado AS TotalPagado,
-        @SaldoPendiente AS SaldoPendiente;
+	-- Devolver resultados
+	SELECT 
+		@TotalFactura AS ImporteOriginal,
+		@Recargo AS Recargo,
+		@PorcentajeDescuento AS PorcentajeDescuento,
+		@DescuentoAplicado AS DescuentoAplicado,
+		@TotalFinal AS ImporteConDescuento,
+		@Pagado AS TotalPagado,
+		@SaldoPendiente AS SaldoPendiente;
 END;
 GO
 
 -- ═══════════════ TABLA PAGO ═══════════════ --
 
---- 34 CREACION DE PROCEDURE INSERTAR PAGO
+--- 35 CREACION DE PROCEDURE INSERTAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.InsertarPago
 	@ID_Pago INT,
 	@FechaPago DATE,
@@ -759,7 +850,7 @@ BEGIN
 END;
 GO
 
---- 35 CREACION DE PROCEDURE MODIFICAR PAGO
+--- 36 CREACION DE PROCEDURE MODIFICAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.ModificarPago
 	@ID_Pago INT,
 	@FechaPago DATE,
@@ -791,7 +882,7 @@ BEGIN
 END;
 GO
 
---- 35 CREACION DE PROCEDURE ELIMINAR PAGO
+--- 37 CREACION DE PROCEDURE ELIMINAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.EliminarPago
 	@ID_Pago INT
 AS
@@ -812,7 +903,7 @@ GO
 
 -- ═══════════════ TABLA DESCUENTO ═══════════════ --
 
---- 37 CREACION DE PROCEDURE INSERTAR DESCUENTO
+--- 38 CREACION DE PROCEDURE INSERTAR DESCUENTO
 
 CREATE OR ALTER PROCEDURE Facturacion.InsertarDescuento
 	@ID_Descuento INT,
@@ -828,7 +919,7 @@ BEGIN
 END;
 GO
 
---- 38 CREACION DE PROCEDURE MODIFICAR DESCUENTO
+--- 39 CREACION DE PROCEDURE MODIFICAR DESCUENTO
 
 CREATE OR ALTER PROCEDURE Facturacion.ModificarDescuento
 		@ID_Descuento INT,
@@ -937,41 +1028,85 @@ GO
 -- ═══════════════ TABLA CUOTA ═══════════════ --
 
 --- 43 CREACION DE PROCEDURE INSERTAR CUOTA
-
 CREATE OR ALTER PROCEDURE Facturacion.InsertarCuota
 	@ID_Cuota INT,
-	@FecCuota DATE
+	@FechaCuota DATE,
+	@Descripcion VARCHAR(100),
+	@ID_Actividad INT
 AS
 BEGIN
-	INSERT INTO Facturacion.Cuota(ID_Cuota, FechaCuota) VALUES(
-		@ID_Cuota,
-		@FecCuota
-	)
+	SET NOCOUNT ON;
+	-- Validación: la cuota debe estar asociada a una actividad
+	IF @ID_Actividad IS NULL
+	BEGIN
+		PRINT 'Debe vincular la cuota con una actividad.';
+		RETURN;
+	END
+
+	-- Validar existencia de la actividad
+	IF NOT EXISTS (
+		SELECT 1 FROM Actividades.Actividad WHERE ID_Actividad = @ID_Actividad)
+	BEGIN
+		PRINT 'La actividad especificada no existe.';
+		RETURN;
+	END
+
+	-- Insertar cuota
+	INSERT INTO Facturacion.Cuota (ID_Cuota, FechaCuota, Descripcion, ID_Actividad)
+	VALUES (@ID_Cuota, @FechaCuota, @Descripcion, @ID_Actividad);
 END;
 GO
 
 --- 44 CREACION DE PROCEDURE MODIFICAR CUOTA
-
 CREATE OR ALTER PROCEDURE Facturacion.ModificarCuota
 	@ID_Cuota INT,
-	@FecCuota DATE = NULL
+	@FechaCuota DATE = NULL,
+	@Descripcion VARCHAR(100) = NULL,
+	@ID_Actividad INT = NULL
 AS
 BEGIN
-	UPDATE Facturacion.Cuota SET
-		FechaCuota = ISNULL(@FecCuota, FechaCuota)
-	WHERE ID_Cuota = @ID_Cuota
+	-- Validar existencia de la cuota
+	IF NOT EXISTS (SELECT 1 FROM Facturacion.Cuota WHERE ID_Cuota = @ID_Cuota)
+	BEGIN
+	PRINT 'La cuota indicada no existe.';
+	RETURN;
+	END
+
+	-- Validar existencia de la actividad (si se desea modificar)
+	IF @ID_Actividad IS NOT NULL AND NOT EXISTS (
+		SELECT 1 FROM Actividades.Actividad WHERE ID_Actividad = @ID_Actividad)
+	BEGIN
+		PRINT 'La actividad especificada no existe.';
+		RETURN;
+	END
+
+	-- Actualización
+	UPDATE Facturacion.Cuota
+	SET
+		FechaCuota = ISNULL(@FechaCuota, FechaCuota),
+		Descripcion = ISNULL(@Descripcion, Descripcion),
+		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad)
+	WHERE ID_Cuota = @ID_Cuota;
 END;
 GO
 
 --- 45 CREACION DE PROCEDURE ELIMINAR CUOTA
-
 CREATE OR ALTER PROCEDURE Facturacion.EliminarCuota
 	@ID_Cuota INT
 AS
 BEGIN
-	DELETE
-	FROM Facturacion.Cuota
-	WHERE ID_Cuota = @ID_Cuota
+	-- Validar existencia
+	IF NOT EXISTS (SELECT 1 FROM Facturacion.Cuota WHERE ID_Cuota = @ID_Cuota)
+	BEGIN
+		PRINT 'La cuota indicada no existe.';
+		RETURN;
+	END
+
+	-- Eliminar
+	DELETE FROM Facturacion.Cuota
+	WHERE ID_Cuota = @ID_Cuota;
+
+	PRINT 'Cuota eliminada correctamente.';
 END;
 GO
 
@@ -1189,12 +1324,12 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarActividadExtra
 	@ID_ActividadExtra INT,
-	@FechaActividadExtra DATE
+	@Tipo VARCHAR(50)
 AS
 BEGIN
-	INSERT INTO Actividades.ActividadExtra(ID_ActividadExtra, FechaActividadExtra) VALUES(
+	INSERT INTO Actividades.ActividadExtra(ID_ActividadExtra, Tipo) VALUES(
 		@ID_ActividadExtra,
-		@FechaActividadExtra
+		@Tipo
 	)
 END;
 GO
@@ -1203,11 +1338,11 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarActividadExtra
 	@ID_ActividadExtra INT,
-	@FechaActividadExtra DATE = NULL
+	@Tipo VARCHAR(50)
 AS
 BEGIN
 	UPDATE Actividades.ActividadExtra SET
-		FechaActividadExtra = ISNULL(@FechaActividadExtra, FechaActividadExtra)
+		Tipo = ISNULL(@Tipo, Tipo)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 GO
@@ -1230,17 +1365,15 @@ GO
 --- 61 CREACION DE PROCEDURE INSERTAR COLONIA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarColonia
-		@ID_ActividadExtra INT,
-        @HoraInicio TIME,
-        @HoraFin TIME,
-        @Monto DECIMAL(10,2)
+	@ID_ActividadExtra INT,
+    @Costo DECIMAL(10,2),
+	@FecVigenciaCosto DATE
 AS
 BEGIN
-	INSERT INTO Actividades.Colonia(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
+	INSERT INTO Actividades.Colonia(ID_ActividadExtra, Costo, FechaVigenciaCosto) VALUES(
 		@ID_ActividadExtra,
-        @HoraInicio,
-        @HoraFin,
-        @Monto
+		@Costo,
+		@FecVigenciaCosto
 	)
 END;
 GO
@@ -1249,15 +1382,13 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarColonia
 	@ID_ActividadExtra INT,
-	@HoraInicio TIME = NULL, 
-	@HoraFin TIME = NULL,
-	@Monto DECIMAL(10,2) = NULL
-AS 
+    @Costo DECIMAL(10,2),
+	@FecVigenciaCosto DATE
+AS
 BEGIN
 	UPDATE Actividades.Colonia SET
-		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
-		HoraFin = ISNULL(@HoraFin, HoraFin),
-		Monto = ISNULL(@Monto, Monto)
+		Costo = ISNULL(@Costo, Costo),
+		FechaVigenciaCosto = ISNULL(@FecVigenciaCosto, FechaVigenciaCosto)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 GO
@@ -1281,16 +1412,14 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarAlquilerSUM
 	@ID_ActividadExtra INT,
-	@HoraInicio TIME,
-    	@HoraFin TIME,
-    	@Monto DECIMAL(10,2)
+    @Costo DECIMAL(10,2),
+	@FecVigenciaCosto DATE
 AS
 BEGIN
-	INSERT INTO Actividades.AlquilerSUM(ID_ActividadExtra, HoraInicio, HoraFin, Monto) VALUES(
+	INSERT INTO Actividades.AlquilerSUM(ID_ActividadExtra, Costo, FechaVigenciaCosto) VALUES(
 		@ID_ActividadExtra,
-		@HoraInicio,
-		@HoraFin,
-		@Monto
+		@Costo,
+		@FecVigenciaCosto
 	)
 END;
 GO
@@ -1299,15 +1428,13 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarAlquilerSUM
 	@ID_ActividadExtra INT,
-   	@HoraInicio TIME = NULL,
-    	@HoraFin TIME = NULL,
-    	@Monto DECIMAL(10,2) = NULL
+    @Costo DECIMAL(10,2),
+	@FecVigenciaCosto DATE
 AS
 BEGIN
 	UPDATE Actividades.AlquilerSUM SET
-		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
-		HoraFin = ISNULL(@HoraFin, HoraFin),
-		Monto = ISNULL(@Monto, Monto)	
+		Costo = ISNULL(@Costo, Costo),
+		FechaVigenciaCosto = ISNULL(@FecVigenciaCosto, FechaVigenciaCosto)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 GO
@@ -1319,7 +1446,7 @@ CREATE OR ALTER PROCEDURE Actividades.EliminarAlquilerSUM
 AS
 BEGIN
 	DELETE
-	FROM ActividadExtra.AlquilerSUM
+	FROM Actividades.AlquilerSUM
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
 END;
 GO
@@ -1391,16 +1518,12 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarPiletaVerano
 	@ID_ActividadExtra INT,
-    @HoraInicio TIME,
-    @HoraFin TIME,
     @CapacidadMaxima INT,
     @ID_CostosPileta INT
 AS
 BEGIN
-	INSERT INTO Actividades.PiletaVerano(ID_ActividadExtra, HoraInicio, HoraFin, CapacidadMaxima, ID_CostosPileta) VALUES(
+	INSERT INTO Actividades.PiletaVerano(ID_ActividadExtra, CapacidadMaxima, ID_CostosPileta) VALUES(
 		@ID_ActividadExtra,
-		@HoraInicio,
-		@HoraFin,
 		@CapacidadMaxima,
 		@ID_CostosPileta
 	)
@@ -1411,15 +1534,11 @@ GO
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarPiletaVerano
 	@ID_ActividadExtra INT,
-    	@HoraInicio TIME = NULL,
-    	@HoraFin TIME = NULL, 
-    	@CapacidadMaxima INT = NULL,
-    	@ID_CostosPileta INT = NULL
+    @CapacidadMaxima INT = NULL,
+    @ID_CostosPileta INT = NULL
 AS
 BEGIN
 	UPDATE Actividades.PiletaVerano SET
-		HoraInicio = ISNULL(@HoraInicio, HoraInicio),
-		HoraFin = ISNULL(@HoraFin, HoraFin),
 		CapacidadMaxima = ISNULL(@CapacidadMaxima, CapacidadMaxima),
 		ID_CostosPileta = ISNULL(@ID_CostosPileta, ID_CostosPileta)
 	WHERE ID_ActividadExtra = @ID_ActividadExtra
@@ -1441,31 +1560,72 @@ GO
 
 -- ═══════════════ TABLA ITEM FACTURA ═══════════════ --
 
---- 73 CREACION DE PROCEDURE INSERTAR ITEM FACTURA
+--- 73 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD
 
-CREATE OR ALTER PROCEDURE Facturacion.InsertarItemFactura
-	@ID_Factura INT,           
-    @ID_Item INT,          
-    @ID_Actividad INT,
-    @ID_ActividadExtra INT,
-    @Descripcion VARCHAR(300),
-    @Importe DECIMAL(10,2)
+CREATE OR ALTER PROCEDURE Facturacion.InsertarItemFacturaActividad
+	@ID_Factura INT,
+	@ID_Item INT,
+	@Descripcion VARCHAR(300)
 AS
 BEGIN
-    -- Verificar existencia de la factura
-    IF NOT EXISTS (
-        SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
-    BEGIN
-        PRINT 'La factura indicada no existe.';
-        RETURN;
-    END
+	SET NOCOUNT ON;
 
-    -- Insertar el ítem
-	INSERT INTO Facturacion.ItemFactura(ID_Factura, ID_Item, ID_Actividad, ID_ActividadExtra, Descripcion, Importe) 
-	VALUES (@ID_Factura, @ID_Item, @ID_Actividad, @ID_ActividadExtra, @Descripcion, @Importe);
+	DECLARE @Importe DECIMAL(15,2);
+
+	-- Validar existencia de factura y que tenga cuota
+	SELECT @Importe = Importe
+	FROM Facturacion.Factura
+	WHERE ID_Factura = @ID_Factura AND ID_Cuota IS NOT NULL;
+
+	IF @Importe IS NULL
+	BEGIN
+		PRINT 'La factura no existe o no corresponde a una actividad mensual.';
+		RETURN;
+	END
+
+	-- Insertar ítem sin vínculo a actividad extra
+	INSERT INTO Facturacion.ItemFactura (ID_Factura, ID_Item, Descripcion)
+	VALUES (@ID_Factura, @ID_Item, @Descripcion);
 END;
 GO
 
+--- 74 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD EXTRA
+CREATE OR ALTER PROCEDURE Facturacion.InsertarItemFacturaActividadExtra
+	@ID_Factura INT,
+	@ID_Item INT,
+	@ID_ActividadExtra INT,
+	@Descripcion VARCHAR(300)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @Importe DECIMAL(15,2);
+
+	-- Verificar que la factura exista y que NO tenga cuota (actividad extra)
+	SELECT @Importe = Importe
+	FROM Facturacion.Factura
+	WHERE ID_Factura = @ID_Factura AND ID_Cuota IS NULL;
+
+	IF @Importe IS NULL
+	BEGIN
+		PRINT 'La factura no existe o no corresponde a una actividad extra.';
+		RETURN;
+	END
+
+	-- Verificar que exista la actividad extra
+	IF NOT EXISTS (
+		SELECT 1 FROM Actividades.ActividadExtra WHERE ID_ActividadExtra = @ID_ActividadExtra)
+	BEGIN
+		PRINT 'La actividad extra indicada no existe.';
+		RETURN;
+	END
+
+	-- Insertar ítem con vínculo a actividad extra
+	INSERT INTO Facturacion.ItemFactura (ID_Factura, ID_Item, Descripcion, ID_ActividadExtra)
+	VALUES (@ID_Factura, @ID_Item, @Descripcion, @ID_ActividadExtra);
+END;
+GO
+/*
 --- 74 CREACION DE PROCEDURE MODIFICAR ITEM FACTURA
 	
 CREATE OR ALTER PROCEDURE Facturacion.ModificarItemFactura
@@ -1516,11 +1676,11 @@ BEGIN
 	WHERE ID_Factura = @ID_Factura
 END;
 GO
-
+*/
 
 -- ═══════════════ TABLA INVITADO ═══════════════ --
 
---- 76 CREACION DE PROCEDURE INSERTAR INVITADO
+--- 75 CREACION DE PROCEDURE INSERTAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.InsertarInvitado
 		@ID_Socio VARCHAR(15),
@@ -1534,7 +1694,7 @@ BEGIN
 END;
 GO
 
---- 77 CREACION DE PROCEDURE MODIFICAR INVITADO
+--- 76 CREACION DE PROCEDURE MODIFICAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.ModificarInvitado
 		@ID_Invitado INT,
@@ -1549,7 +1709,7 @@ BEGIN
 END;
 GO
 
---- 78 CREACION DE PROCEDURE ELIMINAR INVITADO
+--- 77 CREACION DE PROCEDURE ELIMINAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.EliminarInvitado
 	@ID_Invitado VARCHAR(15)
@@ -1564,7 +1724,7 @@ GO
 
 -- ═══════════════ TABLA EMPLEADO ═══════════════ --
 
---- 79 CREACION DE PROCEDURE INSERTAR EMPLEADO
+--- 78 CREACION DE PROCEDURE INSERTAR EMPLEADO
 CREATE OR ALTER PROCEDURE Administracion.InsertarEmpleado
     @ID_Empleado VARCHAR(15),
 	@DNI VARCHAR(50),
@@ -1600,7 +1760,7 @@ BEGIN
 END;
 GO
 
---- 80 CREACION DE PROCEDURE MODIFICAR EMPLEADO
+--- 79 CREACION DE PROCEDURE MODIFICAR EMPLEADO
 
 CREATE OR ALTER PROCEDURE Administracion.ModificarEmpleado
     @ID_Empleado VARCHAR(15),
@@ -1634,7 +1794,7 @@ END;
 GO
 
 
---- 81 CREACION DE PROCEDURE ELIMINAR EMPLEADO
+--- 80 CREACION DE PROCEDURE ELIMINAR EMPLEADO
 
 CREATE OR ALTER PROCEDURE Administracion.EliminarEmpleado
     @ID_Empleado VARCHAR(15)
@@ -1645,6 +1805,7 @@ BEGIN
 END;
 GO
 
+--- 80 CREACION DE PROCEDURE MOSTRAR EMPLEADO DESENCRIPTADO
 CREATE OR ALTER PROCEDURE Administracion.MostrarEmpleadoDesencriptado
     @ClaveSecreta NVARCHAR(128)
 AS

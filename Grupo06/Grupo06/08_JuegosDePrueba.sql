@@ -15,7 +15,7 @@ GO
 -- ║ PRUEBAS PARA SP ║ 
 -- ╚═════════════════╝ 
 
---- PAGOS DE UNA FACTURA
+--- FACTURAS DE ACTIVIDADES
 
 -- Inserto socio para la prueba
 EXEC Personas.InsertarSocio
@@ -25,35 +25,37 @@ EXEC Personas.InsertarSocio
 
 -- Inserto descuento
 EXEC Facturacion.InsertarDescuento
-    @ID_Descuento = 1, @Porcentaje = 10, @Descripcion = 'Descuento Día del padre' 
+    @ID_Descuento = 1, @Porcentaje = 10, @Descripcion = 'Descuento mes del padre' 
+
+-- Inserto una cuota
+EXEC Facturacion.InsertarCuota @ID_Cuota = 100, @FechaCuota = '2025-06-01', @Descripcion = 'Cuota Futsal Junio', 
+                               @ID_Actividad = 1;
 
 -- Creo una factura
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 100, @Numero = 100, @FechaEmision = '2025-06-29', @FechaVencimiento = '2025-07-04',
-    @Importe = 30000, @Recargo = 10000, @ID_Cuota = NULL, @ID_Socio = 'SN100', @ID_Descuento = 1;
+EXEC Facturacion.InsertarFacturaActividad
+    @ID_Factura = 100, @Numero = 'F0100', @FechaEmision = '2025-06-02', @FechaVencimiento = '2025-06-07',
+    @Recargo = 10000, @ID_Cuota = 100, @ID_Socio = 'SN100', @ID_Descuento = 1;
 
 -- Verifico su estado (Impaga), y su saldo
-EXEC Facturacion.VerificarEstadoFactura 
-    @ID_Factura = 100
+EXEC Facturacion.ActualizarEstadoFactura  @ID_Factura = 100
 
-EXEC Facturacion.ConsultarSaldoFactura
-    @ID_Factura = 100
+EXEC Facturacion.ConsultarSaldoFactura @ID_Factura = 100
+
+EXEC Facturacion.InsertarItemFacturaActividad  @ID_Factura = 100, @ID_Item = 1, @Descripcion = 'Pago Cuota Futsal Junio';
 
 -- Inserto un pago de casi todo el importe total de la factura
 EXEC Facturacion.InsertarPago
-    @ID_Pago = 100, @FechaPago = '2025-06-29', @Monto = 35999, @ID_MedioDePago = 2, @NroCuenta = NULL,
+    @ID_Pago = 100, @FechaPago = '2025-06-29', @Monto = 31499, @ID_MedioDePago = 2, @NroCuenta = NULL,
     @ID_Socio = 'SN100', @ID_Factura = 100
 
 -- Verifico su estado (Impaga), y su saldo
-EXEC Facturacion.VerificarEstadoFactura 
-    @ID_Factura = 100
+EXEC Facturacion.ActualizarEstadoFactura @ID_Factura = 100
 
-EXEC Facturacion.ConsultarSaldoFactura
-    @ID_Factura = 100
+EXEC Facturacion.ConsultarSaldoFactura @ID_Factura = 100
     
 -- Intento insertar un reembolso a una factura impaga
 EXEC Facturacion.InsertarReembolso
-    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Dia de lluvia'
+    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Semana con cortes de luz'
 
 -- Inserto un pago para completar el importe total
 EXEC Facturacion.InsertarPago
@@ -62,25 +64,78 @@ EXEC Facturacion.InsertarPago
 
 
 -- Verifico su estado (Pagada), al estar pagada se cambia su estado a 'Pagada'
-EXEC Facturacion.VerificarEstadoFactura 
-    @ID_Factura = 100
+EXEC Facturacion.ActualizarEstadoFactura @ID_Factura = 100
 
-EXEC Facturacion.ConsultarSaldoFactura
-    @ID_Factura = 100
+EXEC Facturacion.ConsultarSaldoFactura @ID_Factura = 100
 
 -- Inserto un reembolso con la factura ya totalmente pagada
 EXEC Facturacion.InsertarReembolso
-    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Dia de lluvia'
+    @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Semana con cortes de luz'
 
+/*
 SELECT * FROM Facturacion.Factura
 SELECT * FROM Facturacion.Pago
 SELECT * FROM Facturacion.Descuento
 SELECT * FROM Facturacion.Reembolso
+SELECT * FROM Facturacion.ItemFactura
+*/  
 
+-- FACTURAS DE ACTIVIDADES EXTRA
 
--- PRUEBAS PARA REEMBOLSOS
+-- Inserto las actividades extra
+EXEC Actividades.InsertarActividadExtra @ID_ActividadExtra = 1, @Tipo = 'Colonia';
+EXEC Actividades.InsertarActividadExtra @ID_ActividadExtra = 2, @Tipo = 'Alquiler SUM';
+EXEC Actividades.InsertarActividadExtra @ID_ActividadExtra = 3, @Tipo = 'Pileta Verano';
 
-    
+-- Inserto los costos
+EXEC Actividades.InsertarColonia @ID_ActividadExtra = 1, @Costo = 10000, @FecVigenciaCosto = '2025-12-31';
+EXEC Actividades.InsertarAlquilerSUM @ID_ActividadExtra = 2, @Costo = 15000, @FecVigenciaCosto = '2025-12-31';
+EXEC Actividades.InsertarPiletaVerano @ID_ActividadExtra = 3, @CapacidadMaxima = 20, @ID_CostosPileta = 1;
+
+-- Creo factura para Colonia
+EXEC Facturacion.InsertarFacturaActividadExtra @ID_Factura = 2001, @Numero = 'FX2001', @FechaEmision = '2025-07-01',
+                                               @FechaVencimiento = '2025-07-05', @Importe = 10000, @Recargo = 0, 
+                                               @ID_ActividadExtra = 1, @ID_Socio = 'SN100', @ID_Descuento = NULL;
+-- Creo su item de factura
+EXEC Facturacion.InsertarItemFacturaActividadExtra @ID_Factura = 2001, @ID_Item = 1, @ID_ActividadExtra = 1,
+                                                   @Descripcion = 'Colonia - Julio 2025';
+
+-- Creo factura para Alquiler de SUM
+EXEC Facturacion.InsertarFacturaActividadExtra @ID_Factura = 2002, @Numero = 'FX2002', @FechaEmision = '2025-07-20',
+                                               @FechaVencimiento = '2025-07-25', @Importe = 15000, @Recargo = 0,
+                                               @ID_ActividadExtra = 2, @ID_Socio = 'SN100', @ID_Descuento = NULL;
+-- Creo su item de factura
+EXEC Facturacion.InsertarItemFacturaActividadExtra @ID_Factura = 2002, @ID_Item = 1, @ID_ActividadExtra = 2,
+                                                   @Descripcion = 'Alquiler de SUM - 22 de Julio';
+
+-- Creo factura para Pileta de Verano
+EXEC Facturacion.InsertarFacturaActividadExtra @ID_Factura = 2003, @Numero = 'FX2003', @FechaEmision = '2025-07-10',
+                                               @FechaVencimiento = '2025-07-15', @Importe = 25000, @Recargo = 0,
+                                               @ID_ActividadExtra = 3, @ID_Socio = 'SN100', @ID_Descuento = NULL;
+-- Creo su item de factura
+EXEC Facturacion.InsertarItemFacturaActividadExtra @ID_Factura = 2003, @ID_Item = 1, @ID_ActividadExtra = 3,
+                                                   @Descripcion = 'Pileta de Verano - 15 de Julio';
+
+-- Creo un pago de la totalidad del costo de la pileta
+EXEC Facturacion.InsertarPago @ID_Pago = 2003, @FechaPago = '2025-07-15', @Monto = 25000, @ID_MedioDePago = 2,
+                              @NroCuenta = NULL, @ID_Socio = 'SN-100', @ID_Factura = 2003;
+
+-- Actualizo el estado de la factura de la pileta
+EXEC Facturacion.ActualizarEstadoFactura 
+    @ID_Factura = 2003
+-- Y verifico su saldo
+EXEC Facturacion.ConsultarSaldoFactura
+    @ID_Factura = 2003
+
+-- Creo un reembolso a la Pileta de Verano
+EXEC Facturacion.InsertarReembolso @ID_Factura = 2003, @FechaReembolso = '2025-07-15', 
+                                   @ImporteReembolso = 25000, @Descripcion = 'Dia de lluvia';
+/*
+SELECT * FROM Facturacion.Factura
+SELECT * FROM Facturacion.ItemFactura
+SELECT * FROM Facturacion.Pago p WHERE p.ID_Pago = '2003'
+SELECT * FROM Facturacion.Reembolso
+*/
 
 ----------------------------------TABLA ROL----------------------------------
 --INSERTAR ROL
@@ -252,192 +307,7 @@ EXEC Personas.EliminarCategoria
 
 ---------------------------------------------------------------------------------------------------
 
--- ╔══════════════════════════════╗ 
--- ║ LOTE DE PRUEBA PARA REPORTES ║ 
--- ╚══════════════════════════════╝ 
 
--- CREAR SOCIO
-EXEC Personas.InsertarSocio
-    @ID_Socio = 'SN001', @DNI = 12345678, @Nombre = 'Juan', @Apellido = 'Perez', @Email = 'juan@gmail.com', @TelefonoContacto = '1234-5678',
-    @TelefonoEmergencia = '1234-9999', @FechaNacimiento = '1990-01-01', @ObraSocial = 'OSDE', @NroSocioObraSocial = '0001',
-    @TelefonoEmergenciaObraSocial = '1234-0000', @ID_Categoria = 3, @ID_GrupoFamiliar = NULL, @ID_Usuario = NULL;
-
-EXEC Personas.InsertarSocio
-    @ID_Socio = 'SN002', @DNI = 23456789, @Nombre = 'José', @Apellido = 'Ramirez', @Email = 'jose@gmail.com', @TelefonoContacto = '9876-5432',
-    @TelefonoEmergencia = '1111-2222', @FechaNacimiento = '1980-01-01', @ObraSocial = 'OSDE', @NroSocioObraSocial = '0002',
-    @TelefonoEmergenciaObraSocial = '1234-0000', @ID_Categoria = 3, @ID_GrupoFamiliar = NULL, @ID_Usuario = NULL;
-
-EXEC Personas.InsertarSocio
-    @ID_Socio = 'SN003', @DNI = 34567890, @Nombre = 'Francisco', @Apellido = 'Gonzalez', @Email = 'francisco@gmail.com', @TelefonoContacto = '5555-6666',
-    @TelefonoEmergencia = '7777-8888', @FechaNacimiento = '1970-01-01', @ObraSocial = 'OSDE', @NroSocioObraSocial = '0003',
-    @TelefonoEmergenciaObraSocial = '1234-0000', @ID_Categoria = 3, @ID_GrupoFamiliar = NULL, @ID_Usuario = NULL;
-
--- CREAR CUENTA
-
-EXEC Facturacion.InsertarCuenta
-    @ID_Socio = 'SN001', @NroCuenta = 1, @FechaAlta = '2025-01-01', @FechaBaja = NULL, @Debito = 0, @Credito = 0, @Saldo = 0
-
-EXEC Facturacion.InsertarCuenta
-    @ID_Socio = 'SN002', @NroCuenta = 2, @FechaAlta = '2025-01-01', @FechaBaja = NULL, @Debito = 0, @Credito = 0, @Saldo = 0
-
-EXEC Facturacion.InsertarCuenta
-    @ID_Socio = 'SN003', @NroCuenta = 3, @FechaAlta = '2025-01-01', @FechaBaja = NULL, @Debito = 0, @Credito = 0, @Saldo = 0
-
-
-
--- CREAR FACTURAS 
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 1, @Numero = 'F0001', @FechaEmision = '2025-02-01', @FechaVencimiento = '2025-02-06',
-    @TotalImporte = 25000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN001';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 2, @Numero = 'F0002', @FechaEmision = '2025-02-01', @FechaVencimiento = '2025-02-06',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN001';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 3, @Numero = 'F0003', @FechaEmision = '2025-03-01', @FechaVencimiento = '2025-03-06',
-    @TotalImporte = 25000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN001';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 4, @Numero = 'F0004', @FechaEmision = '2025-03-01', @FechaVencimiento = '2025-03-06',
-    @TotalImporte = 45000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN001';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 5, @Numero = 'F0005', @FechaEmision = '2025-04-01', @FechaVencimiento = '2025-04-06',
-    @TotalImporte = 25000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN001';
-----------
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 6, @Numero = 'F0006', @FechaEmision = '2025-05-03', @FechaVencimiento = '2025-05-08',
-    @TotalImporte = 25000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN002';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 7, @Numero = 'F0007', @FechaEmision = '2025-05-03', @FechaVencimiento = '2025-05-08',
-    @TotalImporte = 25000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN002';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 8, @Numero = 'F0008', @FechaEmision = '2025-05-03', @FechaVencimiento = '2025-05-08',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Pagada', @ID_Cuota = NULL, @ID_Socio = 'SN002';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 9, @Numero = 'F0009', @FechaEmision = '2025-05-03', @FechaVencimiento = '2025-05-08',
-    @TotalImporte = 45000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN002';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 10, @Numero = 'F0010', @FechaEmision = '2025-05-03', @FechaVencimiento = '2025-05-08',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN002';
-----------
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 11, @Numero = 'F0011', @FechaEmision = '2025-05-10', @FechaVencimiento = '2025-05-15',
-    @TotalImporte = 45000, @Recargo = 0, @Estado = 'Pagada', @ID_Cuota = NULL, @ID_Socio = 'SN003';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 12, @Numero = 'F0012', @FechaEmision = '2025-06-10', @FechaVencimiento = '2025-06-15',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN003';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 13, @Numero = 'F0013', @FechaEmision = '2025-07-04', @FechaVencimiento = '2025-07-09',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN003';
-
-EXEC Facturacion.InsertarFactura
-    @ID_Factura = 14, @Numero = 'F0014', @FechaEmision = '2025-08-04', @FechaVencimiento = '2025-08-09',
-    @TotalImporte = 30000, @Recargo = 0, @Estado = 'Impaga', @ID_Cuota = NULL, @ID_Socio = 'SN003';
-
-
--- CREAR ITEM FACTURA (necesario por FK)
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 1, @ID_Item = 1, @ID_Actividad = 1, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Futsal Febrero', @Importe = 25000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 2, @ID_Item = 2, @ID_Actividad = 2, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Vóley Febrero', @Importe = 30000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 3, @ID_Item = 3, @ID_Actividad = 1, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Futsal Marzo', @Importe = 25000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 4, @ID_Item = 4, @ID_Actividad = 5, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Natacion Marzo', @Importe = 45000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 5, @ID_Item = 5, @ID_Actividad = 1, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Futsal Abril', @Importe = 30000;
-----------
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 6, @ID_Item = 6, @ID_Actividad = 1, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Futsal Mayo', @Importe = 25000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 7, @ID_Item = 7, @ID_Actividad = 2, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Voléy Junio', @Importe = 30000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 8, @ID_Item = 8, @ID_Actividad = 3, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Taekwondo Mayo', @Importe = 25000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 9, @ID_Item = 9, @ID_Actividad = 4, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Baile artístico Mayo', @Importe = 30000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 10, @ID_Item = 10, @ID_Actividad = 5, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Natación Mayo', @Importe = 45000;
-----------
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 11, @ID_Item = 11, @ID_Actividad = 5, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Natación Mayo', @Importe = 45000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 12, @ID_Item = 12, @ID_Actividad = 4, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Baile artístico Junio', @Importe = 30000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 13, @ID_Item = 13, @ID_Actividad = 4, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Baile artístico Julio', @Importe = 30000;
-
-EXEC Facturacion.InsertarItemFactura
-    @ID_Factura = 14, @ID_Item = 14, @ID_Actividad = 4, @ID_ActividadExtra = NULL,
-    @Descripcion = 'Cuota Baile artístico Agosto', @Importe = 30000;
-
-
--- CREAR PAGOS
-EXEC Facturacion.InsertarPago
-    @ID_Pago = 1, @FechaPago = '2025-05-04', @Monto = 30000, @ID_MedioDePago = 2, 
-    @NroCuenta = 2, @ID_Socio = 'SN002', @ID_Factura = 8
-
-EXEC Facturacion.InsertarPago
-    @ID_Pago = 2, @FechaPago = '2025-05-10', @Monto = 45000, @ID_MedioDePago = 3, 
-    @NroCuenta = 3, @ID_Socio = 'SN003', @ID_Factura = 11
-
--- ╔═════════════════════╗
--- ║ PRUEBAS DE REPORTES ║
--- ╚═════════════════════╝
-
--- REPORTE MOROSOS RECURRENTES
-EXEC Reportes.MorososRecurrentes
-    @FechaInicio = '2025-01-01',
-    @FechaFin = '2025-12-31';
-
--- REPORTE INSASISTENCIA POR CATEGORIA Y ACTIVIDAD
-EXEC Reportes.InasistenciasPorCategoriaYActividad
-
--- REPORTE SOCIOS CON INASISTENCIA A ACTIVIDADES
-EXEC Reportes.SociosConInasistenciasAActividades
-
--- REPORTE DE ACUMULADO MENSUAL POR ACTIVIDAD
-EXEC Reportes.AcumuladoMensualPorActividad
-
-/*
-SELECT * FROM Personas.Socio
-SELECT * FROM Facturacion.Cuenta
-SELECT * FROM Facturacion.Factura
-SELECT * FROM Facturacion.ItemFactura
-SELECT * FROM Facturacion.Pago
-SELECT * FROM Actividades.Actividad
-*/
 
 
 -- ╔═════════════════════════╗
@@ -445,67 +315,39 @@ SELECT * FROM Actividades.Actividad
 -- ╚═════════════════════════╝
 
 -- INGRESO ROLES
-EXEC Administracion.InsertarRol
-    @Nombre = 'Jefe de Tesorería', @Descripcion = NULL, @Area = 'Tesorería'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Administrativo de Cobranza', @Descripcion = NULL, @Area = 'Tesorería'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Administrativo de Morosidad', @Descripcion = NULL, @Area = 'Tesorería'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Administrativo de Facturación', @Descripcion = NULL, @Area = 'Tesorería'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Administrativo Socio', @Descripcion = NULL, @Area = 'Socios'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Socios web', @Descripcion = NULL, @Area = 'Socios'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Presidente', @Descripcion = NULL, @Area = 'Autoridades'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Vicepresidente', @Descripcion = NULL, @Area = 'Autoridades'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Secretario', @Descripcion = NULL, @Area = 'Autoridades'
-
-EXEC Administracion.InsertarRol
-    @Nombre = 'Vocales', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Jefe de Tesorería', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Cobranza', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Morosidad', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Facturación', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo Socio', @Descripcion = NULL, @Area = 'Socios'
+EXEC Administracion.InsertarRol @Nombre = 'Socios web', @Descripcion = NULL, @Area = 'Socios'
+EXEC Administracion.InsertarRol @Nombre = 'Presidente', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Vicepresidente', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Secretario', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Vocales', @Descripcion = NULL, @Area = 'Autoridades'
 
 
 -- INGRESO USUARIOS
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'PedroRamirez', @Contrasenia = 'Pedro123', @FechaVigenciaContrasenia = '2025-12-31'
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'LauraFernandez', @Contrasenia = 'Laura123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'MarcosGonzalez', @Contrasenia = 'Marcos123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'AnaLopez', @Contrasenia = 'Ana123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'RicardoMartinez', @Contrasenia = 'Ricardo123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'JulietaSuarez', @Contrasenia = 'Julieta123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'CarlosDominguez', @Contrasenia = 'Carlos123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'VeronicaTorres', @Contrasenia = 'Veronica123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'DiegoMoreno', @Contrasenia = 'Diego123', @FechaVigenciaContrasenia = '2025-12-31';
-
-EXEC Administracion.InsertarUsuario
-    @NombreUsuario = 'CamilaGarcia', @Contrasenia = 'Camila123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_PedroRamirez', 
+                                    @Contrasenia = 'Pedro123', @FechaVigenciaContrasenia = '2025-12-31'
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_LauraFernandez', 
+                                    @Contrasenia = 'Laura123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_MarcosGonzalez', 
+                                    @Contrasenia = 'Marcos123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_AnaLopez',
+                                    @Contrasenia = 'Ana123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_RicardoMartinez', 
+                                    @Contrasenia = 'Ricardo123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_JulietaSuarez', 
+                                    @Contrasenia = 'Julieta123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CarlosDominguez',
+                                    @Contrasenia = 'Carlos123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_VeronicaTorres', 
+                                    @Contrasenia = 'Veronica123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_DiegoMoreno',
+                                    @Contrasenia = 'Diego123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CamilaGarcia',
+                                    @Contrasenia = 'Camila123', @FechaVigenciaContrasenia = '2025-12-31';
 
 -- INGRESO EMPLEADOS
 EXEC Administracion.InsertarEmpleado
@@ -565,25 +407,3 @@ SELECT * FROM Administracion.Empleado
 
 EXEC Administracion.MostrarEmpleadoDesencriptado
     @ClaveSecreta = 'ClaveGrupo06'
--- ╔═══════════════════════════════════════╗
--- ║ CREACION DE ROLES EN LA BASE DE DATOS ║
--- ╚═══════════════════════════════════════╝
-
-USE Com5600G06
-GO
-
-CREATE ROLE RolTesoreria;
-CREATE ROLE RolSocios;
-CREATE ROLE RolAutoridades;
-GO
-
-
-GRANT SELECT, CONTROL ON SCHEMA::Facturacion TO RolTesoreria;
--------------------------------------------------------------------
-GRANT SELECT, CONTROL ON SCHEMA::Personas TO RolSocios;
-GRANT SELECT, CONTROL ON SCHEMA::Actividades TO RolSocios;
--------------------------------------------------------------------
-GRANT SELECT, CONTROL ON SCHEMA::Facturacion TO RolAutoridades;
-GRANT SELECT, CONTROL ON SCHEMA::Administracion TO RolAutoridades;
-GRANT SELECT, CONTROL ON SCHEMA::Personas TO RolAutoridades;
-GRANT SELECT, CONTROL ON SCHEMA::Actividades TO RolAutoridades;

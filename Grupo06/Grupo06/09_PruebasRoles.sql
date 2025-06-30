@@ -10,6 +10,28 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 USE Com5600G06
 GO
 
+-- ╔════════════════════════════════════════════╗
+-- ║ CREACION DE ROLES Y ASIGNACIÓN DE PERMISOS ║
+-- ╚════════════════════════════════════════════╝
+
+CREATE ROLE RolTesoreria;
+CREATE ROLE RolSocios;
+CREATE ROLE RolAutoridades;
+GO
+
+
+GRANT SELECT, CONTROL ON SCHEMA::Facturacion TO RolTesoreria;
+-------------------------------------------------------------------
+GRANT SELECT, CONTROL ON SCHEMA::Personas TO RolSocios;
+GRANT SELECT, CONTROL ON SCHEMA::Actividades TO RolSocios;
+-------------------------------------------------------------------
+GRANT SELECT, CONTROL ON SCHEMA::Facturacion TO RolAutoridades;
+GRANT SELECT, CONTROL ON SCHEMA::Administracion TO RolAutoridades;
+GRANT SELECT, CONTROL ON SCHEMA::Personas TO RolAutoridades;
+GRANT SELECT, CONTROL ON SCHEMA::Actividades TO RolAutoridades;
+
+
+
 
 -- ╔═══════════════════════════════════════════╗
 -- ║ PRUEBAS PARA LA COMPROBACIÓN DE LOS ROLES ║
@@ -34,7 +56,8 @@ ALTER ROLE RolAutoridades ADD MEMBER Usuario_CarlosDominguez;
 
     
 /* 
-    EJECUTAR LAS PRUEBAS SEGUN EL USUARIO CORRESPONDIENTE, Y LUEGO PROBARLAS CON USUARIOS DISTINTOS AL INDICADO
+    LLEGADO A ESTE PUNTO SE DEBEN EJECUTAR LAS PRUEBAS SEGUN EL USUARIO CORRESPONDIENTE 
+    CREANDO UNA CONEXION CON DICHO USUARIO, Y LUEGO PROBARLAS CON USUARIOS DISTINTOS AL INDICADO
     PARA CORROBORAR LOS PERMISOS DE CADA AREA/ROL
 */
 
@@ -129,15 +152,3 @@ ALTER ROLE RolAutoridades DROP MEMBER Usuario_CarlosDominguez;
 REVOKE SELECT ON SCHEMA::Personas TO public;
 REVOKE SELECT ON SCHEMA::Facturacion TO public;
 REVOKE SELECT ON SCHEMA::Administracion TO public;
-
-
-
--- VER LOGINS
-SELECT 
-    session_id, login_name, host_name, program_name
-FROM sys.dm_exec_sessions
-WHERE login_name = 'Login_PedroRamirez';
-
-KILL 63
-
-*/
