@@ -7,6 +7,11 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+--                                             ╔═══════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN PASO A PASO ╠═════════════════════════════════════════════*/
+--                                             ╚═══════════════════════╝
+
+
 USE Com5600G06
 GO
 
@@ -15,7 +20,7 @@ GO
 -- ║ PRUEBAS PARA SP ║ 
 -- ╚═════════════════╝ 
 
---- FACTURAS DE ACTIVIDADES
+--- FACTURAS ASOCIADAS A ACTIVIDADES
 
 -- Inserto socio para la prueba
 EXEC Personas.InsertarSocio
@@ -36,12 +41,13 @@ EXEC Facturacion.InsertarFacturaActividad
     @ID_Factura = 100, @Numero = 'F0100', @FechaEmision = '2025-06-02', @FechaVencimiento = '2025-06-07',
     @Recargo = 10000, @ID_Cuota = 100, @ID_Socio = 'SN100', @ID_Descuento = 1;
 
+-- Inserto su item de factura
+EXEC Facturacion.InsertarItemFacturaActividad  @ID_Factura = 100, @ID_Item = 1, @Descripcion = 'Pago Cuota Futsal Junio';
+
 -- Verifico su estado (Impaga), y su saldo
 EXEC Facturacion.ActualizarEstadoFactura  @ID_Factura = 100
 
 EXEC Facturacion.ConsultarSaldoFactura @ID_Factura = 100
-
-EXEC Facturacion.InsertarItemFacturaActividad  @ID_Factura = 100, @ID_Item = 1, @Descripcion = 'Pago Cuota Futsal Junio';
 
 -- Inserto un pago de casi todo el importe total de la factura
 EXEC Facturacion.InsertarPago
@@ -72,15 +78,16 @@ EXEC Facturacion.ConsultarSaldoFactura @ID_Factura = 100
 EXEC Facturacion.InsertarReembolso
     @ID_Factura = 100, @FechaReembolso = '2025-06-29', @ImporteReembolso = 5000, @Descripcion = 'Semana con cortes de luz'
 
-/*
+---- Muestras para la corroborar la correcta insercion de los datos
 SELECT * FROM Facturacion.Factura
 SELECT * FROM Facturacion.Pago
 SELECT * FROM Facturacion.Descuento
 SELECT * FROM Facturacion.Reembolso
 SELECT * FROM Facturacion.ItemFactura
-*/  
 
--- FACTURAS DE ACTIVIDADES EXTRA
+-----------------------------------------------------------------------------
+
+-- FACTURAS ASOCIADAS A ACTIVIDADES EXTRA
 
 -- Inserto las actividades extra
 EXEC Actividades.InsertarActividadExtra @ID_ActividadExtra = 1, @Tipo = 'Colonia';
@@ -130,14 +137,123 @@ EXEC Facturacion.ConsultarSaldoFactura
 -- Creo un reembolso a la Pileta de Verano
 EXEC Facturacion.InsertarReembolso @ID_Factura = 2003, @FechaReembolso = '2025-07-15', 
                                    @ImporteReembolso = 25000, @Descripcion = 'Dia de lluvia';
-/*
+
+
+---- Muestras para la corroborar la correcta insercion de los datos
 SELECT * FROM Facturacion.Factura
 SELECT * FROM Facturacion.ItemFactura
 SELECT * FROM Facturacion.Pago p WHERE p.ID_Pago = '2003'
 SELECT * FROM Facturacion.Reembolso
-*/
 
-----------------------------------TABLA ROL----------------------------------
+
+-----------------------------------------------------------------------------
+
+
+-- ╔═════════════════════════╗
+-- ║ PRUEBAS DE ENCRIPTACIÓN ║
+-- ╚═════════════════════════╝
+
+-- Ingrsamos ROLES
+EXEC Administracion.InsertarRol @Nombre = 'Jefe de Tesorería', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Cobranza', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Morosidad', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Facturación', @Descripcion = NULL, @Area = 'Tesorería'
+EXEC Administracion.InsertarRol @Nombre = 'Administrativo Socio', @Descripcion = NULL, @Area = 'Socios'
+EXEC Administracion.InsertarRol @Nombre = 'Socios web', @Descripcion = NULL, @Area = 'Socios'
+EXEC Administracion.InsertarRol @Nombre = 'Presidente', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Vicepresidente', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Secretario', @Descripcion = NULL, @Area = 'Autoridades'
+EXEC Administracion.InsertarRol @Nombre = 'Vocales', @Descripcion = NULL, @Area = 'Autoridades'
+
+
+-- Ingresamos USUARIOS
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_PedroRamirez', 
+                                    @Contrasenia = 'Pedro123', @FechaVigenciaContrasenia = '2025-12-31'
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_LauraFernandez', 
+                                    @Contrasenia = 'Laura123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_MarcosGonzalez', 
+                                    @Contrasenia = 'Marcos123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_AnaLopez',
+                                    @Contrasenia = 'Ana123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_RicardoMartinez', 
+                                    @Contrasenia = 'Ricardo123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_JulietaSuarez', 
+                                    @Contrasenia = 'Julieta123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CarlosDominguez',
+                                    @Contrasenia = 'Carlos123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_VeronicaTorres', 
+                                    @Contrasenia = 'Veronica123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_DiegoMoreno',
+                                    @Contrasenia = 'Diego123', @FechaVigenciaContrasenia = '2025-12-31';
+EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CamilaGarcia',
+                                    @Contrasenia = 'Camila123', @FechaVigenciaContrasenia = '2025-12-31';
+
+-- Ingresamos los EMPLEADOS, con sus respectivos roles y usuarios
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0001', @DNI = 20000001, @FecNac = '1980-02-20', @FecIngreso = '2004-06-15', @FecBaja = NULL, 
+    @Nombre = 'Pedro', @Apellido = 'Ramirez', @Email = 'PedroR@gmail.com', 
+    @TelContacto = '1120001111', @ID_Rol = 1, @ID_Usuario = 1
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0002', @DNI = 20000002, @FecNac = '1982-03-10', @FecIngreso = '2004-06-16', @FecBaja = NULL,
+    @Nombre = 'Laura', @Apellido = 'Fernandez', @Email = 'LauraF@gmail.com',
+    @TelContacto = '1120002222', @ID_Rol = 2, @ID_Usuario = 2;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0003', @DNI = 20000003, @FecNac = '1985-04-25', @FecIngreso = '2004-06-17', @FecBaja = NULL,
+    @Nombre = 'Marcos', @Apellido = 'Gonzalez', @Email = 'MarcosG@gmail.com',
+    @TelContacto = '1120003333', @ID_Rol = 3, @ID_Usuario = 3;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0004', @DNI = 20000004, @FecNac = '1987-06-14', @FecIngreso = '2004-06-18', @FecBaja = NULL,
+    @Nombre = 'Ana', @Apellido = 'Lopez', @Email = 'AnaL@gmail.com',
+    @TelContacto = '1120004444', @ID_Rol = 4, @ID_Usuario = 4;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0005', @DNI = 20000005, @FecNac = '1990-07-30', @FecIngreso = '2004-06-19', @FecBaja = NULL,
+    @Nombre = 'Ricardo', @Apellido = 'Martinez', @Email = 'RicardoM@gmail.com',
+    @TelContacto = '1120005555', @ID_Rol = 5, @ID_Usuario = 5;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0006', @DNI = 20000006, @FecNac = '1988-09-05', @FecIngreso = '2004-06-20', @FecBaja = NULL,
+    @Nombre = 'Julieta', @Apellido = 'Suarez', @Email = 'JulietaS@gmail.com',
+    @TelContacto = '1120006666', @ID_Rol = 6, @ID_Usuario = 6;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0007', @DNI = 20000007, @FecNac = '1991-10-22', @FecIngreso = '2004-06-21', @FecBaja = NULL,
+    @Nombre = 'Carlos', @Apellido = 'Dominguez', @Email = 'CarlosD@gmail.com',
+    @TelContacto = '1120007777', @ID_Rol = 7, @ID_Usuario = 7;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0008', @DNI = 20000008, @FecNac = '1983-11-11', @FecIngreso = '2004-06-22', @FecBaja = NULL,
+    @Nombre = 'Verónica', @Apellido = 'Torres', @Email = 'VeronicaT@gmail.com',
+    @TelContacto = '1120008888', @ID_Rol = 8, @ID_Usuario = 8;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0009', @DNI = 20000009, @FecNac = '1986-12-03', @FecIngreso = '2004-06-23', @FecBaja = NULL,
+    @Nombre = 'Diego', @Apellido = 'Moreno', @Email = 'DiegoM@gmail.com',
+    @TelContacto = '1120009999', @ID_Rol = 9, @ID_Usuario = 9;
+
+EXEC Administracion.InsertarEmpleado
+    @ID_Empleado = 'EM-0010', @DNI = 20000010, @FecNac = '1992-01-08', @FecIngreso = '2004-06-24', @FecBaja = NULL,
+    @Nombre = 'Camila', @Apellido = 'Garcia', @Email = 'CamilaG@gmail.com',
+    @TelContacto = '1120010000', @ID_Rol = 10, @ID_Usuario = 10;
+
+
+---- Muestras para la corroborar la correcta insercion de los datos
+SELECT * FROM Administracion.Rol
+SELECT * FROM Administracion.Usuario
+SELECT * FROM Administracion.Empleado
+
+---- Muestra de los empleados con sus datos desencriptados
+EXEC Administracion.MostrarEmpleadoDesencriptado
+    @ClaveSecreta = 'ClaveGrupo06'
+
+---------------------------------------------------------------------------------------------------
+
+
+
+    ----------------------------------TABLA ROL----------------------------------
 --INSERTAR ROL
 
 -- PRUEBA 1: Insertar rol válido= '2025-07-04', 
@@ -307,103 +423,3 @@ EXEC Personas.EliminarCategoria
 
 ---------------------------------------------------------------------------------------------------
 
-
-
-
--- ╔═════════════════════════╗
--- ║ PRUEBAS DE ENCRIPTACIÓN ║
--- ╚═════════════════════════╝
-
--- INGRESO ROLES
-EXEC Administracion.InsertarRol @Nombre = 'Jefe de Tesorería', @Descripcion = NULL, @Area = 'Tesorería'
-EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Cobranza', @Descripcion = NULL, @Area = 'Tesorería'
-EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Morosidad', @Descripcion = NULL, @Area = 'Tesorería'
-EXEC Administracion.InsertarRol @Nombre = 'Administrativo de Facturación', @Descripcion = NULL, @Area = 'Tesorería'
-EXEC Administracion.InsertarRol @Nombre = 'Administrativo Socio', @Descripcion = NULL, @Area = 'Socios'
-EXEC Administracion.InsertarRol @Nombre = 'Socios web', @Descripcion = NULL, @Area = 'Socios'
-EXEC Administracion.InsertarRol @Nombre = 'Presidente', @Descripcion = NULL, @Area = 'Autoridades'
-EXEC Administracion.InsertarRol @Nombre = 'Vicepresidente', @Descripcion = NULL, @Area = 'Autoridades'
-EXEC Administracion.InsertarRol @Nombre = 'Secretario', @Descripcion = NULL, @Area = 'Autoridades'
-EXEC Administracion.InsertarRol @Nombre = 'Vocales', @Descripcion = NULL, @Area = 'Autoridades'
-
-
--- INGRESO USUARIOS
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_PedroRamirez', 
-                                    @Contrasenia = 'Pedro123', @FechaVigenciaContrasenia = '2025-12-31'
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_LauraFernandez', 
-                                    @Contrasenia = 'Laura123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_MarcosGonzalez', 
-                                    @Contrasenia = 'Marcos123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_AnaLopez',
-                                    @Contrasenia = 'Ana123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_RicardoMartinez', 
-                                    @Contrasenia = 'Ricardo123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_JulietaSuarez', 
-                                    @Contrasenia = 'Julieta123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CarlosDominguez',
-                                    @Contrasenia = 'Carlos123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_VeronicaTorres', 
-                                    @Contrasenia = 'Veronica123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_DiegoMoreno',
-                                    @Contrasenia = 'Diego123', @FechaVigenciaContrasenia = '2025-12-31';
-EXEC Administracion.InsertarUsuario @NombreUsuario = 'Usuario_CamilaGarcia',
-                                    @Contrasenia = 'Camila123', @FechaVigenciaContrasenia = '2025-12-31';
-
--- INGRESO EMPLEADOS
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0001', @DNI = 20000001, @FecNac = '1980-02-20', @FecIngreso = '2004-06-15', @FecBaja = NULL, 
-    @Nombre = 'Pedro', @Apellido = 'Ramirez', @Email = 'PedroR@gmail.com', 
-    @TelContacto = '1120001111', @ID_Rol = 1, @ID_Usuario = 1
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0002', @DNI = 20000002, @FecNac = '1982-03-10', @FecIngreso = '2004-06-16', @FecBaja = NULL,
-    @Nombre = 'Laura', @Apellido = 'Fernandez', @Email = 'LauraF@gmail.com',
-    @TelContacto = '1120002222', @ID_Rol = 2, @ID_Usuario = 2;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0003', @DNI = 20000003, @FecNac = '1985-04-25', @FecIngreso = '2004-06-17', @FecBaja = NULL,
-    @Nombre = 'Marcos', @Apellido = 'Gonzalez', @Email = 'MarcosG@gmail.com',
-    @TelContacto = '1120003333', @ID_Rol = 3, @ID_Usuario = 3;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0004', @DNI = 20000004, @FecNac = '1987-06-14', @FecIngreso = '2004-06-18', @FecBaja = NULL,
-    @Nombre = 'Ana', @Apellido = 'Lopez', @Email = 'AnaL@gmail.com',
-    @TelContacto = '1120004444', @ID_Rol = 4, @ID_Usuario = 4;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0005', @DNI = 20000005, @FecNac = '1990-07-30', @FecIngreso = '2004-06-19', @FecBaja = NULL,
-    @Nombre = 'Ricardo', @Apellido = 'Martinez', @Email = 'RicardoM@gmail.com',
-    @TelContacto = '1120005555', @ID_Rol = 5, @ID_Usuario = 5;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0006', @DNI = 20000006, @FecNac = '1988-09-05', @FecIngreso = '2004-06-20', @FecBaja = NULL,
-    @Nombre = 'Julieta', @Apellido = 'Suarez', @Email = 'JulietaS@gmail.com',
-    @TelContacto = '1120006666', @ID_Rol = 6, @ID_Usuario = 6;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0007', @DNI = 20000007, @FecNac = '1991-10-22', @FecIngreso = '2004-06-21', @FecBaja = NULL,
-    @Nombre = 'Carlos', @Apellido = 'Dominguez', @Email = 'CarlosD@gmail.com',
-    @TelContacto = '1120007777', @ID_Rol = 7, @ID_Usuario = 7;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0008', @DNI = 20000008, @FecNac = '1983-11-11', @FecIngreso = '2004-06-22', @FecBaja = NULL,
-    @Nombre = 'Verónica', @Apellido = 'Torres', @Email = 'VeronicaT@gmail.com',
-    @TelContacto = '1120008888', @ID_Rol = 8, @ID_Usuario = 8;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0009', @DNI = 20000009, @FecNac = '1986-12-03', @FecIngreso = '2004-06-23', @FecBaja = NULL,
-    @Nombre = 'Diego', @Apellido = 'Moreno', @Email = 'DiegoM@gmail.com',
-    @TelContacto = '1120009999', @ID_Rol = 9, @ID_Usuario = 9;
-
-EXEC Administracion.InsertarEmpleado
-    @ID_Empleado = 'EM-0010', @DNI = 20000010, @FecNac = '1992-01-08', @FecIngreso = '2004-06-24', @FecBaja = NULL,
-    @Nombre = 'Camila', @Apellido = 'Garcia', @Email = 'CamilaG@gmail.com',
-    @TelContacto = '1120010000', @ID_Rol = 10, @ID_Usuario = 10;
-
-
-SELECT * FROM Administracion.Rol
-SELECT * FROM Administracion.Usuario
-SELECT * FROM Administracion.Empleado
-
-EXEC Administracion.MostrarEmpleadoDesencriptado
-    @ClaveSecreta = 'ClaveGrupo06'

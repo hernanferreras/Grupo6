@@ -7,14 +7,18 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+--                                             ╔═════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN EN BLOQUE ╠═════════════════════════════════════════════*/
+--                                             ╚═════════════════════╝
+
+USE Com5600G06;
+GO
+
 -- ╔══════════════════════╗
 -- ║ CREACION DE ESQUEMAS ║
 -- ╚══════════════════════╝
 
 
-USE Com5600G06;
-GO
-	
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Personas')
 BEGIN
 	EXEC('CREATE SCHEMA Personas')

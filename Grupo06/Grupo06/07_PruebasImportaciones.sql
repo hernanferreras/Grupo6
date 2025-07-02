@@ -8,15 +8,19 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 */
 
 
+--                                             ╔═══════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN PASO A PASO ╠═════════════════════════════════════════════*/
+--                                             ╚═══════════════════════╝
+
+USE Com5600G06
+GO
+
 -- ╔═══════════════════════════════════╗ 
 -- ║ LOTE DE PRUEBA PARA IMPORTACIONES ║ 
 -- ╚═══════════════════════════════════╝ 
 
 
-USE Com5600G06
-GO
-
--- INGRESO DE PROFESORES para respetar FK
+-- INGRESO DE PROFESORES para respetar FK a la hora de importar
 
 EXEC Personas.InsertarProfesor 
     @ID_Profesor = 'PF-0001', @DNI = 10000001, @Especialidad = 'Futsal', @Nombre = 'Pablo',
@@ -47,7 +51,7 @@ EXEC Personas.InsertarProfesor
     @Apellido = 'Guiterrez', @Email = 'RoxanaG@gmail.com', @TelefonoContacto = '1177770000';
 
 
--- INGRESO DE MEDIOS DE PAGO para respetar FK
+-- INGRESO DE MEDIOS DE PAGO para respetar FK a la hora de importar
 EXEC Facturacion.InsertarMedioDePago
     @ID_MedioDePago = 1, @Tipo = 'Efectivo'
 
@@ -66,8 +70,10 @@ EXEC ImportarDatosDesdeExcel
     @RutaArchivo = 'D:\ImportacionesSQL\Datos socios.xlsx'
 GO
 
-----
-/*
+
+
+---- Muestras para la corroborar la correcta insercion de los datos
+
 SELECT * FROM Personas.Socio
 ----
 SELECT * FROM Personas.SocioTutor
@@ -82,18 +88,7 @@ SELECT * FROM Actividades.ActividadRealizada
 SELECT * FROM Actividades.Actividad
 SELECT * FROM Personas.Categoria
 SELECT * FROM Actividades.CostosPileta
-*/
 
-/*
-DELETE FROM Personas.SocioTutor
-DELETE FROM Actividades.ActividadRealizada
-DELETE FROM Actividades.Actividad
-DELETE FROM Personas.Categoria
-DELETE FROM Actividades.CostosPileta
-DELETE FROM Facturacion.Pago
-DELETE FROM Personas.Socio
-DELETE FROM Personas.GrupoFamiliar
-*/
 
 ---------------------------------------------------------------------------------------------------
 
@@ -107,4 +102,11 @@ EXECUTE ImportarClimaDesdeCSV
 EXECUTE ImportarClimaDesdeCSV
 @ruta_archivo = 'D:\ImportacionesSQL\open-meteo-buenosaires_2025.csv'
 
--- SELECT * FROM Actividades.Clima
+
+
+---- Muestras para la corroborar la correcta insercion de los datos
+
+SELECT * FROM Actividades.Clima
+
+
+---------------------------------------------------------------------------------------------------

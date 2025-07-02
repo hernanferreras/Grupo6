@@ -7,13 +7,18 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
--- ╔════════════════════╗
--- ║ CREACION DE TABLAS ║
--- ╚════════════════════╝
+--                                             ╔═════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN EN BLOQUE ╠═════════════════════════════════════════════*/
+--                                             ╚═════════════════════╝
 
 
 USE Com5600G06;
 GO
+
+-- ╔════════════════════╗
+-- ║ CREACION DE TABLAS ║
+-- ╚════════════════════╝
+
 
 -- 1 TABLA ROL
 BEGIN TRY
@@ -25,7 +30,7 @@ BEGIN TRY
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Rol ya existe'
+	PRINT 'La Tabla Rol ya existe'
 END CATCH;
 GO
 
@@ -34,11 +39,11 @@ BEGIN TRY
 	CREATE TABLE Personas.GrupoFamiliar (
     		ID_GrupoFamiliar INT IDENTITY(1,1) PRIMARY KEY,
             Tamaño INT,
-		    Nombre VARCHAR(100),
+		    Nombre VARCHAR(50),
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla GrupoFamiliar ya existe'
+	PRINT 'La Tabla GrupoFamiliar ya existe'
 END CATCH;
 GO
 
@@ -46,13 +51,13 @@ GO
 BEGIN TRY
 	CREATE TABLE Personas.Categoria (
     	ID_Categoria INT IDENTITY(1,1) PRIMARY KEY,
-    	Descripcion VARCHAR(100),
+    	Descripcion VARCHAR(200),
     	Importe DECIMAL(10, 2) NOT NULL CHECK (Importe > 0),
         FecVigenciaCosto DATE
 );
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Categoria ya existe'
+	PRINT 'La Tabla Categoria ya existe'
 END CATCH;
 GO
 
@@ -66,7 +71,7 @@ BEGIN TRY
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Usuario ya existe'
+	PRINT 'La Tabla Usuario ya existe'
 END CATCH;
 GO
 
@@ -75,15 +80,15 @@ BEGIN TRY
 	CREATE TABLE Personas.Socio (
 		ID_Socio VARCHAR(15) PRIMARY KEY,
         DNI int CHECK (DNI BETWEEN 100000 AND 99999999),
-        Nombre VARCHAR(50),
-        Apellido VARCHAR(50),
-    	Email VARCHAR(50),
-        TelefonoContacto VARCHAR(50),
-        TelefonoEmergencia VARCHAR(50),
+        Nombre VARCHAR(30),
+        Apellido VARCHAR(30),
+    	Email VARCHAR(70),
+        TelefonoContacto VARCHAR(30),
+        TelefonoEmergencia VARCHAR(30),
     	FechaNacimiento DATE,
     	ObraSocial VARCHAR(50),
     	NroSocioObraSocial VARCHAR(25),
-        TelefonoEmergenciaObraSocial VARCHAR(50),
+        TelefonoEmergenciaObraSocial VARCHAR(30),
     	ID_Categoria INT,
 		ID_GrupoFamiliar INT,                    
     	ID_Usuario INT,
@@ -93,7 +98,7 @@ BEGIN TRY
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Socio ya existe'
+	PRINT 'La Tabla Socio ya existe'
 END CATCH;	
 GO
 
@@ -110,7 +115,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla UsuarioRol ya Existe'   
+    PRINT 'La Tabla UsuarioRol ya Existe'   
 END CATCH;
 GO
 
@@ -126,7 +131,7 @@ BEGIN TRY
 	)
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla SocioTutor ya existe'
+	PRINT 'La Tabla SocioTutor ya existe'
 END CATCH;
 GO
 
@@ -136,14 +141,14 @@ BEGIN TRY
 		ID_Profesor VARCHAR(15)PRIMARY KEY,
         DNI int CHECK (dni BETWEEN 100000 AND 99999999),
 		Especialidad VARCHAR(30),
-        Nombre VARCHAR(50),
-    	Apellido VARCHAR(50),
-    	Email VARCHAR(50),
-    	TelefonoContacto char(12),
+        Nombre VARCHAR(30),
+    	Apellido VARCHAR(30),
+    	Email VARCHAR(70),
+    	TelefonoContacto VARCHAR(30),
 	)
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Profesor ya existe'
+	PRINT 'La Tabla Profesor ya existe'
 END CATCH;
 GO
     
@@ -162,7 +167,7 @@ BEGIN TRY
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Cuenta ya existe'
+	PRINT 'La Tabla Cuenta ya existe'
 END CATCH;
 GO
 
@@ -198,7 +203,7 @@ GO
 BEGIN TRY
 	CREATE TABLE Facturacion.Transferencia (
     		ID_MedioDePago INT PRIMARY KEY,  
-    		NumeroTransaccion NVARCHAR(50),
+    		NumeroTransaccion VARCHAR(50),
     		FOREIGN KEY (ID_MedioDePago) REFERENCES Facturacion.MedioDePago(ID_MedioDePago)
 	);
 END TRY
@@ -226,11 +231,11 @@ BEGIN TRY
 	CREATE TABLE Facturacion.Descuento (
     		ID_Descuento INT PRIMARY KEY,
     		Porcentaje INT CHECK (Porcentaje BETWEEN 1 AND 100),
-            Descripcion NVARCHAR(300)
+            Descripcion VARCHAR(200)
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Descuento ya existe'
+	PRINT 'La Tabla Descuento ya existe'
 END CATCH;
 GO
 
@@ -239,7 +244,7 @@ BEGIN TRY
 	CREATE TABLE Actividades.Actividad (
     		ID_Actividad INT IDENTITY (1,1) PRIMARY KEY,
     		Nombre VARCHAR(60),
-    		Descripcion VARCHAR(255),
+    		Descripcion VARCHAR(200),
     		CostoMensual DECIMAL(18, 2) NOT NULL,
             FecVigenciaCosto DATE
 );
@@ -262,7 +267,7 @@ BEGIN TRY
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Clase ya existe'
+	PRINT 'La Tabla Clase ya existe'
 END CATCH;
 GO
 
@@ -278,7 +283,7 @@ BEGIN TRY
 );
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla ClaseDictada ya existe'
+	PRINT 'La Tabla ClaseDictada ya existe'
 END CATCH;  
 GO
 
@@ -297,7 +302,7 @@ BEGIN TRY
 );
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla ActividadRealizada ya existe'
+	PRINT 'La Tabla ActividadRealizada ya existe'
 END CATCH;  
 GO
 
@@ -310,7 +315,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla ActividadExtra ya existe';
+    PRINT 'La Tabla ActividadExtra ya existe';
 END CATCH;
 GO
 
@@ -324,7 +329,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla Colonia ya existe';
+    PRINT 'La Tabla Colonia ya existe';
 END CATCH;
 GO
 
@@ -338,7 +343,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla AlquilerSUM ya existe';
+    PRINT 'La Tabla AlquilerSUM ya existe';
 END CATCH;
 GO
 
@@ -354,7 +359,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla CostosPileta ya existe';
+    PRINT 'La Tabla CostosPileta ya existe';
 END CATCH;
 GO
 
@@ -369,7 +374,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla PiletaVerano ya existe';
+    PRINT 'La Tabla PiletaVerano ya existe';
 END CATCH;
 GO
 
@@ -378,13 +383,13 @@ BEGIN TRY
 	CREATE TABLE Facturacion.Cuota (
     	ID_Cuota INT PRIMARY KEY,
     	FechaCuota DATE,
-    	Descripcion VARCHAR(100),
+    	Descripcion VARCHAR(200),
     	ID_Actividad INT NOT NULL,
     	FOREIGN KEY (ID_Actividad) REFERENCES Actividades.Actividad(ID_Actividad)
 	);
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Cuota ya existe';
+	PRINT 'La Tabla Cuota ya existe';
 END CATCH;
 GO
 
@@ -407,14 +412,14 @@ BEGIN TRY
 );
 END TRY
 BEGIN CATCH
-	PRINT 'La tabla Factura ya existe'
+	PRINT 'La Tabla Factura ya existe'
 END CATCH;
 GO
 
 -- 26 TABLA PAGO
 BEGIN TRY
 	CREATE TABLE Facturacion.Pago (
-		ID_Pago VARCHAR(20) PRIMARY KEY,
+		ID_Pago BIGINT PRIMARY KEY,
 		FechaPago DATE,
 		Monto DECIMAL(15,2),
 		ID_MedioDePago INT,
@@ -438,12 +443,12 @@ BEGIN TRY
         ID_Factura INT NOT NULL,                                 
         FechaReembolso DATE NOT NULL,                             
         ImporteReembolso DECIMAL(15,2) NOT NULL CHECK (ImporteReembolso > 0),
-        Descripcion NVARCHAR(300),                                
+        Descripcion VARCHAR(200),                                
         FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura)
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla Reembolso ya existe.';
+    PRINT 'La Tabla Reembolso ya existe.';
 END CATCH;
 GO
 
@@ -453,14 +458,14 @@ BEGIN TRY
         ID_Factura INT NOT NULL,
         ID_Item INT NOT NULL,
         ID_ActividadExtra INT NULL,
-        Descripcion VARCHAR(300),
+        Descripcion VARCHAR(200),
         PRIMARY KEY (ID_Factura, ID_Item),
         FOREIGN KEY (ID_Factura) REFERENCES Facturacion.Factura(ID_Factura),
         FOREIGN KEY (ID_ActividadExtra) REFERENCES Actividades.ActividadExtra(ID_ActividadExtra)
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla ItemFactura ya existe';
+    PRINT 'La Tabla ItemFactura ya existe';
 END CATCH;
 GO
 
@@ -476,7 +481,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla Invitado ya existe';
+    PRINT 'La Tabla Invitado ya existe';
 END CATCH;
 GO
 
@@ -492,7 +497,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla SocioRealizaActividadExtra ya existe';
+    PRINT 'La Tabla SocioRealizaActividadExtra ya existe';
 END CATCH;
 GO
 
@@ -510,7 +515,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla InvitacionPileta ya existe';
+    PRINT 'La Tabla InvitacionPileta ya existe';
 END CATCH;
 GO
 
@@ -526,7 +531,7 @@ BEGIN TRY
     );
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla Clima ya existe';
+    PRINT 'La Tabla Clima ya existe';
 END CATCH;
 GO
 
@@ -549,6 +554,6 @@ BEGIN TRY
 	)
 END TRY
 BEGIN CATCH
-    PRINT 'La tabla Empleado ya existe';
+    PRINT 'La Tabla Empleado ya existe';
 END CATCH;
 GO

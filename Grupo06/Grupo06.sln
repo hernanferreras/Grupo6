@@ -23,9 +23,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Juegos de prueba", "Juegos de prueba", "{6D2524B0-AF47-44C7-B176-43D27FE11EAF}"
 	ProjectSection(SolutionItems) = preProject
 		Grupo06\07_PruebasImportaciones.sql = Grupo06\07_PruebasImportaciones.sql
-		Grupo06\08_JuegosDePrueba.sql = Grupo06\08_JuegosDePrueba.sql
 		Grupo06\08_PruebasReportes.sql = Grupo06\08_PruebasReportes.sql
-		Grupo06\09_PruebasRoles.sql = Grupo06\09_PruebasRoles.sql
+		Grupo06\09_JuegosDePrueba.sql = Grupo06\09_JuegosDePrueba.sql
+		Grupo06\10_PruebasRoles.sql = Grupo06\10_PruebasRoles.sql
 	EndProjectSection
 EndProject
 Global
@@ -34,7 +34,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{23561D16-85F3-89F2-7A85-16DEECF21E6A}.Default|Default.ActiveCfg = Default
-		{ECA5CC56-603B-4EDC-9678-0810A75B8894}.Default|Default.ActiveCfg = Default
+		{FDE1E95C-2158-4C76-9892-6E9BBC82B66B}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

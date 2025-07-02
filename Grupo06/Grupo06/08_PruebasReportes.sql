@@ -7,12 +7,18 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+--                                             ╔═══════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN PASO A PASO ╠═════════════════════════════════════════════*/
+--                                             ╚═══════════════════════╝
+
+USE Com5600G06
+GO
 
 -- ╔══════════════════════════════╗ 
 -- ║ LOTE DE PRUEBA PARA REPORTES ║ 
 -- ╚══════════════════════════════╝ 
 
--- CREAR SOCIO
+-- Creamos los socios de prueba
 EXEC Personas.InsertarSocio
     @ID_Socio = 'SN001', @DNI = 12345678, @Nombre = 'Juan', @Apellido = 'Perez', @Email = 'juan@gmail.com', @TelefonoContacto = '1234-5678',
     @TelefonoEmergencia = '1234-9999', @FechaNacimiento = '1990-01-01', @ObraSocial = 'OSDE', @NroSocioObraSocial = '0001',
@@ -28,8 +34,8 @@ EXEC Personas.InsertarSocio
     @TelefonoEmergencia = '7777-8888', @FechaNacimiento = '1970-01-01', @ObraSocial = 'OSDE', @NroSocioObraSocial = '0003',
     @TelefonoEmergenciaObraSocial = '1234-0000', @ID_Categoria = 3, @ID_GrupoFamiliar = NULL, @ID_Usuario = NULL;
 
--- CREAR CUENTA
 
+-- Creamos las CUENTAS asociadas a dichos socios
 EXEC Facturacion.InsertarCuenta
     @ID_Socio = 'SN001', @NroCuenta = 1, @FechaAlta = '2025-01-01', @FechaBaja = NULL, @Debito = 0, @Credito = 0, @Saldo = 0
 EXEC Facturacion.InsertarCuenta
@@ -38,7 +44,7 @@ EXEC Facturacion.InsertarCuenta
     @ID_Socio = 'SN003', @NroCuenta = 3, @FechaAlta = '2025-01-01', @FechaBaja = NULL, @Debito = 0, @Credito = 0, @Saldo = 0
 
 
-
+-- Creamos CUOTAS para poder crear facturas asociadas a ellas
 EXEC Facturacion.InsertarCuota @ID_Cuota = 1, @FechaCuota = '2025-02-01', @Descripcion = 'Cuota Futsal Febrero', @ID_Actividad = 1;
 EXEC Facturacion.InsertarCuota @ID_Cuota = 2, @FechaCuota = '2025-02-01', @Descripcion = 'Cuota Vóley Febrero', @ID_Actividad = 2;
 EXEC Facturacion.InsertarCuota @ID_Cuota = 3, @FechaCuota = '2025-03-01', @Descripcion = 'Cuota Futsal Marzo', @ID_Actividad = 1;
@@ -53,7 +59,7 @@ EXEC Facturacion.InsertarCuota @ID_Cuota = 11, @FechaCuota = '2025-06-01', @Desc
 EXEC Facturacion.InsertarCuota @ID_Cuota = 12, @FechaCuota = '2025-07-01', @Descripcion = 'Cuota Baile artístico Julio', @ID_Actividad = 4;
 EXEC Facturacion.InsertarCuota @ID_Cuota = 13, @FechaCuota = '2025-08-01', @Descripcion = 'Cuota Baile artístico Agosto', @ID_Actividad = 4;
 
--- Crear Facturas (el SP InsertarFactura ya obtiene el importe de la actividad asociada a la cuota)
+-- Creamos las FACTURAS para las cuotas
 EXEC Facturacion.InsertarFacturaActividad @ID_Factura = 1, @Numero = 'F0001', @FechaEmision = '2025-02-01', 
                                           @FechaVencimiento = '2025-02-06', @Recargo = 0, @ID_Cuota = 1, 
                                           @ID_Socio = 'SN001', @ID_Descuento = NULL;
@@ -97,7 +103,7 @@ EXEC Facturacion.InsertarFacturaActividad @ID_Factura = 14, @Numero = 'F0014', @
                                           @FechaVencimiento = '2025-08-09', @Recargo = 0, @ID_Cuota = 13, 
                                           @ID_Socio = 'SN003', @ID_Descuento = NULL;
 
--- Crear ItemFactura
+-- Creamos sus ITEM DE FACTURA
 EXEC Facturacion.InsertarItemFacturaActividad @ID_Factura = 1, @ID_Item = 1, @Descripcion = 'Cuota Futsal Febrero';
 EXEC Facturacion.InsertarItemFacturaActividad @ID_Factura = 2, @ID_Item = 2, @Descripcion = 'Cuota Vóley Febrero';
 EXEC Facturacion.InsertarItemFacturaActividad @ID_Factura = 3, @ID_Item = 3, @Descripcion = 'Cuota Futsal Marzo';
@@ -114,15 +120,25 @@ EXEC Facturacion.InsertarItemFacturaActividad @ID_Factura = 13, @ID_Item = 13, @
 EXEC Facturacion.InsertarItemFacturaActividad @ID_Factura = 14, @ID_Item = 14, @Descripcion = 'Cuota Baile artístico Agosto';
 
 
--- CREAR PAGOS
+-- Creamos PAGOS asociados a las facturas
 EXEC Facturacion.InsertarPago @ID_Pago = 1, @FechaPago = '2025-05-04', @Monto = 30000, @ID_MedioDePago = 2, 
     @NroCuenta = 2, @ID_Socio = 'SN002', @ID_Factura = 8
 EXEC Facturacion.InsertarPago @ID_Pago = 2, @FechaPago = '2025-05-10', @Monto = 45000, @ID_MedioDePago = 3, 
     @NroCuenta = 3, @ID_Socio = 'SN003', @ID_Factura = 11
 
--- ACTUALIZAR FACTURAS
+-- Actualizamos el estado de las facturas
 EXEC Facturacion.ActualizarEstadoFactura @ID_Factura = 8
 EXEC Facturacion.ActualizarEstadoFactura @ID_Factura = 11
+
+
+---- Muestras para la corroborar la correcta insercion de los datos
+
+SELECT * FROM Personas.Socio
+SELECT * FROM Facturacion.Cuenta
+SELECT * FROM Facturacion.Factura
+SELECT * FROM Facturacion.ItemFactura
+SELECT * FROM Facturacion.Pago
+SELECT * FROM Actividades.Actividad
 
 
 -- ╔═════════════════════╗
@@ -143,11 +159,3 @@ EXEC Actividades.SociosConInasistenciasAActividades
 -- REPORTE DE ACUMULADO MENSUAL POR ACTIVIDAD
 EXEC Facturacion.AcumuladoMensualPorActividad
 
-/*
-SELECT * FROM Personas.Socio
-SELECT * FROM Facturacion.Cuenta
-SELECT * FROM Facturacion.Factura
-SELECT * FROM Facturacion.ItemFactura
-SELECT * FROM Facturacion.Pago
-SELECT * FROM Actividades.Actividad
-*/

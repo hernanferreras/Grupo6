@@ -7,6 +7,11 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+
+--                                             ╔═════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN EN BLOQUE ╠═════════════════════════════════════════════*/
+--                                             ╚═════════════════════╝
+
 USE Com5600G06;
 GO
 
@@ -661,43 +666,6 @@ BEGIN
 END;
 GO
 
-/*
---- 32 CREACION DE PROCEDURE MODIFICAR FACTURA
-
-CREATE OR ALTER PROCEDURE Facturacion.ModificarFactura
-	@ID_Factura INT = NULL,
-	@Numero VARCHAR(50) = NULL,
-	@FechaEmision DATE = NULL,
-	@FechaVencimiento DATE = NULL,
-	@TotalImporte DECIMAL(10,2)= NULL,
-	@Recargo DECIMAL(10,2)= NULL,
-	@Estado VARCHAR(30) = NULL
-AS
-BEGIN
-	UPDATE Facturacion.Factura SET
-		Numero = ISNULL(@Numero, Numero),
-		FechaEmision = ISNULL(@FechaEmision, FechaEmision),
-		FechaVencimiento = ISNULL(@FechaVencimiento, FechaVencimiento),
-		TotalImporte = ISNULL(@TotalImporte, TotalImporte),
-		Recargo = ISNULL(@Recargo, Recargo),
-		Estado = ISNULL(@Estado, Estado)
-	WHERE ID_Factura = @ID_Factura
-END;
-GO
-
---- 33 CREACION DE PROCEDURE ELIMINAR FACTURA
-
-CREATE OR ALTER PROCEDURE Facturacion.EliminarFactura
-	@ID_Factura INT
-AS
-BEGIN
-	DELETE
-	FROM Facturacion.Factura
-	WHERE ID_Factura = @ID_Factura
-END;
-GO
-*/
-
 --- 33 CREACION DE PROCEDURE ACTUALIZAR ESTADO FACTURA
 
 CREATE OR ALTER PROCEDURE Facturacion.ActualizarEstadoFactura
@@ -826,7 +794,7 @@ GO
 
 --- 35 CREACION DE PROCEDURE INSERTAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.InsertarPago
-	@ID_Pago INT,
+	@ID_Pago BIGINT,
 	@FechaPago DATE,
 	@Monto DECIMAL(10,2),
 	@ID_MedioDePago INT,
@@ -852,7 +820,7 @@ GO
 
 --- 36 CREACION DE PROCEDURE MODIFICAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.ModificarPago
-	@ID_Pago INT,
+	@ID_Pago BIGINT,
 	@FechaPago DATE,
 	@Monto DECIMAL(10,2),
 	@ID_MedioDePago INT,
@@ -861,11 +829,11 @@ CREATE OR ALTER PROCEDURE Facturacion.ModificarPago
 	@ID_Factura INT
 AS
 BEGIN
-    -- Verificar existencia de la factura
+    -- Verificar existencia del pago
     IF NOT EXISTS (
-        SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
+        SELECT 1 FROM Facturacion.Pago WHERE ID_Pago = @ID_Pago)
     BEGIN
-        PRINT 'La factura indicada no existe.';
+        PRINT 'El pago indicado no existe.';
         RETURN;
     END
 
@@ -884,7 +852,7 @@ GO
 
 --- 37 CREACION DE PROCEDURE ELIMINAR PAGO
 CREATE OR ALTER PROCEDURE Facturacion.EliminarPago
-	@ID_Pago INT
+	@ID_Pago BIGINT
 AS
 BEGIN
     -- Verificar existencia del pago
@@ -934,7 +902,7 @@ BEGIN
 END;
 GO
 
---- 39 CREACION DE PROCEDURE ELIMINAR DESCUENTO
+--- 40 CREACION DE PROCEDURE ELIMINAR DESCUENTO
 
 CREATE OR ALTER PROCEDURE Facturacion.EliminarDescuento
 	@ID_Descuento INT
@@ -949,7 +917,7 @@ GO
 
 -- ═══════════════ TABLA REEMBOLSO ═══════════════ --
 
---- 40 CREACION DE PROCEDURE INSERTAR REEMBOLSO
+--- 41 CREACION DE PROCEDURE INSERTAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.InsertarReembolso
     @ID_Factura INT,
@@ -982,7 +950,7 @@ BEGIN
 END;
 GO
 
---- 41 CREACION DE PROCEDURE MODIFICAR REEMBOLSO
+--- 42 CREACION DE PROCEDURE MODIFICAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.ModificarReembolso
     @ID_Reembolso INT,
@@ -1008,7 +976,7 @@ BEGIN
 END;
 GO
 
---- 42 CREACION DE PROCEDURE ELIMINAR REEMBOLSO
+--- 43 CREACION DE PROCEDURE ELIMINAR REEMBOLSO
 
 CREATE OR ALTER PROCEDURE Facturacion.EliminarReembolso
     @ID_Reembolso INT
@@ -1027,7 +995,8 @@ GO
 
 -- ═══════════════ TABLA CUOTA ═══════════════ --
 
---- 43 CREACION DE PROCEDURE INSERTAR CUOTA
+--- 44 CREACION DE PROCEDURE INSERTAR CUOTA
+
 CREATE OR ALTER PROCEDURE Facturacion.InsertarCuota
 	@ID_Cuota INT,
 	@FechaCuota DATE,
@@ -1057,7 +1026,8 @@ BEGIN
 END;
 GO
 
---- 44 CREACION DE PROCEDURE MODIFICAR CUOTA
+--- 45 CREACION DE PROCEDURE MODIFICAR CUOTA
+
 CREATE OR ALTER PROCEDURE Facturacion.ModificarCuota
 	@ID_Cuota INT,
 	@FechaCuota DATE = NULL,
@@ -1090,7 +1060,7 @@ BEGIN
 END;
 GO
 
---- 45 CREACION DE PROCEDURE ELIMINAR CUOTA
+--- 46 CREACION DE PROCEDURE ELIMINAR CUOTA
 CREATE OR ALTER PROCEDURE Facturacion.EliminarCuota
 	@ID_Cuota INT
 AS
@@ -1113,7 +1083,7 @@ GO
 
 -- ═══════════════ TABLA ACTIVIDAD ═══════════════ --
 
---- 46 CREACION DE PROCEDURE INSERTAR ACTIVIDAD
+--- 47 CREACION DE PROCEDURE INSERTAR ACTIVIDAD
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarActividad
 	@ID_Actividad INT,
@@ -1131,7 +1101,7 @@ BEGIN
 END;
 GO
 
---- 47 CREACION DE PROCEDURE MODIFICAR ACTIVIDAD
+--- 48 CREACION DE PROCEDURE MODIFICAR ACTIVIDAD
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarActividad
 	@ID_Actividad INT = NULL,
@@ -1148,7 +1118,7 @@ BEGIN
 END;
 GO
 
---- 48 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD
+--- 49 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarActividad
 	@ID_Actividad INT
@@ -1163,7 +1133,7 @@ GO
 
 -- ═══════════════ TABLA ACTIVIDAD REALIZADA ═══════════════ --
 
---- 49 CREACION DE PROCEDURE INSERTAR ACTIVIDAD REALIZADA
+--- 50 CREACION DE PROCEDURE INSERTAR ACTIVIDAD REALIZADA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarActividadRealizada
 	@ID_Actividad INT,
@@ -1179,7 +1149,7 @@ BEGIN
 END;
 GO
 
---- 50 CREACION DE PROCEDURE MODIFICAR ACTVIDAD REALIZADA
+--- 51 CREACION DE PROCEDURE MODIFICAR ACTVIDAD REALIZADA
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarActividadRealizada
 	@ID_Socio VARCHAR(15),
@@ -1199,7 +1169,7 @@ BEGIN
 END;
 GO
 
---- 51 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD REALIZADA
+--- 52 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD REALIZADA
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarActividadRealizada
 	@ID_Socio VARCHAR(15),
@@ -1220,7 +1190,7 @@ GO
 
 -- ═══════════════ TABLA CLASE ═══════════════ --
 
---- 52 CREACION DE PROCEDURE INSERTAR CLASE
+--- 53 CREACION DE PROCEDURE INSERTAR CLASE
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarClase
 	@ID_Clase INT,
@@ -1240,7 +1210,7 @@ BEGIN
 END;
 GO
 
---- 53 CREACION DE PROCEDURE MODIFICAR CLASE
+--- 54 CREACION DE PROCEDURE MODIFICAR CLASE
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarClase
 	@ID_Clase INT,
@@ -1259,7 +1229,7 @@ BEGIN
 END;
 GO
 
---- 54 CREACION DE PROCEDURE ELIMINAR
+--- 55 CREACION DE PROCEDURE ELIMINAR
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarClase
 	@ID_Clase INT
@@ -1274,7 +1244,7 @@ GO
 
 -- ═══════════════ TABLA CLASE DICTADA ═══════════════ --
 
---- 55 CREACION DE PROCEDURE INSERTAR CLASE DICTADA
+--- 56 CREACION DE PROCEDURE INSERTAR CLASE DICTADA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarClaseDictada
 	@ID_Clase INT,
@@ -1290,7 +1260,7 @@ BEGIN
 END;
 GO
 
---- 56 CREACION DE PROCEDURE MODIFICAR CLASE DICTADA
+--- 57 CREACION DE PROCEDURE MODIFICAR CLASE DICTADA
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarClaseDictada
 	@ID_Clase INT,
@@ -1305,7 +1275,7 @@ BEGIN
 END;
 GO
 
---- 57 CREACION DE PROCEDURE ELIMINAR CLASE DICTADA
+--- 58 CREACION DE PROCEDURE ELIMINAR CLASE DICTADA
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarClaseDictada
 	@ID_Clase INT
@@ -1320,7 +1290,7 @@ GO
 
 -- ═══════════════ TABLA ACTIVIDAD EXTRA ═══════════════ --
 
---- 58 CREACION DE PROCEDURE INSERTAR ACTIVIDAD EXTRA
+--- 59 CREACION DE PROCEDURE INSERTAR ACTIVIDAD EXTRA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarActividadExtra
 	@ID_ActividadExtra INT,
@@ -1334,7 +1304,7 @@ BEGIN
 END;
 GO
 
---- 59 CREACION DE PROCEDURE MODIFICAR ACTIVIDAD EXTRA
+--- 60 CREACION DE PROCEDURE MODIFICAR ACTIVIDAD EXTRA
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarActividadExtra
 	@ID_ActividadExtra INT,
@@ -1347,7 +1317,7 @@ BEGIN
 END;
 GO
 
---- 60 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD EXTRA
+--- 61 CREACION DE PROCEDURE ELIMINAR ACTIVIDAD EXTRA
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarActividadExtra
 	@ID_ActividadExtra INT
@@ -1362,7 +1332,7 @@ GO
 
 -- ═══════════════ TABLA COLONIA ═══════════════ --
 
---- 61 CREACION DE PROCEDURE INSERTAR COLONIA
+--- 62 CREACION DE PROCEDURE INSERTAR COLONIA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarColonia
 	@ID_ActividadExtra INT,
@@ -1378,7 +1348,7 @@ BEGIN
 END;
 GO
 
---- 62 CREACION DE PROCEDURE MODIFICAR COLONIA
+--- 63 CREACION DE PROCEDURE MODIFICAR COLONIA
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarColonia
 	@ID_ActividadExtra INT,
@@ -1393,7 +1363,7 @@ BEGIN
 END;
 GO
 
---- 63 CREACION DE PROCEDURE ELIMINAR COLONIA
+--- 64 CREACION DE PROCEDURE ELIMINAR COLONIA
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarColonia
 	@ID_ActividadExtra INT
@@ -1408,7 +1378,7 @@ GO
 
 -- ═══════════════ TABLA ALQUILER SUM ═══════════════ --
 
---- 64 CREACION DE PROCEDURE INSERTAR ALQUILER SUM
+--- 65 CREACION DE PROCEDURE INSERTAR ALQUILER SUM
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarAlquilerSUM
 	@ID_ActividadExtra INT,
@@ -1424,7 +1394,7 @@ BEGIN
 END;
 GO
 
---- 65 CREACION DE PROCEDURE MODIFICAR ALQUIER SUM
+--- 66 CREACION DE PROCEDURE MODIFICAR ALQUIER SUM
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarAlquilerSUM
 	@ID_ActividadExtra INT,
@@ -1439,7 +1409,7 @@ BEGIN
 END;
 GO
 
---- 66 CREACION DE PROCEDURE ELIMINAR ALQUILER SUM
+--- 67 CREACION DE PROCEDURE ELIMINAR ALQUILER SUM
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarAlquilerSUM
 	@ID_ActividadExtra INT
@@ -1454,7 +1424,7 @@ GO
 
 -- ═══════════════ TABLA COSTOS PILETA ═══════════════ --
 
---- 67 CREACION DE PROCEDURE INSERTAR COSTOS PILETA
+--- 68 CREACION DE PROCEDURE INSERTAR COSTOS PILETA
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarCostoPileta
 	@ID_TarifaPileta INT,
@@ -1477,7 +1447,7 @@ BEGIN
 END;
 GO
 
---- 68 CREACION DE PROCEDURE MODIFICAR COSTOS PILETA
+--- 69 CREACION DE PROCEDURE MODIFICAR COSTOS PILETA
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarCostosPileta
 	@ID_CostosPileta INT,
@@ -1499,7 +1469,7 @@ BEGIN
 END;
 GO
 
---- 69 CREACION DE PROCEDURE ELIMINAR COSTOS PILETA
+--- 70 CREACION DE PROCEDURE ELIMINAR COSTOS PILETA
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarCostosPileta
 	@ID_CostosPileta INT
@@ -1514,7 +1484,7 @@ GO
 
 -- ═══════════════ TABLA PILETA VERANO ═══════════════ --
 
---- 70 CREACION DE PROCEDURE INSERTAR PILETA VERANO
+--- 71 CREACION DE PROCEDURE INSERTAR PILETA VERANO
 
 CREATE OR ALTER PROCEDURE Actividades.InsertarPiletaVerano
 	@ID_ActividadExtra INT,
@@ -1530,7 +1500,7 @@ BEGIN
 END;
 GO
 
---- 71 CREACION DE PROCEDURE MODIFICAR PILETA VERANO
+--- 72 CREACION DE PROCEDURE MODIFICAR PILETA VERANO
 
 CREATE OR ALTER PROCEDURE Actividades.ModificarPiletaVerano
 	@ID_ActividadExtra INT,
@@ -1545,7 +1515,7 @@ BEGIN
 END;
 GO
 
---- 72 CREACION DE PROCEDURE ELIMINAR PILETA VERANO
+--- 73 CREACION DE PROCEDURE ELIMINAR PILETA VERANO
 
 CREATE OR ALTER PROCEDURE Actividades.EliminarPiletaVerano
 	@ID_ActividadExtra INT
@@ -1560,7 +1530,7 @@ GO
 
 -- ═══════════════ TABLA ITEM FACTURA ═══════════════ --
 
---- 73 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD
+--- 74 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD
 
 CREATE OR ALTER PROCEDURE Facturacion.InsertarItemFacturaActividad
 	@ID_Factura INT,
@@ -1589,7 +1559,7 @@ BEGIN
 END;
 GO
 
---- 74 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD EXTRA
+--- 75 CREACION DE PROCEDURE INSERTAR ITEM FACTURA PARA ACTIVIDAD EXTRA
 CREATE OR ALTER PROCEDURE Facturacion.InsertarItemFacturaActividadExtra
 	@ID_Factura INT,
 	@ID_Item INT,
@@ -1625,62 +1595,11 @@ BEGIN
 	VALUES (@ID_Factura, @ID_Item, @Descripcion, @ID_ActividadExtra);
 END;
 GO
-/*
---- 74 CREACION DE PROCEDURE MODIFICAR ITEM FACTURA
-	
-CREATE OR ALTER PROCEDURE Facturacion.ModificarItemFactura
-	@ID_Factura INT,           
-    @ID_Item INT = NULL,          
-    @ID_Actividad INT = NULL,
-    @ID_ActividadExtra INT = NULL,
-    @Descripcion VARCHAR(300) = NULL,
-    @Importe DECIMAL(10,2) = NULL
-AS
-BEGIN
-    -- Verificar existencia de la factura
-    IF NOT EXISTS (
-        SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
-    BEGIN
-        PRINT 'La factura indicada no existe.';
-        RETURN;
-    END
 
-    -- Modificar ítems de la factura
-	UPDATE Facturacion.ItemFactura SET
-		ID_Item = ISNULL(@ID_Item, ID_Item),          
-		ID_Actividad = ISNULL(@ID_Actividad, ID_Actividad),
-		ID_ActividadExtra= ISNULL(@ID_ActividadExtra, ID_ActividadExtra),
-		Descripcion = ISNULL(@Descripcion, Descripcion),
-		Importe = ISNULL(@Importe, Importe)
-	WHERE ID_Factura = @ID_Factura
-END;
-GO
-
-
---- 75 CREACION DE PROCEDURE ELIMINAR ITEM FACTURA
-
-CREATE OR ALTER PROCEDURE Facturacion.EliminarItemFactura
-	@ID_Factura INT
-AS
-BEGIN
-    -- Verificar existencia de la factura
-    IF NOT EXISTS (
-        SELECT 1 FROM Facturacion.Factura WHERE ID_Factura = @ID_Factura)
-    BEGIN
-        PRINT 'La factura indicada no existe.';
-        RETURN;
-    END
-
-    -- Eliminar ítems de la factura
-	DELETE FROM Facturacion.ItemFactura
-	WHERE ID_Factura = @ID_Factura
-END;
-GO
-*/
 
 -- ═══════════════ TABLA INVITADO ═══════════════ --
 
---- 75 CREACION DE PROCEDURE INSERTAR INVITADO
+--- 76 CREACION DE PROCEDURE INSERTAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.InsertarInvitado
 		@ID_Socio VARCHAR(15),
@@ -1694,7 +1613,7 @@ BEGIN
 END;
 GO
 
---- 76 CREACION DE PROCEDURE MODIFICAR INVITADO
+--- 77 CREACION DE PROCEDURE MODIFICAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.ModificarInvitado
 		@ID_Invitado INT,
@@ -1709,7 +1628,7 @@ BEGIN
 END;
 GO
 
---- 77 CREACION DE PROCEDURE ELIMINAR INVITADO
+--- 78 CREACION DE PROCEDURE ELIMINAR INVITADO
 
 CREATE OR ALTER PROCEDURE Personas.EliminarInvitado
 	@ID_Invitado VARCHAR(15)
@@ -1724,7 +1643,7 @@ GO
 
 -- ═══════════════ TABLA EMPLEADO ═══════════════ --
 
---- 78 CREACION DE PROCEDURE INSERTAR EMPLEADO
+--- 79 CREACION DE PROCEDURE INSERTAR EMPLEADO
 CREATE OR ALTER PROCEDURE Administracion.InsertarEmpleado
     @ID_Empleado VARCHAR(15),
 	@DNI VARCHAR(50),
@@ -1760,7 +1679,7 @@ BEGIN
 END;
 GO
 
---- 79 CREACION DE PROCEDURE MODIFICAR EMPLEADO
+--- 80 CREACION DE PROCEDURE MODIFICAR EMPLEADO
 
 CREATE OR ALTER PROCEDURE Administracion.ModificarEmpleado
     @ID_Empleado VARCHAR(15),
@@ -1794,7 +1713,7 @@ END;
 GO
 
 
---- 80 CREACION DE PROCEDURE ELIMINAR EMPLEADO
+--- 81 CREACION DE PROCEDURE ELIMINAR EMPLEADO
 
 CREATE OR ALTER PROCEDURE Administracion.EliminarEmpleado
     @ID_Empleado VARCHAR(15)
@@ -1805,7 +1724,7 @@ BEGIN
 END;
 GO
 
---- 80 CREACION DE PROCEDURE MOSTRAR EMPLEADO DESENCRIPTADO
+--- 82 CREACION DE PROCEDURE MOSTRAR EMPLEADO DESENCRIPTADO
 CREATE OR ALTER PROCEDURE Administracion.MostrarEmpleadoDesencriptado
     @ClaveSecreta NVARCHAR(128)
 AS

@@ -7,6 +7,10 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+--                                             ╔═════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN EN BLOQUE ╠═════════════════════════════════════════════*/
+--                                             ╚═════════════════════╝
+
 -- ╔══════════════════════════════╗
 -- ║ CREACION DE LA BASE DE DATOS ║
 -- ╚══════════════════════════════╝

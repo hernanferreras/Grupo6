@@ -7,6 +7,11 @@ DNI  /  Apellido  /  Nombre  /  Email / usuario GitHub
 44793833 Bustamante Alan bustamantealangabriel@hotmail.com Alanbst
 */
 
+--                                             ╔═══════════════════════╗
+/*═════════════════════════════════════════════╣ EJECUCIÓN PASO A PASO ╠═════════════════════════════════════════════*/
+--                                             ╚═══════════════════════╝
+
+
 USE Com5600G06
 GO
 
@@ -14,12 +19,14 @@ GO
 -- ║ CREACION DE ROLES Y ASIGNACIÓN DE PERMISOS ║
 -- ╚════════════════════════════════════════════╝
 
+-- Creo los nuevos roles
 CREATE ROLE RolTesoreria;
 CREATE ROLE RolSocios;
 CREATE ROLE RolAutoridades;
 GO
 
 
+-- Asigno los permisos necesarios a cada ROL
 GRANT SELECT, CONTROL ON SCHEMA::Facturacion TO RolTesoreria;
 -------------------------------------------------------------------
 GRANT SELECT, CONTROL ON SCHEMA::Personas TO RolSocios;
@@ -59,6 +66,11 @@ ALTER ROLE RolAutoridades ADD MEMBER Usuario_CarlosDominguez;
     LLEGADO A ESTE PUNTO SE DEBEN EJECUTAR LAS PRUEBAS SEGUN EL USUARIO CORRESPONDIENTE 
     CREANDO UNA CONEXION CON DICHO USUARIO, Y LUEGO PROBARLAS CON USUARIOS DISTINTOS AL INDICADO
     PARA CORROBORAR LOS PERMISOS DE CADA AREA/ROL
+
+    El resultado esperado es:
+                             - El area Tesoreria (RolTesoreria) tenga acceso solamente al esquema Facturacion
+                             - El area Socios (RolSocios) tenga acceso solamente al esquema Personas
+                             - El area Autoridades (RolAutoridades) tenga acceso a todos los esquemas
 */
 
 --══════════════════════════════════ AREA TESORERÍA ══════════════════════════════════--
@@ -75,7 +87,7 @@ EXEC Facturacion.InsertarPago
 -- Modificar medio de pago
 EXEC Facturacion.ModificarPago
 	@ID_Pago = 3, @FechaPago = NULL, @Monto = NULL, @ID_MedioDePago = 2, 
-	@NroCuenta = NULL, @ID_Socio = NULL, @ID_Factura = NULL
+	@NroCuenta = NULL, @ID_Socio = NULL, @ID_Factura = 14
 
 -- Eliminar pago
 EXEC Facturacion.EliminarPago
@@ -109,7 +121,6 @@ EXEC Personas.EliminarSocio
 
 -- Se debe logear con el usuario Login_CarlosDominguez. Constraseña: Carlos123
 
-
 EXEC Administracion.MostrarEmpleadoDesencriptado
     @ClaveSecreta = 'ClaveGrupo06'
 
@@ -129,26 +140,20 @@ EXEC Administracion.EliminarEmpleado
     @ID_Empleado = 'EM-0011'
 
 
-
 /*
-DROP USER Usuario_PedroRamirez;
-DROP USER Usuario_JulietaSuarez;
-DROP USER Usuario_CarlosDominguez;
+DROP USER  Usuario_PedroRamirez;
+DROP USER  Usuario_JulietaSuarez;
+DROP USER  Usuario_CarlosDominguez;
 
 DROP LOGIN Login_PedroRamirez;
 DROP LOGIN Login_JulietaSuarez;
 DROP LOGIN Login_CarlosDominguez;
 
-DROP ROLE RolTesoreria;
-DROP ROLE RolSocios;
-DROP ROLE RolAutoridades;
-
 ALTER ROLE RolTesoreria DROP MEMBER Usuario_PedroRamirez;
 ALTER ROLE RolSocios DROP MEMBER Usuario_JulietaSuarez;
 ALTER ROLE RolAutoridades DROP MEMBER Usuario_CarlosDominguez;
 
+DROP ROLE RolTesoreria;
+DROP ROLE RolSocios;
+DROP ROLE RolAutoridades;
 
-
-REVOKE SELECT ON SCHEMA::Personas TO public;
-REVOKE SELECT ON SCHEMA::Facturacion TO public;
-REVOKE SELECT ON SCHEMA::Administracion TO public;
